@@ -119,7 +119,6 @@
         }
 
         #messageForm {
-            display: none;
             margin-top: 20px;
         }
     </style>
@@ -179,16 +178,17 @@
                 </div>
             </div>
 
-            <div id="messageForm">
-                <h4>Напишите сообщение:</h4>
-                <textarea class="form-control" rows="4" id="message" placeholder="Введите ваше сообщение"></textarea>
-                <button type="button" class="btn btn-primary mt-3" id="sendMessage">Отправить сообщение</button>
-            </div>
+
         </div>
 
     <div class="filtered-devices-list">
     <h3>Отфильтрованные устройства</h3>
     <div id="filtered-devices-list-content"></div>
+        <div id="messageForm">
+            <h4>Напишите сообщение:</h4>
+            <textarea class="form-control" rows="4" id="message" placeholder="Введите ваше сообщение"></textarea>
+            <button type="button" class="btn btn-primary mt-3" id="sendMessage">Отправить сообщение</button>
+        </div>
     </div>
 
     </form>
@@ -389,6 +389,38 @@ function updatePackageDevicesList(devices, selectedDevices) {
 
     // Добавляем обработчик изменений для всех чекбоксов
     document.addEventListener("change", fetchOfficesAndDevices);
+
+    document.getElementById('sendMessage').addEventListener('click', function () {
+    const message = document.getElementById('message').value.trim();
+    if (message) {
+        const formData = new FormData();
+        formData.append('message', message);
+
+        fetch('send-message/', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(data.message);
+                document.getElementById('message').value = ''; // Очистка поля
+            } else {
+                alert('Ошибка: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при отправке сообщения:', error);
+        });
+    } else {
+        alert('Введите сообщение!');
+    }
+});
+
 
 </script>
 

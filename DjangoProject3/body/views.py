@@ -2,7 +2,30 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Body, Floor, Office, PackageDevice, Device
 
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from telegram import Bot
 
+# Замените 'YOUR_BOT_TOKEN' и 'YOUR_CHAT_ID' на реальные данные вашего бота
+BOT_TOKEN = '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA'
+CHAT_ID = '5006892820'
+
+# Функция отправки сообщения в Telegram
+
+@csrf_exempt
+async def send_message_to_telegram(request):
+    if request.method == 'POST':
+        message = request.POST.get('message', '')
+        if message:
+            bot = Bot(token=BOT_TOKEN)
+            try:
+                await bot.send_message(chat_id=CHAT_ID, text=message)
+                return JsonResponse({'status': 'success', 'message': 'Сообщение отправлено!'})
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': str(e)})
+        return JsonResponse({'status': 'error', 'message': 'Сообщение не может быть пустым!'})
+    return JsonResponse({'status': 'error', 'message': 'Неверный метод запроса!'})
 def body_list(request):
     selected_bodies = request.POST.getlist('selected_bodies', [])
     selected_floors = request.POST.getlist('selected_floors', [])
@@ -48,10 +71,6 @@ def body_list(request):
     if selected_package_devices:
         devices = Device.objects.filter(package_id__in=selected_package_devices)
 
-    # Принт отфильтрованных устройств в консоль с проверкой кондиции
-    for device in devices:
-        print(
-            f"Device ID: {device.id}, Serial Number: {device.serial_number}, Package ID: {device.package_id}, Condition ID: {device.condition_id}")
 
     # Обрабатываем кондиции для пакетов устройств
     # Если кондиция "4" или "6", сохраняем её, иначе сохраняем "1"
