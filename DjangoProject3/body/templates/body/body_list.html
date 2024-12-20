@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор Body и Floors</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .content-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .body-list, .floors-list, .offices-list {
+            flex: 1 1 calc(33.33% - 20px);
+            box-sizing: border-box;
+        }
+
+        .device-item label {
+            font-size: 10px;
+            line-height: 1.2;
+        }
+
+        .filtered-devices-list{
+            display: none;
+        }
+
+        .device-image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .warning-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px; /* Увеличиваем размер */
+    height: 40px; /* Увеличиваем размер */
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Позволяет кликабельность элементов ниже */
+}
+
+        .devices-list {
+            flex: 1 1 100%;
+            position: relative;
+            background-image: url('https://fsd.multiurok.ru/html/2021/08/21/s_61212f0da4dc8/phpwowL5U_OU-YUbilej-SHkoly_html_f97f782edb34b027.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 20px;
+            min-height: 300px;
+            width: 100%;
+            height: 741px;
+        }
+
+        #devices-list {
+            margin-left: 350px;
+        }
+
+        .devices-list::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        .devices-grid {
+            display: grid;
+            grid-auto-flow: column;
+            grid-template-rows: repeat(5, max-content);
+            grid-auto-columns: minmax(50px, 150px);
+            gap: 1px;
+            row-gap: 35px;
+            justify-content: start;
+            align-content: start;
+        }
+
+        .device-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 2px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    max-width: 120px;
+    margin: 3px;
+    height: auto;
+    position: relative; /* Нужно для правильного наложения элементов */
+}
+
+
+.device-image {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+        .warning-icon-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #messageForm {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body class="container">
+    <h1 class="my-4 text-center">Выбор Body и Floors</h1>
+
+    <form method="POST" id="selectionForm">
+        {% csrf_token %}
+        <div class="content-container">
+            <div class="body-list">
+                <h3>Список Body</h3>
+                {% for body in bodies %}
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="selected_bodies"
+                            value="{{ body.id }}"
+                            id="body_{{ body.id }}"
+                            {% if body.id|stringformat:"s" in selected_bodies %}checked{% endif %}>
+                        <label class="form-check-label" for="body_{{ body.id }}">
+                            <strong>{{ body.number }}</strong> — {{ body.address }}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="floors-list">
+                <h3>Список Floors</h3>
+                {% for floor in floors %}
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="selected_floors"
+                            value="{{ floor.id }}"
+                            id="floor_{{ floor.id }}"
+                            {% if floor.id|stringformat:"s" in selected_floors %}checked{% endif %}>
+                        <label class="form-check-label" for="floor_{{ floor.id }}">
+                            Этаж №{{ floor.number }}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+
+           <div class="offices-list" id="offices-list" style="display: none;">
+    <h3>Список Offices</h3>
+    <div id="offices-list-content"></div>
+</div>
+
+
+            <div class="devices-list">
+                <h3>Список packege-Devices</h3>
+                <div id="devices-list" class="devices-grid">
+
+                </div>
+            </div>
+
+            <div id="messageForm">
+                <h4>Напишите сообщение:</h4>
+                <textarea class="form-control" rows="4" id="message" placeholder="Введите ваше сообщение"></textarea>
+                <button type="button" class="btn btn-primary mt-3" id="sendMessage">Отправить сообщение</button>
+            </div>
+        </div>
+
+    <div class="filtered-devices-list">
+    <h3>Отфильтрованные устройства</h3>
+    <div id="filtered-devices-list-content"></div>
+    </div>
+
+    </form>
+
+
+
+<script>
+    // Получение CSRF токена
+    function getCSRFToken() {
+        var token = null;
+        document.cookie.split(';').forEach(function(cookie) {
+            if (cookie.trim().startsWith('csrftoken=')) {
+                token = cookie.split('=')[1];
+            }
+        });
+        return token;
+    }
+
+    // Загрузка офисов и устройств
+function fetchOfficesAndDevices() {
+    var selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
+    var selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
+    var selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
+    var selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
+
+    var formData = new FormData();
+    selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
+    selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
+    selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
+    selectedDevices.forEach(checkbox => formData.append('selected_package_devices', checkbox.value));
+
+    // Проверяем, выбраны ли корпуса и этажи
+    if (selectedBodies.length > 0 && selectedFloors.length > 0) {
+        // Показываем список офисов
+        document.getElementById("offices-list").style.display = 'block';
+    } else {
+        // Скрываем список офисов, если не выбран ни один корпус или этаж
+        document.getElementById("offices-list").style.display = 'none';
+    }
+
+    // Показываем или скрываем блок с отфильтрованными устройствами в зависимости от выбора пакетов устройств
+    if (selectedDevices.length > 0) {
+        document.querySelector('.filtered-devices-list').style.display = 'block';
+    } else {
+        document.querySelector('.filtered-devices-list').style.display = 'none';
+    }
+
+    fetch('/body/', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCSRFToken(),
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        updateOfficesList(data.offices, selectedOffices);
+        updatePackageDevicesList(data.package_devices, selectedDevices);
+        updateDevicesList(data.devices, selectedDevices);
+    })
+    .catch(error => {
+        console.error('Ошибка при выполнении запроса:', error);
+    });
+}
+
+function updateOfficesList(offices, selectedOffices) {
+    const officesListContent = document.getElementById("offices-list-content");
+    officesListContent.innerHTML = "";  // Очистка списка
+
+    if (offices && offices.length > 0) {
+        offices.forEach(office => {
+            const officeElement = document.createElement('div');
+            officeElement.classList.add('form-check');
+            officeElement.innerHTML = `
+                <input class="form-check-input" type="checkbox" name="selected_offices" value="${office.id}" id="office_${office.id}" ${office.selected ? 'checked' : ''}>
+                <label class="form-check-label" for="office_${office.id}">
+                    Офис ${office.number} — Этаж ID: ${office.floors_id}, Корпус ID: ${office.body_id}
+                </label>
+            `;
+            officesListContent.appendChild(officeElement);
+        });
+    }
+
+    // Обновление стилей, чтобы список всегда был видимым
+    officesListContent.style.display = 'block';
+}
+function updatePackageDevicesList(devices, selectedDevices) {
+    const devicesList = document.getElementById("devices-list");
+    devicesList.innerHTML = "";  // Очистка списка
+
+    // Массив для хранения всех отфильтрованных устройств
+    let filteredDevices = [];
+
+    if (devices && devices.length > 0) {
+        devices.forEach(device => {
+            const deviceItem = document.createElement('div');
+            deviceItem.classList.add('device-item');
+
+            // Преобразуем condition_id в число для уверенности, что сравнение будет корректным
+            let conditionId = Number(device.condition_id);
+
+            // Лог для проверки типа и значения condition_id
+            console.log(`Device ID: ${device.id}, Condition: ${conditionId}, Type: ${typeof conditionId}`);
+
+            // Стандартное изображение устройства
+            let deviceImage = `
+                <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
+            `;
+
+            // Если кондиция 4 или 6, добавляем восклицательный знак поверх изображения
+            if (conditionId === 4 || conditionId === 6) {
+                console.log(`Adding warning icon for Device ID: ${device.id}, Condition: ${conditionId}`);
+                deviceImage += `
+                    <div class="warning-icon-container">
+                        <img src="https://i.pinimg.com/736x/8d/ef/54/8def54ebab6fc164e50a6ec426e19937.jpg" alt="Warning Icon" class="warning-icon">
+                    </div>
+                `;
+            }
+
+            // Теперь контейнер для изображений
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('device-image-container');
+            imageContainer.innerHTML = deviceImage;
+
+            // Контейнер для чекбокса и метки
+            const checkboxContainer = document.createElement('div');
+            checkboxContainer.classList.add('device-checkbox-container');
+            checkboxContainer.innerHTML = `
+                <input class="form-check-input" type="checkbox" name="selected_package_devices" value="${device.id}" id="device_${device.id}">
+                <label class="form-check-label" for="device_${device.id}">
+                    Серийный номер: ${device.number}, ID: ${device.id}
+                </label>
+            `;
+
+            // Добавляем оба контейнера в основной элемент устройства
+            deviceItem.appendChild(imageContainer);
+            deviceItem.appendChild(checkboxContainer);
+
+            // Добавляем устройство в список
+            devicesList.appendChild(deviceItem);
+
+            // Вывод кондиции устройства в консоль
+            console.log(`Device ID: ${device.id}, Condition: ${device.condition_id}`);
+
+            // Добавляем устройство в список отфильтрованных устройств
+            filteredDevices.push(device);
+        });
+
+        // Восстановление состояния выбранных чекбоксов
+        selectedDevices.forEach(checkbox => {
+            const selectedCheckbox = document.getElementById('device_' + checkbox.value);
+            if (selectedCheckbox) {
+                selectedCheckbox.checked = true;
+            }
+        });
+    }
+}
+
+
+    function updateDevicesList(devices, selectedDevices) {
+    const filteredDevicesListContent = document.getElementById("filtered-devices-list-content");
+    filteredDevicesListContent.innerHTML = "";  // Очистка списка
+
+    // Массив для хранения всех отфильтрованных устройств
+    let filteredDevices = [];
+
+    if (devices && devices.length > 0) {
+        devices.forEach(device => {
+            const deviceItem = document.createElement('div');
+            deviceItem.classList.add('form-check');
+            deviceItem.innerHTML = `
+                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="filtered_device_${device.id}">
+                <label class="form-check-label" for="filtered_device_${device.id}">
+                    Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id}
+                </label>
+            `;
+            filteredDevicesListContent.appendChild(deviceItem);
+
+            // Добавляем устройство в список отфильтрованных устройств
+            filteredDevices.push(device);
+        });
+
+        // Восстановление состояния выбранных чекбоксов
+        selectedDevices.forEach(checkbox => {
+            const selectedCheckbox = document.getElementById('filtered_device_' + checkbox.value);
+            if (selectedCheckbox) {
+                selectedCheckbox.checked = true;
+            }
+        });
+    }
+
+    // Выводим отфильтрованные устройства в консоль (если нужно для отладки)
+    console.log("Filtered Devices:", filteredDevices);
+}
+
+
+
+    // Добавляем обработчик изменений для всех чекбоксов
+    document.addEventListener("change", fetchOfficesAndDevices);
+
+</script>
+
+</body>
+</html>

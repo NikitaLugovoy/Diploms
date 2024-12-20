@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type Devices</title>
+    <!-- Подключение Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #deviceForm {
+            display: none; /* Изначально форма скрыта */
+            margin-bottom: 20px;
+            background-color: #007bff; /* Синий фон формы */
+            padding: 20px;
+            border-radius: 8px;
+            width: 600px; /* Ширина формы */
+            margin-left: auto;
+            margin-right: auto; /* Центрируем форму */
+        }
+
+        .device-table {
+            background-color: #f8f9fa; /* Серый фон таблицы */
+        }
+
+        .device-table th, .device-table td {
+            text-align: center;
+        }
+
+        .device-form-button {
+    background-color: #f8f9fa; /* Серый цвет для кнопки */
+    color: black;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100px;
+}
+
+.form-group {
+    padding-top: 20px;
+    text-align: center; /* Центрирование содержимого */
+}
+.form-group1 {
+    text-align: center; /* Центрирование содержимого */
+    background-color: #f8f9fa;
+    width: 500px;
+    padding: 15px;
+    border-radius: 8px; /* Закругленные углы */
+    border: 1px solid #5a6268; /* Синий бордер */
+    margin-left: auto;
+    margin-right: auto; /* Центрируем форму */
+}
+
+.form-group .device-form-button {
+    display: inline-block; /* Устанавливаем кнопку как блочный элемент */
+}
+
+
+        .device-form-button:hover {
+            background-color: #5a6268; /* Темно-серый при наведении */
+        }
+
+        .device-edit-button, .device-delete-button {
+            background-color: #007bff; /* Синий цвет для кнопок */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+
+        .device-edit-button:hover, .device-delete-button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-label {
+            margin-left: auto;
+            margin-right: auto; /* Центрируем форму */
+    }
+    </style>
+</head>
+<body class="container">
+    <h1 class="my-4 text-center">Типы устройства</h1>
+
+    <!-- Кнопка для отображения формы -->
+
+    <!-- Форма -->
+    <div id="deviceForm">
+        <form method="post" onsubmit="handleFormSubmit(event)">
+            <input type="hidden" name="action" value="create">
+            <input type="hidden" name="device_id" value="">
+            {% csrf_token %}
+           <div class="form-group1">
+    <!-- Лейбл -->
+                <label for="id_name" class="form-label">Название типа устройства</label>
+                {{ form.name }}
+            </div>
+<div class="form-group">
+    <!-- Кнопка -->
+    <button type="submit" class="device-form-button">Создать</button>
+</div>
+
+        </form>
+    </div>
+
+    <!-- Список устройств -->
+    <h2>Типы устройства</h2>
+    <table class="table table-striped device-table">
+        <thead>
+            <tr>
+                <th>Название устройства</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+                <tr>
+                    <td>{{ device.name }}</td>
+                    <td>
+                        <button onclick="handleEdit({{ device.id }}, '{{ device.name }}')" class="device-edit-button">Редактировать</button>
+                        <button onclick="handleDelete(event, {{ device.id }})" class="device-delete-button">Удалить</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button onclick="toggleForm()" class="btn btn-primary mb-4">Добавить тип устройства</button>
+
+    <script>
+        // Получение CSRF-токена из cookie
+        function getCsrfToken() {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    return value;
+                }
+            }
+            return '';
+        }
+
+        // Отправка AJAX-запроса
+        async function sendAjaxRequest(url, formData) {
+            const response = await fetch(url, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCsrfToken(),
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+            return await response.json();
+        }
+
+        // Обработка отправки формы
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            try {
+                const data = await sendAjaxRequest("", formData);
+                if (data.success) {
+                    updateDeviceList(data.devices);
+                    form.reset();
+                    form.querySelector("button[type='submit']").innerText = "Добавить";
+                    form.querySelector("input[name='action']").value = "create";
+                    form.querySelector("input[name='device_id']").value = "";
+
+                    // Скрыть форму после добавления записи
+                    document.getElementById("deviceForm").style.display = "none";
+                } else {
+                    alert("Error: " + data.error);
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Failed to process the request.");
+            }
+        }
+
+        // Удаление устройства
+        async function handleDelete(event, deviceId) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append("device_id", deviceId);
+            formData.append("action", "delete");
+
+            try {
+                const data = await sendAjaxRequest("", formData);
+                if (data.success) {
+                    updateDeviceList(data.devices);
+                } else {
+                    alert("Error: " + data.error);
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Failed to delete the device.");
+            }
+        }
+
+        // Обновление списка устройств
+        function updateDeviceList(devices) {
+            const tableBody = document.querySelector("tbody");
+            tableBody.innerHTML = "";
+            devices.forEach((device) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${device.name}</td>
+                    <td>
+                        <button onclick="handleEdit(${device.id}, '${device.name}')" class="device-edit-button">Редактировать</button>
+                        <button onclick="handleDelete(event, ${device.id})" class="device-delete-button">Удалить</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Редактирование устройства
+        function handleEdit(deviceId, deviceName) {
+            const form = document.querySelector("form");
+            form.querySelector("input[name='device_id']").value = deviceId;
+            form.querySelector("input[name='name']").value = deviceName;
+            form.querySelector("button[type='submit']").innerText = "Обновить";
+            form.querySelector("input[name='action']").value = "update";
+            // Показать форму при редактировании
+            document.getElementById("deviceForm").style.display = "block";
+        }
+
+        // Показать/скрыть форму
+        function toggleForm() {
+            const form = document.getElementById("deviceForm");
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+    </script>
+
+    <!-- Подключение Bootstrap JS и Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
