@@ -213,12 +213,15 @@ function fetchOfficesAndDevices() {
     var selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
     var selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
     var selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
+    
+    var selected_filtered_devices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
 
     var formData = new FormData();
     selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
     selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
     selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
     selectedDevices.forEach(checkbox => formData.append('selected_package_devices', checkbox.value));
+    selected_filtered_devices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
 
     // Проверяем, выбраны ли корпуса и этажи
     if (selectedBodies.length > 0 && selectedFloors.length > 0) {
@@ -248,7 +251,7 @@ function fetchOfficesAndDevices() {
     .then(data => {
         updateOfficesList(data.offices, selectedOffices);
         updatePackageDevicesList(data.package_devices, selectedDevices);
-        updateDevicesList(data.devices, selectedDevices);
+        updateDevicesList(data.devices, selected_filtered_devices);
     })
     .catch(error => {
         console.error('Ошибка при выполнении запроса:', error);
@@ -408,33 +411,43 @@ function updatePackageDevicesList(devices, selectedDevices) {
 
     document.getElementById('sendMessage').addEventListener('click', function () {
     const message = document.getElementById('message').value.trim();
-    if (message) {
-        const formData = new FormData();
-        formData.append('message', message);
 
-        fetch('send-message/', {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': getCSRFToken(),
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert(data.message);
-                document.getElementById('message').value = ''; // Очистка поля
-            } else {
-                alert('Ошибка: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка при отправке сообщения:', error);
-        });
-    } else {
-        alert('Введите сообщение!');
-    }
+    // Собираем данные из формы
+    const formData = new FormData();
+    formData.append('message', message);
+
+    const selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
+    const selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
+    const selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
+    const selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
+    const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+
+    selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
+    selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
+    selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
+    selectedDevices.forEach(checkbox => formData.append('selected_package_devices', checkbox.value));
+    selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
+
+    // Отправка данных на сервер
+    fetch('send-message/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCSRFToken(),
+        },
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message);
+        } else {
+            alert('Ошибка: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Ошибка при отправке сообщения:', error);
+    });
+
 });
 
 

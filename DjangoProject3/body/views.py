@@ -16,16 +16,35 @@ CHAT_ID = '5006892820'
 @csrf_exempt
 async def send_message_to_telegram(request):
     if request.method == 'POST':
+        # Получаем сообщение и выбранные данные из запроса
         message = request.POST.get('message', '')
+        selected_bodies = request.POST.getlist('selected_bodies', [])
+        selected_floors = request.POST.getlist('selected_floors', [])
+        selected_offices = request.POST.getlist('selected_offices', [])
+        selected_package_devices = request.POST.getlist('selected_package_devices', [])
+        selected_filtered_devices = request.POST.getlist('selected_filtered_devices', [])
+
         if message:
             bot = Bot(token=BOT_TOKEN)
             try:
-                await bot.send_message(chat_id=CHAT_ID, text=message)
+                # Формируем текст сообщения с учетом данных
+                formatted_message = (
+                    f"Сообщение: {message}\n\n"
+                    f"Выбранные корпуса: {', '.join(selected_bodies)}\n"
+                    f"Выбранные этажи: {', '.join(selected_floors)}\n"
+                    f"Выбранные офисы: {', '.join(selected_offices)}\n"
+                    f"Выбранные пакеты устройств: {', '.join(selected_package_devices)}\n"
+                    f"Выбранные устройства: {', '.join(selected_filtered_devices)}"
+                )
+
+                # Отправляем сообщение в Telegram
+                await bot.send_message(chat_id=CHAT_ID, text=formatted_message)
                 return JsonResponse({'status': 'success', 'message': 'Сообщение отправлено!'})
             except Exception as e:
                 return JsonResponse({'status': 'error', 'message': str(e)})
         return JsonResponse({'status': 'error', 'message': 'Сообщение не может быть пустым!'})
     return JsonResponse({'status': 'error', 'message': 'Неверный метод запроса!'})
+
 def body_list(request):
     selected_bodies = request.POST.getlist('selected_bodies', [])
     selected_floors = request.POST.getlist('selected_floors', [])
@@ -74,8 +93,6 @@ def body_list(request):
         devices = Device.objects.filter(package_id__in=selected_package_devices)
 
 
-    # Обрабатываем кондиции для пакетов устройств
-    # Если кондиция "4" или "6", сохраняем её, иначе сохраняем "1"
     package_devices_with_condition = []
     for package_device in package_devices:
         # Получаем устройства, связанные с этим пакетом
