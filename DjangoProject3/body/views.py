@@ -29,6 +29,7 @@ async def send_message_to_telegram(request):
 def body_list(request):
     selected_bodies = request.POST.getlist('selected_bodies', [])
     selected_floors = request.POST.getlist('selected_floors', [])
+    selected_filtered_devices = request.POST.getlist('selected_filtered_devices', [])
     selected_offices = request.POST.getlist('selected_offices', [])
     selected_package_devices = request.POST.getlist('selected_package_devices', [])
 
