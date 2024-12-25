@@ -349,42 +349,58 @@ function updatePackageDevicesList(devices, selectedDevices) {
 }
 
 
+
     function updateDevicesList(devices, selectedDevices) {
     const filteredDevicesListContent = document.getElementById("filtered-devices-list-content");
-    filteredDevicesListContent.innerHTML = "";  // Очистка списка
 
-    // Массив для хранения всех отфильтрованных устройств
-    let filteredDevices = [];
+    // Сохраняем текущие выбранные устройства
+    const previouslySelectedDeviceIds = Array.from(
+        document.querySelectorAll('input[name="selected_filtered_devices"]:checked')
+    ).map(checkbox => checkbox.value);
+
+    // Очищаем текущий список устройств
+    filteredDevicesListContent.innerHTML = "";
 
     if (devices && devices.length > 0) {
         devices.forEach(device => {
             const deviceItem = document.createElement('div');
             deviceItem.classList.add('form-check');
+
+            // Проверяем, был ли текущий ID ранее выбран
+            const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
+
+            // Создаём чекбокс и метку
             deviceItem.innerHTML = `
-                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="filtered_device_${device.id}">
+                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="filtered_device_${device.id}"
+                    ${isChecked ? 'checked' : ''}>
                 <label class="form-check-label" for="filtered_device_${device.id}">
                     Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id}
                 </label>
             `;
+
+            // Добавляем элемент в контейнер
             filteredDevicesListContent.appendChild(deviceItem);
-
-            // Добавляем устройство в список отфильтрованных устройств
-            filteredDevices.push(device);
-        });
-
-        // Восстановление состояния выбранных чекбоксов
-        selectedDevices.forEach(checkbox => {
-            const selectedCheckbox = document.getElementById('filtered_device_' + checkbox.value);
-            if (selectedCheckbox) {
-                selectedCheckbox.checked = true;
-            }
         });
     }
 
-    // Выводим отфильтрованные устройства в консоль (если нужно для отладки)
-    console.log("Filtered Devices:", filteredDevices);
+    // Лог состояния для отладки
+    console.log("Сохранённые устройства:", previouslySelectedDeviceIds);
+    console.log("Обновлённые устройства:", devices);
 }
 
+
+    document.addEventListener('change', function (event) {
+    if (event.target.name === 'selected_filtered_devices') {
+        const selectedDeviceId = event.target.value;
+        const isChecked = event.target.checked;
+
+        if (isChecked) {
+            console.log(`Выбран ID устройства: ${selectedDeviceId}`);
+        } else {
+            console.log(`Снята галочка с устройства ID: ${selectedDeviceId}`);
+        }
+    }
+});
 
 
     // Добавляем обработчик изменений для всех чекбоксов
