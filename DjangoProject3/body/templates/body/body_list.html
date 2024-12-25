@@ -54,6 +54,7 @@
             min-height: 300px;
             width: 100%;
             height: 741px;
+            display: none;
         }
 
         #devices-list {
@@ -213,26 +214,30 @@ function fetchOfficesAndDevices() {
     var selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
     var selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
     var selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
-    
-    var selected_filtered_devices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+    var selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
 
     var formData = new FormData();
     selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
     selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
     selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
     selectedDevices.forEach(checkbox => formData.append('selected_package_devices', checkbox.value));
-    selected_filtered_devices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
+    selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
 
-    // Проверяем, выбраны ли корпуса и этажи
+    // Управляем видимостью списка офисов
     if (selectedBodies.length > 0 && selectedFloors.length > 0) {
-        // Показываем список офисов
         document.getElementById("offices-list").style.display = 'block';
     } else {
-        // Скрываем список офисов, если не выбран ни один корпус или этаж
         document.getElementById("offices-list").style.display = 'none';
     }
 
-    // Показываем или скрываем блок с отфильтрованными устройствами в зависимости от выбора пакетов устройств
+    // Управляем видимостью списка устройств
+    if (selectedOffices.length > 0) {
+        document.querySelector('.devices-list').style.display = 'block';
+    } else {
+        document.querySelector('.devices-list').style.display = 'none';
+    }
+
+    // Управляем видимостью фильтрованных устройств
     if (selectedDevices.length > 0) {
         document.querySelector('.filtered-devices-list').style.display = 'block';
     } else {
@@ -251,12 +256,13 @@ function fetchOfficesAndDevices() {
     .then(data => {
         updateOfficesList(data.offices, selectedOffices);
         updatePackageDevicesList(data.package_devices, selectedDevices);
-        updateDevicesList(data.devices, selected_filtered_devices);
+        updateDevicesList(data.devices, selectedFilteredDevices);
     })
     .catch(error => {
         console.error('Ошибка при выполнении запроса:', error);
     });
 }
+
 
 function updateOfficesList(offices, selectedOffices) {
     const officesListContent = document.getElementById("offices-list-content");
@@ -448,7 +454,30 @@ function updatePackageDevicesList(devices, selectedDevices) {
         console.error('Ошибка при отправке сообщения:', error);
     });
 
+
+    if (message.trim() !== "") {
+        alert("Сообщение отправлено: " + message);
+        document.getElementById("message").value = ""; // Очищаем текстовое поле
+        resetCheckboxes(); // Сбрасываем чекбоксы
+    } else {
+        alert("Пожалуйста, введите сообщение!");
+    }
 });
+
+    // Функция для сброса всех чекбоксов
+function resetCheckboxes() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Скрываем блоки после сброса
+    document.getElementById("offices-list").style.display = 'none';
+    document.getElementById("devices-list").style.display = 'none';
+    document.querySelector('.filtered-devices-list').style.display = 'none';
+    ;
+    document.querySelector('.devices-list').style.display = 'none';
+}
 
 
 </script>
