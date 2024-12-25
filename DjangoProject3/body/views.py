@@ -36,6 +36,7 @@ def body_list(request):
     print('Selected Bodies:', selected_bodies)
     print('Selected Floors:', selected_floors)
     print('Selected Offices:', selected_offices)
+    print('Selected selected_filtered_devices:', selected_filtered_devices)
 
     # Фильтрация офисов
     offices = Office.objects.all()
