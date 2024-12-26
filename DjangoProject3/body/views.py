@@ -1,3 +1,4 @@
+from asgiref.sync import sync_to_async
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Body, Floor, Office, PackageDevice, Device
@@ -13,6 +14,39 @@ CHAT_ID = '5006892820'
 
 # Функция отправки сообщения в Telegram
 
+@sync_to_async
+def get_device(device_id):
+    try:
+        device = Device.objects.get(id=device_id)
+        return device
+    except Device.DoesNotExist:
+        return None
+
+# Функция для синхронного обновления устройства
+@sync_to_async
+def update_device_condition(device):
+    device.condition_id = 4
+    device.save()
+
+
+@sync_to_async
+def get_body_address(body_id):
+    try:
+        body = Body.objects.get(id=body_id)
+        return body.address
+    except Body.DoesNotExist:
+        return None
+
+@sync_to_async
+def get_office_number(office_id):
+    try:
+        office = Office.objects.get(id=office_id)
+        return office.number
+    except Office.DoesNotExist:
+        return None
+
+
+# Функция отправки сообщения в Telegram
 @csrf_exempt
 async def send_message_to_telegram(request):
     if request.method == 'POST':
@@ -21,20 +55,69 @@ async def send_message_to_telegram(request):
         selected_bodies = request.POST.getlist('selected_bodies', [])
         selected_floors = request.POST.getlist('selected_floors', [])
         selected_offices = request.POST.getlist('selected_offices', [])
-        selected_package_devices = request.POST.getlist('selected_package_devices', [])
         selected_filtered_devices = request.POST.getlist('selected_filtered_devices', [])
 
+        # Получаем адреса корпусов
+        body_addresses = []
+        for body_id in selected_bodies:
+            address = await get_body_address(body_id)
+            if address:
+                body_addresses.append(address)
+            else:
+                body_addresses.append(f"Неизвестный корпус (ID: {body_id})")
+
+        # Получаем номера офисов
+        # Получаем номера офисов
+        office_numbers = []
+        for office_id in selected_offices:
+            office_number = await get_office_number(office_id)
+            if office_number:
+                office_numbers.append(str(office_number))  # Преобразование в строку
+            else:
+                office_numbers.append(f"Неизвестный офис (ID: {office_id})")
+
+        # Формируем текст сообщения
+        office_text = (
+            f"Офис: {', '.join(office_numbers)}" if office_numbers
+            else "Офисы не выбраны"
+        )
+
+        # Формируем текст сообщения
+        body_text = (
+            f"Корпус: {', '.join(body_addresses)}" if body_addresses
+            else "Корпуса не выбраны"
+        )
+        floor_text = f"Этаж: {', '.join(selected_floors)}" if selected_floors else "Этажи не выбраны"
+
+        # Обновляем состояния устройств, если они выбраны
+        device_serials = []
+        if selected_filtered_devices:
+            for device_id in selected_filtered_devices:
+                device = await get_device(device_id)
+                if device:
+                    await update_device_condition(device)
+                    device_serials.append(str(device.serial_number))  # Преобразование в строку
+                    print(f"Устройство с ID {device_id} изменено, новое condition_id: {device.condition_id}")
+                else:
+                    device_serials.append(f"Неизвестное устройство (ID: {device_id})")
+                    return JsonResponse({'status': 'error', 'message': f'Устройство с ID {device_id} не найдено!'})
+
+        device_text = (
+            f"Устройства: {', '.join(device_serials)}" if device_serials
+            else "Устройства не выбраны"
+        )
+
+        # Отправляем сообщение
         if message:
             bot = Bot(token=BOT_TOKEN)
             try:
-                # Формируем текст сообщения с учетом данных
+                # Формируем полный текст сообщения
                 formatted_message = (
                     f"Сообщение: {message}\n\n"
-                    f"Выбранные корпуса: {', '.join(selected_bodies)}\n"
-                    f"Выбранные этажи: {', '.join(selected_floors)}\n"
-                    f"Выбранные офисы: {', '.join(selected_offices)}\n"
-                    f"Выбранные пакеты устройств: {', '.join(selected_package_devices)}\n"
-                    f"Выбранные устройства: {', '.join(selected_filtered_devices)}"
+                    f"{body_text}\n"
+                    f"{floor_text}\n"
+                    f"{office_text}\n"
+                    f"{device_text}"
                 )
 
                 # Отправляем сообщение в Telegram
@@ -42,6 +125,7 @@ async def send_message_to_telegram(request):
                 return JsonResponse({'status': 'success', 'message': 'Сообщение отправлено!'})
             except Exception as e:
                 return JsonResponse({'status': 'error', 'message': str(e)})
+
         return JsonResponse({'status': 'error', 'message': 'Сообщение не может быть пустым!'})
     return JsonResponse({'status': 'error', 'message': 'Неверный метод запроса!'})
 
@@ -56,6 +140,7 @@ def body_list(request):
     print('Selected Floors:', selected_floors)
     print('Selected Offices:', selected_offices)
     print('Selected selected_filtered_devices:', selected_filtered_devices)
+
 
     # Фильтрация офисов
     offices = Office.objects.all()

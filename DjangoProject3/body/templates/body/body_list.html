@@ -101,6 +101,13 @@
 }
 
 
+        .status-message {
+    color: red;
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
 .device-image {
     width: 30px;
     height: 30px;
@@ -359,7 +366,7 @@ function updatePackageDevicesList(devices, selectedDevices) {
 
 
 
-    function updateDevicesList(devices, selectedDevices) {
+function updateDevicesList(devices, selectedDevices) {
     const filteredDevicesListContent = document.getElementById("filtered-devices-list-content");
 
     // Сохраняем текущие выбранные устройства
@@ -378,12 +385,15 @@ function updatePackageDevicesList(devices, selectedDevices) {
             // Проверяем, был ли текущий ID ранее выбран
             const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
 
+            // Добавляем сообщение "СЛОМАНО !!!" для устройств с condition_id = 4
+            const statusMessage = device.condition_id === 4 ? '<span class="status-message">СЛОМАНО !!!</span>' : '';
+
             // Создаём чекбокс и метку
             deviceItem.innerHTML = `
                 <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="filtered_device_${device.id}"
                     ${isChecked ? 'checked' : ''}>
                 <label class="form-check-label" for="filtered_device_${device.id}">
-                    Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id}
+                    Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id} ${statusMessage}
                 </label>
             `;
 
@@ -396,6 +406,7 @@ function updatePackageDevicesList(devices, selectedDevices) {
     console.log("Сохранённые устройства:", previouslySelectedDeviceIds);
     console.log("Обновлённые устройства:", devices);
 }
+
 
 
     document.addEventListener('change', function (event) {
@@ -445,7 +456,6 @@ function updatePackageDevicesList(devices, selectedDevices) {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert(data.message);
         } else {
             alert('Ошибка: ' + data.message);
         }
@@ -456,7 +466,6 @@ function updatePackageDevicesList(devices, selectedDevices) {
 
 
     if (message.trim() !== "") {
-        alert("Сообщение отправлено: " + message);
         document.getElementById("message").value = ""; // Очищаем текстовое поле
         resetCheckboxes(); // Сбрасываем чекбоксы
     } else {
@@ -465,19 +474,42 @@ function updatePackageDevicesList(devices, selectedDevices) {
 });
 
     // Функция для сброса всех чекбоксов
+// Функция для сброса всех чекбоксов
 function resetCheckboxes() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(checkbox => {
+    // Сбрасываем чекбоксы для корпусов
+    document.querySelectorAll('input[name="selected_bodies"]').forEach(checkbox => {
         checkbox.checked = false;
     });
 
-    // Скрываем блоки после сброса
-    document.getElementById("offices-list").style.display = 'none';
-    document.getElementById("devices-list").style.display = 'none';
-    document.querySelector('.filtered-devices-list').style.display = 'none';
-    ;
-    document.querySelector('.devices-list').style.display = 'none';
+    // Сбрасываем чекбоксы для этажей
+    document.querySelectorAll('input[name="selected_floors"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Сбрасываем чекбоксы для офисов
+    document.querySelectorAll('input[name="selected_offices"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Сбрасываем чекбоксы для пакетов девайсов
+    document.querySelectorAll('input[name="selected_package_devices"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Сбрасываем чекбоксы для отдельных девайсов
+    document.querySelectorAll('input[name="selected_filtered_devices"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Скрываем секции, зависящие от выборов
+    document.getElementById("offices-list").style.display = "none";
+    document.querySelector(".devices-list").style.display = "none";
+    document.querySelector(".filtered-devices-list").style.display = "none";
+    document.querySelector(".device-packages").style.display = "none";
+    document.querySelector(".devices").style.display = "none";
 }
+
+
 
 
 </script>
