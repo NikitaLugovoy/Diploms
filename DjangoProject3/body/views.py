@@ -22,7 +22,7 @@ def get_device(device_id):
     except Device.DoesNotExist:
         return None
 
-# Функция для синхронного обновления устройства
+# Функция для
 @sync_to_async
 def update_device_condition(device):
     device.condition_id = 4
