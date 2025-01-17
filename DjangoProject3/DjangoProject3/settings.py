@@ -31,6 +31,12 @@ ALLOWED_HOSTS = []
 TELEGRAM_BOT_TOKEN = '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA'
 TELEGRAM_CHAT_ID = '5006892820'
 
+
+LOGIN_URL = '/login/'  # Страница входа
+LOGIN_REDIRECT_URL = '/success/'  # Перенаправление после входа
+LOGOUT_REDIRECT_URL = '/login/'  # Перенаправление после выхода
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +48,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'type_devices',
     'body',
+    'yagpt',
+    'chat',
+    'account',
     'rest_framework',
 ]
 

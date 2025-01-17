@@ -23,5 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('type_devices/', include('type_devices.urls')),
     path('body/', include('body.urls')),
-
+    path('yagpt/', include('yagpt.urls')),
+    path('chat/', include('chat.urls')),
+    path('', include('account.urls')),
 ]

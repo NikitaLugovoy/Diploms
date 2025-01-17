@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YaGPT Integration</title>
+    <!-- Подключение Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f8ff; /* Светло-голубой фон */
+            color: #333; /* Темный текст для контраста */
+        }
+
+        h1 {
+            color: #8FBC8F; /* Лаймово-зеленый */
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #6B8E23; /* Оливковый зеленый */
+        }
+
+        input, button {
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        /* Увеличиваем ширину поля ввода и выравниваем его по центру */
+        .input-group {
+            max-width: 600px;
+            margin: 0 auto; /* Центрируем поле */
+        }
+
+        input {
+            padding: 10px;
+            border: 2px solid #8FBC8F;
+        }
+
+        button {
+            background-color: #8FBC8F;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #6B8E23;
+        }
+
+        #response {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #006400; /* Темно-зеленый для текста ответа */
+        }
+
+        .container {
+            max-width: 800px; /* Ширина контейнера увеличена */
+            margin-top: 50px;
+        }
+
+        /* Позиционирование кнопки назад в левом верхнем углу */
+        .btn-back {
+            background-color: #B0E57C; /* Лаймово-бледный фон для кнопки "Назад" */
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background-color: #8FBC8F;
+            color: white;
+        }
+
+        .btn-back-container {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+        }
+
+    </style>
+    <script>
+        // Функция для отправки запроса через AJAX
+        async function sendRequest(event) {
+            event.preventDefault();  // Отменяем стандартное поведение формы
+
+            const userText = document.getElementById('user_text').value; // Получение введенного текста
+            const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value; // CSRF токен
+
+            try {
+                // Отправка POST-запроса на сервер
+                const response = await fetch("{% url 'ya_page' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrfToken,
+                    },
+                    body: JSON.stringify({ user_text: userText }) // Передача текста в JSON
+                });
+
+                if (response.ok) {
+                    const result = await response.json(); // Получение данных из JSON ответа
+                    const generatedText = result['generated_text'];
+
+                    // Отображение текста в DOM
+                    document.getElementById('response').innerText = generatedText;
+                } else {
+                    document.getElementById('response').innerText = "Ошибка при запросе: " + response.statusText;
+                }
+            } catch (error) {
+                console.error("Ошибка при выполнении запроса:", error);
+                document.getElementById('response').innerText = "Ошибка: не удалось отправить запрос.";
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <!-- Кнопка "Назад" в левом верхнем углу -->
+    <div class="btn-back-container">
+        <a href="{% url 'success' %}" class="btn-back">Назад</a>
+    </div>
+
+    <h1 class="text-center">Помощь от Yandex</h1>
+    <!-- Форма для ввода запроса -->
+    <form onsubmit="sendRequest(event)" class="text-center">
+        {% csrf_token %}
+        <div class="mb-3 input-group">
+            <input type="text" id="user_text" name="user_text" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success">Найти</button>
+    </form>
+
+    <!-- Поле для отображения ответа -->
+    <p id="response" class="text-center mt-3"></p>
+</div>
+</body>
+</html>

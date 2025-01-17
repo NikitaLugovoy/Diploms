@@ -6,6 +6,58 @@
     <title>Выбор Body и Floors</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f0f8ff; /* Светло-голубой фон */
+            color: #333; /* Темный текст для контраста */
+        }
+
+        h1 {
+            color: #8FBC8F; /* Лаймово-зеленый */
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #6B8E23; /* Оливковый зеленый */
+        }
+
+        input, button {
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        /* Увеличиваем ширину поля ввода и выравниваем его по центру */
+        .input-group {
+            max-width: 600px;
+            margin: 0 auto; /* Центрируем поле */
+        }
+
+        input {
+            padding: 10px;
+            border: 2px solid #8FBC8F;
+        }
+
+        button {
+            background-color: #8FBC8F;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #6B8E23;
+        }
+
+        .btn-secondary {
+            background-color: #B0E57C; /* Лаймово-бледный фон для кнопки "Назад" */
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #8FBC8F;
+        }
+
         .content-container {
             display: flex;
             flex-wrap: wrap;
@@ -23,8 +75,10 @@
             line-height: 1.2;
         }
 
-        .filtered-devices-list{
+        .filtered-devices-list {
             display: none;
+            max-width: 600px; /* Устанавливаем максимальную ширину */
+            margin: 0 auto; /* Центрируем контейнер */
         }
 
         .device-image-container {
@@ -33,15 +87,15 @@
         }
 
         .warning-icon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20px; /* Увеличиваем размер */
-    height: 40px; /* Увеличиваем размер */
-    z-index: 10;
-    transform: translate(-50%, -50%);
-    pointer-events: none; /* Позволяет кликабельность элементов ниже */
-}
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 40px;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
 
         .devices-list {
             flex: 1 1 100%;
@@ -84,36 +138,35 @@
         }
 
         .device-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 2px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ccc;
-    max-width: 120px;
-    margin: 3px;
-    height: auto;
-    position: relative; /* Нужно для правильного наложения элементов */
-}
-
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+            max-width: 120px;
+            margin: 3px;
+            height: auto;
+            position: relative;
+        }
 
         .status-message {
-    color: red;
-    font-weight: bold;
-    font-size: 14px;
-    margin-left: 10px;
-}
+            color: red;
+            font-weight: bold;
+            font-size: 14px;
+            margin-left: 10px;
+        }
 
-.device-image {
-    width: 30px;
-    height: 30px;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
+        .device-image {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
 
         .warning-icon-container {
             position: absolute;
@@ -128,17 +181,29 @@
 
         #messageForm {
             margin-top: 20px;
+            max-width: 600px; /* Устанавливаем максимальную ширину */
+            margin: 0 auto; /* Центрируем блок */
+        }
+
+        .btn-back {
+            position: absolute;
+            top: 10px;
+            left: 10px;
         }
     </style>
 </head>
 <body class="container">
-    <h1 class="my-4 text-center">Выбор Body и Floors</h1>
+    <h1 class="my-4 text-center">Выбор поломанного устройства</h1>
 
     <form method="POST" id="selectionForm">
+        <div class="text-center">
+            <!-- Кнопка "Назад" с таким же стилем -->
+            <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
+        </div>
         {% csrf_token %}
         <div class="content-container">
             <div class="body-list">
-                <h3>Список Body</h3>
+                <h3>Список Корпусов</h3>
                 {% for body in bodies %}
                     <div class="form-check">
                         <input
@@ -156,7 +221,7 @@
             </div>
 
             <div class="floors-list">
-                <h3>Список Floors</h3>
+                <h3>Список этажей</h3>
                 {% for floor in floors %}
                     <div class="form-check">
                         <input
@@ -173,34 +238,31 @@
                 {% endfor %}
             </div>
 
-           <div class="offices-list" id="offices-list" style="display: none;">
-    <h3>Список Offices</h3>
-    <div id="offices-list-content"></div>
-</div>
-
-
-            <div class="devices-list">
-                <h3>Список packege-Devices</h3>
-                <div id="devices-list" class="devices-grid">
-
-                </div>
+            <div class="offices-list" id="offices-list" style="display: none;">
+                <h3>Список кабинетов</h3>
+                <div id="offices-list-content"></div>
             </div>
 
+            <div class="devices-list">
+                <h3>Схема кабинета</h3>
+                <div id="devices-list" class="devices-grid"></div>
+            </div>
 
         </div>
 
-    <div class="filtered-devices-list">
-    <h3>Отфильтрованные устройства</h3>
-    <div id="filtered-devices-list-content"></div>
-        <div id="messageForm">
-            <h4>Напишите сообщение:</h4>
-            <textarea class="form-control" rows="4" id="message" placeholder="Введите ваше сообщение"></textarea>
-            <button type="button" class="btn btn-primary mt-3" id="sendMessage">Отправить сообщение</button>
+        <div class="filtered-devices-list text-center" >
+            <h3>Устройства</h3>
+            <div id="filtered-devices-list-content"></div>
+            <div id="messageForm">
+                <h4>Напишите сообщение:</h4>
+                <textarea class="form-control" rows="4" id="message" placeholder="Введите ваше сообщение"></textarea>
+                <button type="button" class="btn btn-primary btn-secondary mt-3" id="sendMessage">Отправить сообщение</button>
+            </div>
         </div>
-    </div>
 
     </form>
-
+</body>
+</html>
 
 
 <script>
@@ -316,7 +378,7 @@ function updatePackageDevicesList(devices, selectedDevices) {
             `;
 
             // Если кондиция 4 или 6, добавляем восклицательный знак поверх изображения
-            if (conditionId === 4 || conditionId === 6) {
+            if (conditionId === 4) {
                 console.log(`Adding warning icon for Device ID: ${device.id}, Condition: ${conditionId}`);
                 deviceImage += `
                     <div class="warning-icon-container">
@@ -509,10 +571,6 @@ function resetCheckboxes() {
     document.querySelector(".devices").style.display = "none";
 }
 
-
-
-
+    
 </script>
 
-</body>
-</html>
