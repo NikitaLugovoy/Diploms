@@ -27,7 +27,6 @@
             border-radius: 5px;
         }
 
-        /* Увеличиваем ширину поля ввода и выравниваем его по центру */
         .input-group {
             max-width: 600px;
             margin: 0 auto; /* Центрируем поле */
@@ -61,7 +60,6 @@
             margin-top: 50px;
         }
 
-        /* Позиционирование кнопки назад в левом верхнем углу */
         .btn-back {
             background-color: #B0E57C; /* Лаймово-бледный фон для кнопки "Назад" */
             color: #333;
@@ -86,39 +84,54 @@
 
     </style>
     <script>
-        // Функция для отправки запроса через AJAX
-        async function sendRequest(event) {
-            event.preventDefault();  // Отменяем стандартное поведение формы
+    // Функция для отправки запроса через AJAX с текстом и фото
+    async function sendRequest(event) {
+        event.preventDefault();  // Отменяем стандартное поведение формы
 
-            const userText = document.getElementById('user_text').value; // Получение введенного текста
-            const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value; // CSRF токен
+        const userText = document.getElementById('user_text').value; // Получение введенного текста
+        const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value; // CSRF токен
+        const imageFile = document.getElementById('image_file').files[0]; // Получение выбранного файла изображения
 
-            try {
-                // Отправка POST-запроса на сервер
-                const response = await fetch("{% url 'ya_page' %}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrfToken,
-                    },
-                    body: JSON.stringify({ user_text: userText }) // Передача текста в JSON
-                });
-
-                if (response.ok) {
-                    const result = await response.json(); // Получение данных из JSON ответа
-                    const generatedText = result['generated_text'];
-
-                    // Отображение текста в DOM
-                    document.getElementById('response').innerText = generatedText;
-                } else {
-                    document.getElementById('response').innerText = "Ошибка при запросе: " + response.statusText;
-                }
-            } catch (error) {
-                console.error("Ошибка при выполнении запроса:", error);
-                document.getElementById('response').innerText = "Ошибка: не удалось отправить запрос.";
-            }
+        // Проверка, что хотя бы одно поле (текст или файл) заполнено
+        if (!userText && !imageFile) {
+            document.getElementById('response').innerText = "Ошибка: необходимо ввести текст или выбрать файл.";
+            return;
         }
-    </script>
+
+        const formData = new FormData();
+        if (userText) {
+            formData.append('user_text', userText);  // Добавляем текст, если он есть
+        }
+        if (imageFile) {
+            formData.append('image_file', imageFile);  // Добавляем файл, если он есть
+        }
+
+        try {
+            // Отправка POST-запроса на сервер с использованием FormData
+            const response = await fetch("{% url 'ya_page' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                },
+                body: formData // Отправляем данные через FormData
+            });
+
+            if (response.ok) {
+                const result = await response.json(); // Получение данных из JSON ответа
+                const generatedText = result['generated_text'];
+
+                // Отображение текста в DOM
+                document.getElementById('response').innerText = generatedText;
+            } else {
+                document.getElementById('response').innerText = "Ошибка при запросе: " + response.statusText;
+            }
+        } catch (error) {
+            console.error("Ошибка при выполнении запроса:", error);
+            document.getElementById('response').innerText = "Ошибка: не удалось отправить запрос.";
+        }
+    }
+</script>
+
 </head>
 <body>
 <div class="container">
@@ -129,11 +142,17 @@
 
     <h1 class="text-center">Помощь от Yandex</h1>
     <!-- Форма для ввода запроса -->
-    <form onsubmit="sendRequest(event)" class="text-center">
+    <form onsubmit="sendRequest(event)" class="text-center" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3 input-group">
-            <input type="text" id="user_text" name="user_text" class="form-control" required>
+        <input type="text" id="user_text" name="user_text" class="form-control" placeholder="Введите запрос">
+    </div>
+
+        <!-- Форма для отправки фото -->
+        <div class="mb-3 input-group">
+            <input type="file" id="image_file" name="image_file" class="form-control" accept="image/*">
         </div>
+
         <button type="submit" class="btn btn-success">Найти</button>
     </form>
 

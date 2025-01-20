@@ -1,9 +1,13 @@
 import json
-
+import pytesseract
+from PIL import Image
 import requests
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+
+# Укажите путь к исполнимому файлу Tesseract (если необходимо)
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Путь для Windows, измените при необходимости
 
 @csrf_exempt  # Отключение проверки CSRF для AJAX-запросов
 def yagpt_page(request):
@@ -15,9 +19,28 @@ def yagpt_page(request):
     folder_id = "b1gca4u7tp73kpmj87no"
 
     if request.method == "POST":
-        # Получение текста из запроса
-        data = json.loads(request.body)
-        user_text = data.get("user_text", "")
+        # Проверка на наличие текста в запросе
+        user_text = None
+
+        # Проверка на наличие файла в запросе
+        if 'image_file' in request.FILES:
+            image_file = request.FILES['image_file']
+            print(f"Получен файл: {image_file.name}, размер: {image_file.size} байт")  # Выводим информацию о файле
+
+            # Открываем изображение с помощью Pillow
+            image = Image.open(image_file)
+            # Распознаем текст с изображения с помощью pytesseract для русского и английского языков
+            user_text = "Как решить " + pytesseract.image_to_string(image, lang='rus+eng')
+            print(f"Текст с изображения: {user_text}")  # Выводим распознанный текст
+
+            if not user_text.strip():  # Если текст не распознан
+                return JsonResponse({'error': 'Не удалось распознать текст на изображении'}, status=400)
+
+        elif 'user_text' in request.POST:
+            user_text = request.POST['user_text']
+            print(f"Получен текст: {user_text}")
+        else:
+            return JsonResponse({'error': 'Текст не передан'}, status=400)
 
         # Подготовка данных для Yandex GPT API
         payload = {
