@@ -40,6 +40,7 @@ LOGOUT_REDIRECT_URL = '/login/'  # Перенаправление после в�
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,8 +54,6 @@ INSTALLED_APPS = [
     'account',
     'rest_framework',
 ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -98,7 +97,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': config('DB_DATABASE', default='diplom'),
         'USER': config('DB_USERNAME', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default='n1i2k3i4t5a6'),
+        'PASSWORD': config('DB_PASSWORD', default='Nikita'),
         'HOST': config('DB_HOST', default='127.0.0.1'),
         'PORT': config('DB_PORT', default='5432'),
         # Дополнительные параметры можно указать через OPTIONS
