@@ -489,54 +489,54 @@ function updateDevicesList(devices, selectedDevices) {
     document.addEventListener("change", fetchOfficesAndDevices);
 
     document.getElementById('sendMessage').addEventListener('click', function () {
-    const message = document.getElementById('message').value.trim();
+        const message = document.getElementById('message').value.trim();
 
-    // Собираем данные из формы
-    const formData = new FormData();
-    formData.append('message', message);
+        // Собираем данные из формы
+        const formData = new FormData();
+        formData.append('message', message);
 
-    const selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
-    const selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
-    const selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
-    const selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
-    const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+        const selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
+        const selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
+        const selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
+        const selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
+        const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
 
-    selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
-    selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
-    selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
-    selectedDevices.forEach(checkbox => formData.append('selected_package_devices', checkbox.value));
-    selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
+        selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
+        selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
+        selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
+        selectedDevices.forEach(checkbox => formData.append('selected_package_devices', checkbox.value));
+        selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
 
-    // Отправка данных на сервер
-    fetch('send-message/', {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
+        // Отправка данных на сервер
+        fetch('send-message/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                } else {
+                    alert('Ошибка: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке сообщения:', error);
+            });
+
+
+        if (message.trim() !== "") {
+            document.getElementById("message").value = ""; // Очищаем текстовое поле
+            resetCheckboxes(); // Сбрасываем чекбоксы
         } else {
-            alert('Ошибка: ' + data.message);
+            alert("Пожалуйста, введите сообщение!");
         }
-    })
-    .catch(error => {
-        console.error('Ошибка при отправке сообщения:', error);
     });
 
-
-    if (message.trim() !== "") {
-        document.getElementById("message").value = ""; // Очищаем текстовое поле
-        resetCheckboxes(); // Сбрасываем чекбоксы
-    } else {
-        alert("Пожалуйста, введите сообщение!");
-    }
-});
-
     // Функция для сброса всех чекбоксов
-// Функция для сброса всех чекбоксов
+    // Функция для сброса всех чекбоксов
 function resetCheckboxes() {
     // Сбрасываем чекбоксы для корпусов
     document.querySelectorAll('input[name="selected_bodies"]').forEach(checkbox => {

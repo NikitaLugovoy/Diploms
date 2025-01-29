@@ -1,7 +1,9 @@
 from asgiref.sync import sync_to_async
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from .models import Body, Floor, Office, PackageDevice, Device
+from django.utils.timezone import now
+
+from .models import Body, Floor, Office, PackageDevice, Device, Application, Status
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -13,6 +15,78 @@ BOT_TOKEN = '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA'
 CHAT_ID = '5006892820'
 
 # Функция отправки сообщения в Telegram
+
+# Код для получения всех заявок
+def application_list(request):
+    applications = Application.objects.all()
+
+    # Для каждой заявки добавляем номер офиса, серийный номер устройства и имя статуса
+    for application in applications:
+        # Получаем данные об офисе
+        office = Office.objects.get(id=application.office_id)
+        application.office_number = office.number
+
+        # Получаем данные о устройстве
+        device = Device.objects.get(id=application.device_id)
+        application.device_serial_number = device.serial_number
+
+        # Получаем данные о статусе
+        status = Status.objects.get(id=application.status_id)
+        application.status_name = status.name  # Добавляем имя статуса
+
+    return render(request, 'body/application_list.html', {'applications': applications})
+
+
+from django.shortcuts import get_object_or_404, redirect
+from .models import Application, Device
+
+def close_application(request, application_id):
+    # Получаем заявку по ID
+    application = get_object_or_404(Application, id=application_id)
+
+    # Обновляем статус заявки на статус с ID = 3
+    application.status_id = 3
+    application.save()
+
+    # Получаем устройство, связанное с заявкой
+    device = get_object_or_404(Device, id=application.device_id)
+
+    # Обновляем condition_id устройства на 1
+    device.condition_id = 1
+    device.save()
+
+    # После обновления статуса и condition_id перенаправляем обратно на страницу списка заявок
+    return redirect('application_list')
+
+@sync_to_async
+def save_application(office_id, device_ids, reason):
+    """
+    Функция для сохранения записей в таблице `applications` для всех выбранных устройств.
+
+    :param office_id: ID офиса.
+    :param device_ids: Список ID устройств.
+    :param reason: Причина (сообщение).
+    :return: JSON-ответ с результатом.
+    """
+    try:
+        application_ids = []
+        for device_id in device_ids:
+            # Создание новой записи для каждого устройства
+            application = Application.objects.create(
+                office_id=office_id,
+                device_id=device_id,
+                reason=reason,
+                user_id=1,
+                data=now(),  # Текущее время
+                status_id=1  # Фиксированное значение
+            )
+            application.save()
+            application_ids.append(application.id)
+
+        return JsonResponse({'status': 'success', 'message': 'Заявки успешно сохранены!', 'application_ids': application_ids})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
+
 
 @sync_to_async
 def get_device(device_id):
@@ -100,13 +174,13 @@ async def send_message_to_telegram(request):
                     print(f"Устройство с ID {device_id} изменено, новое condition_id: {device.condition_id}")
                 else:
                     device_serials.append(f"Неизвестное устройство (ID: {device_id})")
-                    return JsonResponse({'status': 'error', 'message': f'Устройство с ID {device_id} не найдено!'})
 
         device_text = (
             f"Устройства: {', '.join(device_serials)}" if device_serials
             else "Устройства не выбраны"
         )
 
+        # Отправляем сообщение
         # Отправляем сообщение
         if message:
             bot = Bot(token=BOT_TOKEN)
@@ -122,10 +196,15 @@ async def send_message_to_telegram(request):
 
                 # Отправляем сообщение в Telegram
                 await bot.send_message(chat_id=CHAT_ID, text=formatted_message)
+
+                if selected_offices and selected_filtered_devices:
+                    office_id = selected_offices[0]  # Используем первый выбранный офис
+                    save_response = await save_application(office_id, selected_filtered_devices, message)
+                    print(save_response.content)
+
                 return JsonResponse({'status': 'success', 'message': 'Сообщение отправлено!'})
             except Exception as e:
                 return JsonResponse({'status': 'error', 'message': str(e)})
-
         return JsonResponse({'status': 'error', 'message': 'Сообщение не может быть пустым!'})
     return JsonResponse({'status': 'error', 'message': 'Неверный метод запроса!'})
 

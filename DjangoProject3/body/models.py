@@ -58,3 +58,29 @@ class Device(models.Model):
 
     def __str__(self):
         return f"Device {self.serial_number} (Type ID: {self.type_id}, Package ID: {self.package_id}, Condition ID: {self.condition_id})"
+
+
+class Application(models.Model):
+    office_id = models.IntegerField()
+    device_id = models.IntegerField()
+    reason = models.TextField()
+    data = models.DateTimeField(auto_now_add=True)
+    status_id = models.IntegerField()
+    user_id = models.IntegerField()
+
+    class Meta:
+        db_table = 'applications'
+
+    def __str__(self):
+        return f"Application {self.id} (Office: {self.office_id}, Device: {self.device_id})"
+
+from django.db import models
+
+class Status(models.Model):
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'statuses'
+
+    def __str__(self):
+        return self.name

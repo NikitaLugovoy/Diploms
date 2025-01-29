@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        input, button {
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #8FBC8F;
+            margin-top: 20px;
+            font-size: 2rem;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #8FBC8F;
+        }
+
+        th {
+            background-color: #8FBC8F;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f4f4f4;
+        }
+
+        button {
+            background-color: #8FBC8F;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #6B8E23;
+        }
+        .btn-secondary {
+            background-color: #B0E57C; /* Лаймово-бледный фон для кнопки "Назад" */
+            border: none;
+        }
+        .btn-back {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        form {
+            display: inline-block;
+        }
+
+        @media (max-width: 767px) {
+            table {
+                width: 100%;
+                font-size: 0.9rem;
+            }
+
+            button {
+                width: 100%;
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Скрытие кнопки "Закрыть заявку", если она не существует */
+        .hidden-button {
+            display: none;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // Отправка формы через AJAX
+            $("form").on("submit", function(event){
+                event.preventDefault(); // Предотвращаем обычную отправку формы
+
+                var form = $(this);
+                var button = form.find("button");
+                var row = form.closest("tr"); // Находим строку таблицы, в которой находится кнопка
+
+                // Логирование для дебага
+                console.log("Запрос на закрытие заявки отправлен.");
+
+                $.ajax({
+                    url: form.attr("action"),  // URL для обработки
+                    type: "POST",
+                    data: form.serialize(),    // Данные формы (включая csrf_token)
+                    success: function(response) {
+                        console.log("Заявка закрыта.");
+
+                        // Обновляем строку таблицы
+                        button.prop("disabled", true); // Отключаем кнопку
+                        row.find("td").eq(5).text("Закрыто"); // Обновляем статус заявки в таблице
+                        button.addClass("hidden-button"); // Скрываем кнопку
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Ошибка при отправке запроса: " + error);
+                        alert("Произошла ошибка при закрытии заявки.");
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Все Заявки</h1>
+
+    <div class="text-center">
+            <!-- Кнопка "Назад" с таким же стилем -->
+            <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
+        </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Номер Офиса</th>
+                <th>Серийный Номер Устройства</th>
+                <th>Причина</th>
+                <th>Дата</th>
+                <th>Статус</th>
+                <th>ID Пользователя</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+                <tr>
+                    <td>{{ application.id }}</td>
+                    <td>{{ application.office_number }}</td>
+                    <td>{{ application.device_serial_number }}</td>
+                    <td>{{ application.reason }}</td>
+                    <td>{{ application.data }}</td>
+                    <td>{{ application.status_name }}</td>
+                    <td>{{ application.user_id }}</td>
+                    <td>
+                        {% if application.status_id != 3 %}
+                            <form action="{% url 'close_application' application.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit">Закрыть заявку</button>
+                            </form>
+                        {% else %}
+                            <span class="hidden-button"></span> <!-- Пустой элемент для сохранения места -->
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
