@@ -1,4 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
+
 from .models import Chat, Message, User
 
 
@@ -10,9 +12,6 @@ def chat_page(request, chat_id):
         'messages': messages,
     }
     return render(request, 'chat_index.html', context)
-
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import redirect
 
 @csrf_exempt
 def send_message(request, chat_id):
@@ -27,3 +26,7 @@ def send_message(request, chat_id):
         # Создание сообщения
         Message.objects.create(person1=person1, chat=chat, messenges=message_text)
         return redirect('chat_index', chat_id=chat_id)
+
+def history_chat(request):
+    chats = Chat.objects.all()
+    return render(request, 'history_chat.html', {'chats': chats})
