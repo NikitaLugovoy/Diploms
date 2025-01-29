@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список чатов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #8FBC8F;
+            margin-top: 20px;
+            font-size: 2rem;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+
+        li {
+            background-color: #f9f9f9;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            border: 1px solid #8FBC8F;
+        }
+
+        a {
+            color: #6B8E23;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #8FBC8F;
+        }
+
+        .btn-secondary {
+            background-color: #B0E57C; /* Лаймово-бледный фон для кнопки "Назад" */
+            border: none;
+        }
+
+        .btn-back {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        @media (max-width: 767px) {
+            li {
+                font-size: 1rem;
+                padding: 12px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <h2>Все чаты</h2>
+
+    <div class="text-center">
+        <!-- Кнопка "Назад" -->
+        <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
+    </div>
+
+    <ul>
+        {% for chat in chats %}
+            <li>
+                <!-- Добавляем ссылку на страницу чата -->
+                <a href="{% url 'chat_index' chat.id %}">{{ chat.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
