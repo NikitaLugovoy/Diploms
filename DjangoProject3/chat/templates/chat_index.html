@@ -124,7 +124,7 @@
         <div id="messages">
             {% for message in messages %}
             <div class="message">
-                <strong>{{ message.person1.name }}</strong>
+                <strong>{{ message.person1.username}}</strong>
                 <p>{{ message.messenges }}</p>
                 <div class="time">{{ message.time }}</div>
             </div>
@@ -139,5 +139,13 @@
             </form>
         </div>
     </div>
+<script>
+
+        function reloadMessages() {
+            location.reload();
+        }
+
+        setInterval(reloadMessages, 10000);
+    </script>
 </body>
 </html>

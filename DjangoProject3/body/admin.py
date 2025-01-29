@@ -15,10 +15,12 @@ class FloorAdmin(admin.ModelAdmin):
     list_display = ('number',)
     search_fields = ('number',)
 
+# В файле admin.py
 @admin.register(Office)
 class OfficeAdmin(admin.ModelAdmin):
-    list_display = ('number', 'floors_id', 'body_id')
-    search_fields = ('number', 'floors_id', 'body_id')
+    list_display = ('number', 'floor', 'body')  # Заменили floors_id на floor
+    search_fields = ('number', 'floor__number', 'body__number')  # Используем связанные поля для поиска
+
 
 @admin.register(PackageDevice)
 class PackageDeviceAdmin(admin.ModelAdmin):

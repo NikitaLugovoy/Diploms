@@ -1,14 +1,5 @@
+from django.contrib.auth.models import User
 from django.db import models
-
-# Таблица пользователей
-class User(models.Model):
-    name = models.CharField(max_length=255)
-
-    class Meta:
-        db_table = 'users'
-
-    def __str__(self):
-        return self.name
 
 
 class Chat(models.Model):
@@ -19,6 +10,7 @@ class Chat(models.Model):
 
     def __str__(self):
         return self.name
+
 
 # Таблица сообщений
 class Message(models.Model):

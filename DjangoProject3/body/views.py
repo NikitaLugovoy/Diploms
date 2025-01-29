@@ -225,24 +225,28 @@ def body_list(request):
     offices = Office.objects.all()
 
     if selected_bodies:
-        offices = offices.filter(body_id__in=selected_bodies)
+        offices = offices.filter(body__in=selected_bodies)
 
     if selected_floors:
-        offices = offices.filter(floors_id__in=selected_floors)
+        offices = offices.filter(floor__in=selected_floors)
+
+    print(offices)
 
     office_data = [
         {
             'id': office.id,
             'number': office.number,
-            'floors_id': office.floors_id,
-            'body_id': office.body_id,
+            'floors_id': office.floor.id,
+            'body_id': office.body.id,
             'selected': str(office.id) in selected_offices
         }
         for office in offices
     ]
 
+    print(office_data)
+
     # Фильтрация пакетов устройств (PackageDevice) только для выбранных офисов
-    package_devices = PackageDevice.objects.filter(office_id__in=selected_offices) if selected_offices else []
+    package_devices = PackageDevice.objects.filter(office__in=selected_offices) if selected_offices else []
 
     # Получаем устройства с учетом их кондиции
     device_data = [
@@ -254,13 +258,13 @@ def body_list(request):
     devices = Device.objects.all()
 
     if selected_package_devices:
-        devices = Device.objects.filter(package_id__in=selected_package_devices)
+        devices = Device.objects.filter(package__in=selected_package_devices)
 
 
     package_devices_with_condition = []
     for package_device in package_devices:
         # Получаем устройства, связанные с этим пакетом
-        devices_in_package = Device.objects.filter(package_id=package_device.id)
+        devices_in_package = Device.objects.filter(package=package_device.id)
 
         # Ищем кондицию устройства, если находим 4 или 6, используем её, иначе 1
         condition = "1"  # По умолчанию кондиция 1

@@ -18,7 +18,7 @@ from django.shortcuts import redirect
 def send_message(request, chat_id):
     if request.method == 'POST':
         chat = get_object_or_404(Chat, id=chat_id)
-        person1 = User.objects.get(id=1)  # Отправитель, предполагается, что авторизация настроена
+        person1 = request.user
         message_text = request.POST.get('messenges')
 
         if not message_text:

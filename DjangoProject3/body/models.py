@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 class Body(models.Model):
@@ -10,71 +11,62 @@ class Body(models.Model):
     def __str__(self):
         return self.number
 
-
-from django.db import models
-
 class Floor(models.Model):
     number = models.IntegerField()
+    body = models.ForeignKey(Body, on_delete=models.CASCADE, related_name='floors')
 
     class Meta:
         db_table = 'floors'
 
     def __str__(self):
-        return f"Этаж {self.number}"
-
-from django.db import models
+        return f"Этаж {self.number} ({self.body.number})"
 
 class Office(models.Model):
     number = models.CharField(max_length=50)
-    floors_id = models.IntegerField()  # Прямой ID вместо ForeignKey
-    body_id = models.IntegerField()   # Прямой ID вместо ForeignKey
+    floor = models.ForeignKey(Floor, on_delete=models.CASCADE)
+    body = models.ForeignKey(Body, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'offices'
 
     def __str__(self):
-        return f"Офис {self.number} (Этаж ID: {self.floors_id}, Корпус ID: {self.body_id})"
+        return f"Офис {self.number} (Этаж: {self.floor.number}, Корпус: {self.body.number})"
 
 class PackageDevice(models.Model):
-    office_id = models.IntegerField()  # Связь с моделью Office
-    number = models.CharField(max_length=100)  # Номер пакета
+    office = models.ForeignKey(Office, on_delete=models.CASCADE, related_name='package_devices')
+    number = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'package_device'
 
     def __str__(self):
-        return f"{self.number} — {self.office_id}"
+        return f"{self.number} — {self.office.number}"
 
-
-# Модель для устройств
 class Device(models.Model):
-    type_id = models.IntegerField()  # Идентификатор типа устройства
-    serial_number = models.CharField(max_length=100)  # Серийный номер устройства
-    package_id = models.IntegerField()  # Связь с пакетом (PackageDevice)
-    condition_id = models.IntegerField()  # Состояние устройства
+    type = models.ForeignKey('type_devices.TypeDevice', on_delete=models.CASCADE, related_name='devices')
+    serial_number = models.CharField(max_length=100)
+    package = models.ForeignKey(PackageDevice, on_delete=models.CASCADE, related_name='devices')
+    condition = models.ForeignKey('Status', on_delete=models.CASCADE, related_name='devices')
 
     class Meta:
         db_table = 'devices'
 
     def __str__(self):
-        return f"Device {self.serial_number} (Type ID: {self.type_id}, Package ID: {self.package_id}, Condition ID: {self.condition_id})"
-
+        return f"Device {self.serial_number} (Type ID: {self.type.name}, Package: {self.package.number}, Condition: {self.condition.name})"
 
 class Application(models.Model):
-    office_id = models.IntegerField()
-    device_id = models.IntegerField()
+    office = models.ForeignKey(Office, on_delete=models.CASCADE, related_name='applications')
+    device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='applications')
     reason = models.TextField()
     data = models.DateTimeField(auto_now_add=True)
-    status_id = models.IntegerField()
-    user_id = models.IntegerField()
+    status = models.ForeignKey('Status', on_delete=models.CASCADE, related_name='applications')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
 
     class Meta:
         db_table = 'applications'
 
     def __str__(self):
-        return f"Application {self.id} (Office: {self.office_id}, Device: {self.device_id})"
-
-from django.db import models
+        return f"Application {self.id} (Office: {self.office.number}, Device: {self.device.serial_number})"
 
 class Status(models.Model):
     name = models.CharField(max_length=100)
