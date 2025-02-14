@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Информация о пользователе</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f8ff;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #8FBC8F;
+        }
+        .container {
+            margin: 40px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .devices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Колонки динамически адаптируются */
+    gap: 10px;
+    justify-content: start;
+    align-content: start;
+}
+
+        .device-item {
+            background: #e6f7ff;
+            padding: 10px;
+            border-radius: 5px;
+            flex: 1 1 calc(50% - 10px);
+            min-width: 150px;
+        }
+
+
+        .device-image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .warning-icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 40px;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .devices-list {
+            flex: 1 1 100%;
+            position: relative;
+            background-image: url('https://fsd.multiurok.ru/html/2021/08/21/s_61212f0da4dc8/phpwowL5U_OU-YUbilej-SHkoly_html_f97f782edb34b027.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 20px;
+            min-height: 300px;
+            width: 100%;
+            height: 741px;
+        }
+
+        #devices-list {
+            margin-left: 350px;
+        }
+
+        .devices-list::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        .devices-grid {
+            display: grid;
+            grid-auto-flow: column;
+            grid-template-rows: repeat(5, max-content);
+            grid-auto-columns: minmax(50px, 150px);
+            gap: 1px;
+            row-gap: 35px;
+            justify-content: start;
+            align-content: start;
+        }
+
+        .device-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+            max-width: 120px;
+            margin: 3px;
+            height: auto;
+            position: relative;
+        }
+
+        .status-message {
+            color: red;
+            font-weight: bold;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .device-image {
+            width: 30px;
+            height: 30px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .warning-icon-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="container">
+    <h1 class="my-4 text-center">Выбор поломанного устройства</h1>
+
+    <form method="POST" id="selectionForm">
+        <div class="text-center">
+            <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
+        </div>
+        {% csrf_token %}
+
+        <div class="content-container">
+            <div class="body-list">
+    <h3>Ваши активные расписания</h3>
+    {% for schedule in schedules %}
+        <div class="schedule-item" data-name="{{ schedule.name }}" data-office="{{ schedule.office.id }}">
+            <strong>{{ schedule.name }}</strong> — Офис <span class="office-number">{{ schedule.office.id }}</span>
+        </div>
+    {% endfor %}
+</div>
+
+
+            <div class="devices-list">
+                <h3>Список пакетов устройств</h3>
+            <div id="devices-list" class="devices-grid">
+                    <!-- Устройства загружаются через JS -->
+
+                {% for package in package_devices %}
+    <div class="device-item">
+        <input class="form-check-input package-checkbox" type="checkbox" name="selected_packages" value="{{ package.id }}" id="package_{{ package.id }}">
+        <label class="form-check-label" for="package_{{ package.id }}">
+            <div class="device-image-container">
+                <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
+                {% if package.has_warning %}
+                    <div class="warning-icon-container">
+                        <img src="https://i.pinimg.com/736x/8d/ef/54/8def54ebab6fc164e50a6ec426e19937.jpg" alt="Warning Icon" class="warning-icon">
+                    </div>
+                {% endif %}
+            </div>
+            <strong>{{ package.number }}</strong>
+        </label>
+    </div>
+{% endfor %}
+
+            </div>
+
+            </div>
+
+            <div class="filtered-devices-list">
+                <h3>Устройства</h3>
+
+            </div>
+        </div>
+
+        <div class="filtered-devices-list text-center">
+            <h3>Выбранные устройства</h3>
+            <div id="filtered-devices-list-content"></div>
+            <div id="messageForm">
+                <h4>Напишите сообщение:</h4>
+                <textarea class="form-control" rows="4" id="message" placeholder="Введите ваше сообщение"></textarea>
+                <button type="button" class="btn btn-primary mt-3" id="sendMessage">Отправить сообщение</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    function updateDevices() {
+        const selectedPackages = [...document.querySelectorAll(".package-checkbox:checked")].map(cb => cb.value);
+        const devicesList = document.getElementById("filtered-devices-list-content");
+
+        const formData = new FormData();
+        formData.append("csrfmiddlewaretoken", document.querySelector("input[name=csrfmiddlewaretoken]").value);
+        selectedPackages.forEach(id => formData.append("selected_packages", id));
+
+        fetch("{% url 'fastapplication_list' %}", {
+            method: "POST",
+            body: formData,
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Полученные данные устройств:", data.devices);
+            // Очищаем список перед заполнением
+            devicesList.innerHTML = "";
+
+            // Проходим по всем устройствам из ответа
+            data.devices.forEach(device => {
+                // Выводим отладочную информацию для каждого устройства
+                console.log("Device ID:", device.id, "condition:", device.condition);
+
+                // Приводим значение condition к числу
+                const conditionValue = Number(device.condition); // или parseInt(device.condition, 10)
+
+                // Если condition равна 4, выводим дополнительное сообщение в консоль
+                if (conditionValue === 4) {
+                    console.log(`Отладка: Устройство с id ${device.id} имеет condition = ${conditionValue} (СЛОМАНО !!!)`);
+                }
+
+                // Если condition равна 4, добавляем сообщение "СЛОМАНО !!!"
+                const statusMessage = conditionValue === 4
+                    ? '<span class="status-message">СЛОМАНО !!!</span>'
+                    : '';
+
+                // Создаем HTML для элемента устройства
+                const deviceItem = document.createElement("div");
+                deviceItem.classList.add("device-item", "form-check");
+                deviceItem.dataset.deviceId = device.id;
+                deviceItem.innerHTML = `
+                    <input class="form-check-input device-checkbox" type="checkbox" name="selected_devices" value="${device.id}">
+                    <label class="form-check-label">
+                        Устройство ID: ${device.id} ${statusMessage}
+                    </label>
+                `;
+                devicesList.appendChild(deviceItem);
+            });
+        })
+        .catch(error => console.error("Ошибка загрузки устройств:", error));
+    }
+
+    document.querySelectorAll(".schedule-checkbox, .package-checkbox").forEach(checkbox => {
+        checkbox.addEventListener("change", updateDevices);
+    });
+
+    document.querySelectorAll(".device-checkbox").forEach(checkbox => {
+        checkbox.addEventListener("change", updateDevices);
+    });
+});
+
+document.getElementById('sendMessage').addEventListener('click', function () {
+    const message = document.getElementById('message').value.trim();
+    if (!message) {
+        alert("Пожалуйста, введите сообщение!");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('message', message);
+    formData.append('csrfmiddlewaretoken', document.querySelector("input[name=csrfmiddlewaretoken]").value);
+
+    function appendCheckedValues(formData, name) {
+        document.querySelectorAll(`input[name="${name}"]:checked`).forEach(el => {
+            formData.append(name, el.value);
+        });
+    }
+
+    // Добавляем только выбранные пакеты и устройства
+    appendCheckedValues(formData, 'selected_packages');
+    appendCheckedValues(formData, 'selected_devices');
+
+    // Собираем расписания и офисы из data-атрибутов
+    const schedules = [];
+    const offices = [];
+
+    document.querySelectorAll(".body-list .schedule-item").forEach(item => {
+        const scheduleName = item.dataset.name?.trim();
+        const officeId = item.dataset.office?.trim();
+
+        console.log("Найдено расписание:", scheduleName, "Офис:", officeId);
+
+        if (scheduleName && officeId) {
+            schedules.push(scheduleName);
+            offices.push(officeId);
+        }
+    });
+
+    if (schedules.length === 0) {
+        console.warn("❗ Расписания не найдены!");
+    }
+    if (offices.length === 0) {
+        console.warn("❗ Офисы не найдены!");
+    }
+
+    // Добавляем массивы в FormData
+    formData.append('all_schedules', JSON.stringify(schedules));
+    formData.append('all_offices', JSON.stringify(offices));
+
+    console.log("Отправляемые данные:", Object.fromEntries(formData.entries()));
+
+    fetch("{% url 'send_selected_to_telegram' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("Сообщение успешно отправлено в Telegram!");
+            document.getElementById("message").value = "";
+        } else {
+            alert("Ошибка отправки: " + data.message);
+        }
+    })
+    .catch(error => {
+        console.error("Ошибка при отправке:", error);
+        alert("Произошла ошибка при отправке сообщения.");
+    });
+});
+
+
+
+// Функция сброса чекбоксов после успешной отправки
+function resetCheckboxes() {
+    document.querySelectorAll(".schedule-checkbox, .package-checkbox, .device-checkbox").forEach(cb => {
+        cb.checked = false;
+    });
+}
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

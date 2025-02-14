@@ -3,23 +3,22 @@ from django.db import models
 
 class Body(models.Model):
     number = models.CharField(max_length=50)
-    address = models.URLField()
+    address = models.CharField(max_length=50)
 
     class Meta:
         db_table = 'body'
 
     def __str__(self):
-        return self.number
+        return f"{self.number} {self.address}"
 
 class Floor(models.Model):
     number = models.IntegerField()
-    body = models.ForeignKey(Body, on_delete=models.CASCADE, related_name='floors')
 
     class Meta:
         db_table = 'floors'
 
     def __str__(self):
-        return f"Этаж {self.number} ({self.body.number})"
+        return f"Этаж {self.number} ({self.number})"
 
 class Office(models.Model):
     number = models.CharField(max_length=50)
@@ -73,6 +72,20 @@ class Status(models.Model):
 
     class Meta:
         db_table = 'statuses'
+
+    def __str__(self):
+        return self.name
+
+
+class Schedule(models.Model):
+    name = models.TextField()
+    office = models.ForeignKey(Office, on_delete=models.CASCADE, related_name='schedules')
+    datetime_start = models.DateTimeField()
+    datetime_end = models.DateTimeField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedules')
+
+    class Meta:
+        db_table = 'schedules'
 
     def __str__(self):
         return self.name

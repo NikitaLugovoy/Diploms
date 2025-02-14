@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from body.models import Body, Floor, Office, PackageDevice, Device, Application, Status
+from body.models import Body, Floor, Office, PackageDevice, Device, Application, Status, Schedule
 from type_devices.models import TypeDevice
 
 
@@ -46,3 +46,9 @@ class StatusAdmin(admin.ModelAdmin):
 class TypeDeviceAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
+
+
+@admin.register(Schedule)
+class ScheduleAdmin(admin.ModelAdmin):
+    list_display = ('name', 'office', 'datetime_start', 'datetime_end', 'user')
+    search_fields = ('name', 'office__number', 'user__username')

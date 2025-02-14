@@ -6,7 +6,11 @@ urlpatterns = [
     path('', views.body_list, name='body_list'),
     path('send-message/', views.send_message_to_telegram, name='send_message_to_telegram'),
 
+    path('send-messages/', views.send_selected_to_telegram, name='send_selected_to_telegram'),
+
     path('application', views.application_list, name='application_list'),
 
-path('close_application/<int:application_id>/', views.close_application, name='close_application'),  # Новый путь
+    path('fastapplication', views.fastapplication_list, name='fastapplication_list'),
+
+    path('close_application/<int:application_id>/', views.close_application, name='close_application'),  # Новый путь
   ]

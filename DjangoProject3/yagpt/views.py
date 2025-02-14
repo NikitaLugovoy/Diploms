@@ -19,7 +19,7 @@ def yagpt_page(request):
     folder_id = "b1gca4u7tp73kpmj87no"
 
     if request.method == "POST":
-        # Проверка на наличие текста в запросе
+
         user_text = None
 
         # Проверка на наличие файла в запросе
