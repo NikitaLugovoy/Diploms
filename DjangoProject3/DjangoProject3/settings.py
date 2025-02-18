@@ -31,6 +31,14 @@ ALLOWED_HOSTS = []
 TELEGRAM_BOT_TOKEN = '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA'
 TELEGRAM_CHAT_ID = '5006892820'
 
+BASE_URL = "http://localhost:8000"  # Или другой ваш URL
+
+# settings.py
+import os
+
+BOT_TOKEN = os.getenv('BOT_TOKEN', '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA')
+CHAT_ID = os.getenv('CHAT_ID', '5006892820')
+
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/success/'

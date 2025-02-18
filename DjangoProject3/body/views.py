@@ -1,350 +1,370 @@
+import logging
+import json
+import requests
+import telebot
+from requests.exceptions import RequestException
 from asgiref.sync import sync_to_async
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.utils.timezone import now
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework import status
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from drf_spectacular.utils import extend_schema
 
-from .models import Body, Floor, Office, PackageDevice, Device, Application, Status
+from .models import (
+    Schedule, PackageDevice, Device, Office, Body, Floor, Application, Status
+)
+from .serializers import (
+    ScheduleSerializer, PackageDeviceSerializer, DeviceSerializer, OfficeSerializer, BodySerializer,
+    FastApplicationRequestSerializer, DeviceRequestSerializer, PackageNameRequestSerializer,
+    ScheduleNameRequestSerializer, SendMessageSerializer, SendToTelegramSerializer,
+    ApplicationSerializer, CloseApplicationSerializer, SaveApplicationSerializer
+)
+from DjangoProject3 import settings
 
-from django.shortcuts import render
+logger = logging.getLogger(__name__)
+
+BOT_TOKEN = settings.BOT_TOKEN
+CHAT_ID = settings.CHAT_ID
+
+
+from DjangoProject3 import settings
+from .models import Application, Device, Office, Status
+from .serializers import ApplicationSerializer, CloseApplicationSerializer, SaveApplicationSerializer, \
+    ScheduleSerializer
+
+logger = logging.getLogger(__name__)
+
+
+import logging
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from telegram import Bot
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from .serializers import SendMessageSerializer
+from .models import Device
 
-# Замените 'YOUR_BOT_TOKEN' и 'YOUR_CHAT_ID' на реальные данные вашего бота
+
+
+logger = logging.getLogger(__name__)
+
 BOT_TOKEN = '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA'
 CHAT_ID = '5006892820'
+import logging
+import telebot
+from django.http import JsonResponse
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from .serializers import SendMessageSerializer
+import requests
+from requests.exceptions import RequestException  # Добавьте этот импорт
 
-# Функция отправки сообщения в Telegram
+from asgiref.sync import sync_to_async
+from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .models import Device, Body, Office
+from .serializers import DeviceSerializer, BodySerializer, OfficeSerializer
+from .serializers import DeviceRequestSerializer
 
-# Код для получения всех заявок
+
+@swagger_auto_schema(method='get', responses={200: ApplicationSerializer(many=True)})
+@api_view(['GET'])
 def application_list(request):
     applications = Application.objects.all()
-
-    # Для каждой заявки добавляем номер офиса, серийный номер устройства и имя статуса
-    for application in applications:
-        # Получаем данные об офисе
-        office = Office.objects.get(id=application.office_id)
-        application.office_number = office.number
-
-        # Получаем данные о устройстве
-        device = Device.objects.get(id=application.device_id)
-        application.device_serial_number = device.serial_number
-
-        # Получаем данные о статусе
-        status = Status.objects.get(id=application.status_id)
-        application.status_name = status.name  # Добавляем имя статуса
-
-    return render(request, 'body/application_list.html', {'applications': applications})
+    serializer = ApplicationSerializer(applications, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-from django.shortcuts import get_object_or_404, redirect
-from .models import Application, Device
-
+@swagger_auto_schema(method='post', request_body=CloseApplicationSerializer)
+@api_view(['POST'])
 def close_application(request, application_id):
-    # Получаем заявку по ID
     application = get_object_or_404(Application, id=application_id)
-
-    # Обновляем статус заявки на статус с ID = 3
     application.status_id = 3
     application.save()
 
-    # Получаем устройство, связанное с заявкой
     device = get_object_or_404(Device, id=application.device_id)
-
-    # Обновляем condition_id устройства на 1
     device.condition_id = 1
     device.save()
 
-    # После обновления статуса и condition_id перенаправляем обратно на страницу списка заявок
-    return redirect('application_list')
+    logger.info(f"Application {application_id} closed successfully.")
+    return Response({"message": "Application closed successfully."}, status=status.HTTP_200_OK)
 
-@sync_to_async
-def save_application(office_id, device_ids, reason):
-    """
-    Функция для сохранения записей в таблице `applications` для всех выбранных устройств.
 
-    :param office_id: ID офиса.
-    :param device_ids: Список ID устройств.
-    :param reason: Причина (сообщение).
-    :return: JSON-ответ с результатом.
-    """
-    try:
+@swagger_auto_schema(method='post', request_body=SaveApplicationSerializer)
+@api_view(['POST'])
+def save_application(request):
+    serializer = SaveApplicationSerializer(data=request.data)
+    if serializer.is_valid():
+        office_id = serializer.validated_data['office_id']
+        device_ids = serializer.validated_data['device_ids']
+        reason = serializer.validated_data['reason']
+
         application_ids = []
         for device_id in device_ids:
-            # Создание новой записи для каждого устройства
             application = Application.objects.create(
                 office_id=office_id,
                 device_id=device_id,
                 reason=reason,
                 user_id=1,
-                data=now(),  # Текущее время
-                status_id=1  # Фиксированное значение
+                data=now(),
+                status_id=1
             )
             application.save()
             application_ids.append(application.id)
 
-        return JsonResponse({'status': 'success', 'message': 'Заявки успешно сохранены!', 'application_ids': application_ids})
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)})
+        logger.info("Applications saved successfully.")
+        return Response(
+            {'status': 'success', 'message': 'Applications saved successfully!', 'application_ids': application_ids},
+            status=status.HTTP_201_CREATED)
 
-    return JsonResponse({'status': 'error', 'message': 'Неверный метод запроса!'})
+    logger.error("Invalid application data received.")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@sync_to_async
+
+
+# Исправляем get_device, если в ней неправильно передаются аргументы
 def get_device(device_id):
     try:
-        device = Device.objects.get(id=device_id)
-        print(device_id)
-        return device
+        return Device.objects.get(id=device_id)
     except Device.DoesNotExist:
         return None
 
-# Функция для
-@sync_to_async
-def update_device_condition(device):
+
+
+def update_device_condition_by_id(device_id: int):
+    """
+    Обновляет состояние устройства по ID (condition_id = 4).
+    """
+    device = get_object_or_404(Device, id=device_id)
     device.condition_id = 4
     device.save()
+    return device  # Возвращаем объект устройства, а не Response
 
-@sync_to_async
-def update_device_condition_by_id(device_id):
-    from .models import Device
+
+def get_body_address(body_id: int) -> str:
+    """
+    Получает адрес здания по ID и возвращает строку.
+    """
+    body = get_object_or_404(Body, id=body_id)
+    return body.address  # Предполагаем, что у модели Body есть поле address
+
+
+def get_office_number(office_id: int) -> Response:
+    """
+    Получает номер офиса по ID.
+    """
+    office = get_object_or_404(Office, id=office_id)
+    return str(office.number)
+
+
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+# Кэшируем объект бота
+def get_telegram_bot(token):
+    if hasattr(get_telegram_bot, 'bot'):
+        return get_telegram_bot.bot
+
+    get_telegram_bot.bot = telebot.TeleBot(token)
+    return get_telegram_bot.bot
+
+# Отправка сообщения в Telegram
+def send_telegram_message(chat_bot: str, chat_id: str, message: str):
     try:
-        device = Device.objects.get(id=device_id)
-        device.condition_id = 4
-        device.save()
-        return device
-    except Device.DoesNotExist:
-        return None
+        bot = get_telegram_bot(chat_bot)
+        logger.info(f"Отправка сообщения в Telegram: {message}")  # Лог перед отправкой
+        bot.send_message(chat_id, message)
+    except Exception as e:
+        logger.error(f"{send_telegram_message.__name__} {e}")
+
+@swagger_auto_schema(
+    method='post',
+    request_body=SendMessageSerializer,
+    responses={200: openapi.Response('Успешный ответ', SendMessageSerializer)},
+    operation_description="Отправляет сообщение в Telegram и создает заявку.",
+)
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def send_message_to_telegram(request):
+    logger.info(f"RAW REQUEST DATA: {request.data}")
+
+    serializer = SendMessageSerializer(data=request.data)
+    if not serializer.is_valid():
+        logger.error(f"Ошибка валидации: {serializer.errors}")
+        return JsonResponse({'status': 'error', 'message': serializer.errors}, status=400)
+
+    data = serializer.validated_data
+    user_message = data.get('message', '')
+    selected_filtered_devices = data.get('selected_filtered_devices', [])
+
+    if not selected_filtered_devices:
+        return JsonResponse({'status': 'error', 'message': 'Не выбрано ни одного устройства!'}, status=400)
+
+    # Получение информации об устройствах
+    device_details_list = []
+    first_office_id = None
 
 
-@sync_to_async
-def get_body_address(body_id):
-    try:
-        body = Body.objects.get(id=body_id)
-        return body.address
-    except Body.DoesNotExist:
-        return None
-
-@sync_to_async
-def get_office_number(office_id):
-    try:
-        office = Office.objects.get(id=office_id)
-        return office.number
-    except Office.DoesNotExist:
-        return None
-
-
-# Функция отправки сообщения в Telegram
-@csrf_exempt
-async def send_message_to_telegram(request):
-    if request.method == 'POST':
-        message = request.POST.get('message', '')
-        selected_bodies = request.POST.getlist('selected_bodies', [])
-        selected_floors = request.POST.getlist('selected_floors', [])
-        selected_offices = request.POST.getlist('selected_offices', [])
-        selected_filtered_devices = request.POST.getlist('selected_filtered_devices', [])
-
-        # Получаем адреса корпусов
-        body_addresses = []
-        for body_id in selected_bodies:
-            address = await get_body_address(body_id)
-            if address:
-                body_addresses.append(address)
-            else:
-                body_addresses.append(f"Неизвестный корпус (ID: {body_id})")
-
-        # Получаем номера офисов
-        office_numbers = []
-        for office_id in selected_offices:
-            office_number = await get_office_number(office_id)
-            if office_number:
-                office_numbers.append(str(office_number))
-            else:
-                office_numbers.append(f"Неизвестный офис (ID: {office_id})")
-
-        office_text = (
-            f"Офис: {', '.join(office_numbers)}" if office_numbers
-            else "Офисы не выбраны"
-        )
-
-        body_text = (
-            f"Корпус: {', '.join(body_addresses)}" if body_addresses
-            else "Корпуса не выбраны"
-        )
-        floor_text = f"Этаж: {', '.join(selected_floors)}" if selected_floors else "Этажи не выбраны"
-
-        # Обновляем состояния устройств, если они выбраны
-        device_serials = []
-        if selected_filtered_devices:
-            for device_id in selected_filtered_devices:
-                device = await get_device(device_id)
-                if device:
-                    updated_device = await update_device_condition_by_id(device_id)
-                    if updated_device:
-                        device_serials.append(str(updated_device.serial_number))
-                        print(f"Устройство с ID {device_id} изменено, новое condition_id: {updated_device.condition_id}")
-                    else:
-                        device_serials.append(f"Неизвестное устройство (ID: {device_id})")
-                else:
-                    device_serials.append(f"Неизвестное устройство (ID: {device_id})")
-
-        device_text = (
-            f"Устройства: {', '.join(device_serials)}" if device_serials
-            else "Устройства не выбраны"
-        )
-
-        if message:
-            async with Bot(token=BOT_TOKEN) as bot:
-                try:
-                    formatted_message = (
-                        f"Сообщение: {message}\n\n"
-                        f"{body_text}\n"
-                        f"{floor_text}\n"
-                        f"{office_text}\n"
-                        f"{device_text}"
-                    )
-
-                    await bot.send_message(chat_id=CHAT_ID, text=formatted_message)
-
-                    if selected_offices and selected_filtered_devices:
-                        office_id = selected_offices[0]  # Используем первый выбранный офис
-                        save_response = await save_application(office_id, selected_filtered_devices, message)
-                        print(save_response.content)
-
-                    return JsonResponse({'status': 'success', 'message': 'Сообщение отправлено!'})
-                except Exception as e:
-                    return JsonResponse({'status': 'error', 'message': str(e)})
-        return JsonResponse({'status': 'error', 'message': 'Сообщение не может быть пустым!'})
-    return JsonResponse({'status': 'error', 'message': 'Неверный метод запроса!'})
-
-def body_list(request):
-    selected_bodies = request.POST.getlist('selected_bodies', [])
-    selected_floors = request.POST.getlist('selected_floors', [])
-    selected_filtered_devices = request.POST.getlist('selected_filtered_devices', [])
-    selected_offices = request.POST.getlist('selected_offices', [])
-    selected_package_devices = request.POST.getlist('selected_package_devices', [])
-
-    print('Selected Bodies:', selected_bodies)
-    print('Selected Floors:', selected_floors)
-    print('Selected Offices:', selected_offices)
-    print('Selected selected_filtered_devices:', selected_filtered_devices)
-
-
-    # Фильтрация офисов
-    offices = Office.objects.all()
-
-    if selected_bodies:
-        offices = offices.filter(body__in=selected_bodies)
-
-    if selected_floors:
-        offices = offices.filter(floor__in=selected_floors)
-
-    print(offices)
-
-    office_data = [
-        {
-            'id': office.id,
-            'number': office.number,
-            'floors_id': office.floor.id,
-            'body_id': office.body.id,
-            'selected': str(office.id) in selected_offices
-        }
-        for office in offices
-    ]
-
-    print(office_data)
-
-    # Фильтрация пакетов устройств (PackageDevice) только для выбранных офисов
-    package_devices = PackageDevice.objects.filter(office__in=selected_offices) if selected_offices else []
-
-    # Получаем устройства с учетом их кондиции
-    device_data = [
-        {'id': device.id, 'number': device.number, 'office_id': device.office_id}
-        for device in package_devices
-    ]
-
-    # Фильтрация устройств по выбранным пакетам устройств
-    devices = Device.objects.all()
-
-    if selected_package_devices:
-        devices = Device.objects.filter(package__in=selected_package_devices)
-
-
-    package_devices_with_condition = []
-    for package_device in package_devices:
-
-        devices_in_package = Device.objects.filter(package=package_device.id)
-
-        condition = "1"
-        for device in devices_in_package:
-            if device.condition_id in [4, 6]:
-                condition = str(device.condition_id)
-                break
-
-
-        package_devices_with_condition.append({
-            'package_device_id': package_device.id,
-            'condition_id': condition
-        })
-
-
-        package_device.condition_id = condition
-
-
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+    for device_id in selected_filtered_devices:
         try:
+            # Используем select_related для оптимизации запросов
+            device = Device.objects.select_related(
+                'package__office__floor',
+                'package__office__body'
+            ).get(id=device_id)
+
+            updated_device = update_device_condition_by_id(device_id)
+
+            package = device.package
+            office = package.office
+            floor = office.floor
+            body = office.body
+
+            if not first_office_id:
+                first_office_id = office.id  # Запоминаем первый найденный офис
+
+
+            device_details_list.append(
+                f"Устройство ID: {device.id}\n"
+                f"Серийный номер: {device.serial_number}\n"
+                f"Пакет: {package.number}\n"
+                f"Офис: {office.number}\n"
+                f"Этаж: {floor.number}\n"
+                f"Корпус: {body.number}, Адрес: {body.address}\n"
+            )
+        except Device.DoesNotExist:
+            device_details_list.append(f"Неизвестное устройство (ID: {device_id})")
+
+    # Формирование сообщения
+    devices_info = "\n".join(device_details_list)
+    formatted_message = f"Сообщение от пользователя: {user_message}\n\nИнформация об устройствах:\n{devices_info}"
+
+    # Сохранение заявки через HTTP-запрос
+    save_application_url = f"{settings.BASE_URL}/body/save-application/"
+    try:
+        response = requests.post(
+            save_application_url,
+            json={'office_id': first_office_id, 'device_ids': selected_filtered_devices, 'reason': user_message},
+        )
+        response.raise_for_status()
+    except RequestException as e:
+        logger.error(f"Ошибка при создании заявки: {str(e)}")
+        return JsonResponse({'status': 'error', 'message': 'Ошибка при создании заявки!'}, status=500)
+
+    # Отправка сообщения в Telegram
+    try:
+        send_telegram_message(BOT_TOKEN, CHAT_ID, formatted_message)
+        return JsonResponse({'status': 'success', 'message': 'Сообщение отправлено!'}, status=200)
+    except Exception as e:
+        logger.error(f"Ошибка при отправке сообщения в Telegram: {str(e)}")
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@api_view(["GET", "POST"])  # Разрешаем оба метода
+def body_list(request):
+    if request.method == "POST":
+        selected_bodies = list(map(int, request.POST.getlist("selected_bodies", [])))
+        selected_floors = list(map(int, request.POST.getlist("selected_floors", [])))
+        selected_filtered_devices = list(map(int, request.POST.getlist("selected_filtered_devices", [])))
+        selected_offices = list(map(int, request.POST.getlist("selected_offices", [])))
+        selected_package_devices = list(map(int, request.POST.getlist("selected_package_devices", [])))
+
+        print("Selected Bodies:", selected_bodies)
+        print("Selected Floors:", selected_floors)
+        print("Selected Offices:", selected_offices)
+        print("Selected Filtered Devices:", selected_filtered_devices)
+
+        # Фильтрация офисов
+        offices = Office.objects.all()
+        if selected_bodies:
+            offices = offices.filter(body_id__in=selected_bodies)
+        if selected_floors:
+            offices = offices.filter(floor_id__in=selected_floors)
+
+        # Фильтрация пакетов устройств
+        package_devices = PackageDevice.objects.filter(office_id__in=selected_offices) if selected_offices else []
+
+        # Фильтрация устройств
+        devices = Device.objects.filter(package_id__in=selected_package_devices) if selected_package_devices else Device.objects.all()
+
+        # Проставляем `condition_id` для пакетов устройств
+        package_devices_with_condition = []
+        for package_device in package_devices:
+            devices_in_package = Device.objects.filter(package_id=package_device.id)
+            condition = "1"  # По умолчанию
+            for device in devices_in_package:
+                if device.condition_id in [4, 6]:
+                    condition = str(device.condition_id)
+                    break
+            package_devices_with_condition.append({
+                "id": package_device.id,
+                "number": package_device.number,
+                "office_id": package_device.office_id or None,
+                "condition_id": condition,
+            })
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            offices_data = OfficeSerializer(offices, many=True).data
+
+            # Отладочный вывод
+            print("Сериализованные офисы:", offices_data)
             return JsonResponse({
-                'offices': office_data,
-                'package_devices': [
+                "offices": offices_data,
+                "package_devices": package_devices_with_condition,
+                "devices": [
                     {
-                        'id': package_device.id,
-                        'number': package_device.number,
-                        'office_id': package_device.office_id,
-                        'condition_id': package_device.condition_id,  # Отправляем condition_id как строку
-                    }
-                    for package_device in package_devices
-                ],
-                'devices': [
-                    {
-                        'id': device.id,
-                        'serial_number': device.serial_number,
-                        'package_id': device.package_id,
-                        'condition_id': device.condition_id,  # Отправляем condition_id как строку
+                        "id": device.id,
+                        "serial_number": device.serial_number,
+                        "package_id": device.package_id or None,  # Обрабатываем `None`
+                        "condition_id": device.condition_id,
                     }
                     for device in devices
-                ],
-                'package_devices_with_condition': package_devices_with_condition,  # Добавили condition_id в response
+                ]
             })
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
 
-    # Для обычного рендера страницы
+    # Если `GET`, отрисовываем страницу
     bodies = Body.objects.all()
     floors = Floor.objects.all()
-
-    return render(request, 'body/body_list.html', {
-        'bodies': bodies,
-        'floors': floors,
-        'offices': offices,
-        'package_devices': package_devices if selected_offices else [],
-        'devices': devices,
-        'selected_bodies': selected_bodies,
-        'selected_floors': selected_floors,
+    offices = Office.objects.all()
+    return render(request, "body/body_list.html", {
+        "bodies": bodies,
+        "floors": floors,
+        "offices": offices,
+        "package_devices": [],
+        "devices": [],
     })
 
-from django.shortcuts import render
-from django.utils.timezone import now
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from .models import Schedule, PackageDevice, Device
-
+@api_view(["GET", "POST"])
 @login_required
 def fastapplication_list(request):
-    selected_schedules = request.POST.getlist("selected_schedules", [])
-    selected_packages = request.POST.getlist("selected_packages", [])
-    selected_devices = request.POST.getlist("selected_devices", [])  # Получаем выбранные устройства
+    print("Current User:", request.user)
+
+    # Получаем переданные параметры (если их нет — пустые списки)
+    selected_schedules = list(map(int, request.POST.getlist("selected_schedules", [])))
+    selected_packages = list(map(int, request.POST.getlist("selected_packages", [])))
+    selected_devices = list(map(int, request.POST.getlist("selected_devices", [])))
+
+    print("Selected Schedules:", selected_schedules)
+    print("Selected Packages:", selected_packages)
+    print("Selected Devices:", selected_devices)
 
     current_time = now()
 
+    # Фильтруем расписания для пользователя
     schedules = Schedule.objects.filter(
         user=request.user,
         datetime_start__lte=current_time,
@@ -357,145 +377,52 @@ def fastapplication_list(request):
     if selected_packages:
         package_devices = package_devices.filter(id__in=selected_packages)
 
-    # Если выбраны пакеты – выбираем устройства, принадлежащие им, иначе пустой queryset
     devices = Device.objects.filter(package_id__in=selected_packages) if selected_packages else Device.objects.none()
 
-    # Формируем данные для пакетов и проверяем наличие девайса с condition == 4
-    package_devices_data = []
-    for package in package_devices:
-        # Проверяем, есть ли хотя бы один девайс в пакете с condition равным 4
-        has_warning = Device.objects.filter(package_id=package.id, condition=4).exists()
-        package_devices_data.append({
-            'id': package.id,
-            'number': package.number,
-            'office_id': package.office_id,
-            'has_warning': has_warning,
+    # Проставляем `condition_id` для пакетов устройств
+    package_devices_with_condition = []
+    for package_device in package_devices:
+        devices_in_package = Device.objects.filter(package_id=package_device.id)
+        print(f"Package {package_device.id} содержит устройства: {[device.id for device in devices_in_package]}")
+
+        condition = "1"  # По умолчанию
+        for device in devices_in_package:
+            print(f"Устройство {device.id} имеет condition_id: {device.condition_id}")
+            if device.condition_id in [4, 6]:
+                condition = device.condition_id
+                print(f"Устройство {device.id} сломано! condition_id = {condition}")
+                break
+
+        package_devices_with_condition.append({
+            "id": package_device.id,
+            "number": package_device.number,
+            "office_id": package_device.office_id or None,
+            "condition_id": condition,
+            "has_warning": condition == 4
         })
 
-    # Формируем данные по устройствам (при необходимости можно добавить поле condition)
-    devices_data = [
-        {
-            'id': device.id,
-            'serial_number': device.serial_number,
-            'package_id': device.package_id,
-            'condition': device.condition.id,
-        }
-        for device in devices
-    ]
+    print("Package Devices:", package_devices_with_condition)
 
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        schedules_data = ScheduleSerializer(schedules, many=True).data
+        package_devices_data = PackageDeviceSerializer(package_devices, many=True).data
+        devices_data = DeviceSerializer(devices, many=True).data
+
+        print("Serialized Schedules:", schedules_data)
+
         return JsonResponse({
-            'selected_schedules': selected_schedules,
-            'selected_packages': selected_packages,
-            'selected_devices': selected_devices,  # Возвращаем на фронт выбранные устройства
-            'package_devices': package_devices_data,
-            'devices': devices_data
+            "schedules": schedules_data,
+            "package_devices": package_devices_with_condition,
+            "devices": devices_data
         })
 
-    return render(request, 'body/fastapplication_list.html', {
-        'schedules': schedules,
-        # Передаём пакеты с дополнительным полем has_warning
-        'package_devices': package_devices_data,
-        'devices': devices,
-        'selected_schedules': selected_schedules,
-        'selected_packages': selected_packages,
-        'selected_devices': selected_devices,
+    # Отображение страницы с уже обработанными данными
+    return render(request, "body/fastapplication_list.html", {
+        "schedules": schedules,
+        "package_devices": package_devices_with_condition,
+        "devices": devices,
     })
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from aiogram import Bot
-import asyncio
 
-async def get_schedule_name(schedule_id):
-    # Логика получения названия расписания по ID
-    return f"Расписание {schedule_id}"
 
-async def get_package_name(package_id):
-    # Логика получения названия пакета по ID
-    return f"Пакет {package_id}"
-
-async def get_device(device_id):
-    # Логика получения устройства по ID
-    return {"serial_number": f"SN-{device_id}"}
-
-from aiogram import Bot
-import json
-
-@csrf_exempt
-async def send_selected_to_telegram(request):
-    if request.method == 'POST':
-        message = request.POST.get('message', '')
-
-        # Парсим JSON-данные из строки (если они приходят в таком формате)
-        try:
-            selected_schedules = json.loads(request.POST.get('all_schedules', '[]'))
-            selected_offices = json.loads(request.POST.get('all_offices', '[]'))
-        except json.JSONDecodeError:
-            selected_schedules = []
-            selected_offices = []
-
-        selected_packages = request.POST.getlist('selected_packages', [])
-        selected_devices = request.POST.getlist('selected_devices', [])
-
-        # Дебаг
-        print(f"🔹 Сообщение: {message}")
-        print(f"🔹 Расписания: {selected_schedules}")
-        print(f"🔹 Офисы: {selected_offices}")
-        print(f"🔹 Пакеты: {selected_packages}")
-        print(f"🔹 Устройства: {selected_devices}")
-
-        # Получаем данные об офисах, этажах и корпусах
-        office_details = []
-        for office_id in selected_offices:
-            try:
-                office = await Office.objects.select_related('floor', 'body').aget(id=office_id)
-                office_details.append(
-                    f"Офис {office.number} (Этаж: {office.floor.number}, Корпус: {office.body.number})")
-            except Office.DoesNotExist:
-                office_details.append(f"Неизвестный офис (ID: {office_id})")
-
-        office_text = f"Офисы: {', '.join(office_details)}" if office_details else "Офисы не выбраны"
-
-        # Формируем текстовые блоки сообщения
-        schedule_text = f"Расписания: {', '.join(selected_schedules)}" if selected_schedules else "Расписания не выбраны"
-        package_text = f"Пакеты: {', '.join(selected_packages)}" if selected_packages else "Пакеты не выбраны"
-        device_text = f"Устройства: {', '.join(selected_devices)}" if selected_devices else "Устройства не выбраны"
-
-        print(f"🔹 Отправка заявки для устройств ID: {selected_devices}")
-
-        # Обновляем состояния устройств (кондицию) для каждого выбранного устройства
-        if selected_devices:
-            for device_id in selected_devices:
-                updated_device = await update_device_condition_by_id(device_id)
-                if updated_device:
-                    print(f"✅ Устройство с ID {device_id} обновлено, новое condition_id: {updated_device.condition_id}")
-                else:
-                    print(f"⚠️ Не удалось обновить устройство с ID {device_id}")
-
-        if message:
-            async with Bot(token=BOT_TOKEN) as bot:
-                try:
-                    formatted_message = (
-                        f"Сообщение: {message}\n\n"
-                        f"{office_text}\n"
-                        f"{schedule_text}\n"
-                        f"{package_text}\n"
-                        f"{device_text}"
-                    )
-
-                    await bot.send_message(chat_id=CHAT_ID, text=formatted_message)
-
-                    # Отправляем заявку для каждого офиса
-                    for office_id in selected_offices:
-                        save_response = await save_application(office_id, selected_devices, message)
-                        print(f"✅ Ответ сохранения для офиса {office_id}: {save_response.content}")
-
-                    return JsonResponse({'status': 'success', 'message': 'Сообщение отправлено!'})
-
-                except Exception as e:
-                    return JsonResponse({'status': 'error', 'message': str(e)})
-
-        return JsonResponse({'status': 'error', 'message': 'Сообщение не может быть пустым!'})
-
-    return JsonResponse({'status': 'error', 'message': 'Неверный метод запроса!'})

@@ -335,18 +335,31 @@ function fetchOfficesAndDevices() {
 
 function updateOfficesList(offices, selectedOffices) {
     const officesListContent = document.getElementById("offices-list-content");
-    officesListContent.innerHTML = "";  // Очистка списка
+
+    // Сохранение текущего состояния чекбоксов
+    const previouslySelectedOffices = new Set(
+        Array.from(document.querySelectorAll('input[name="selected_offices"]:checked'))
+            .map(checkbox => checkbox.value)
+    );
+
+    // Очистка списка
+    officesListContent.innerHTML = "";
 
     if (offices && offices.length > 0) {
         offices.forEach(office => {
             const officeElement = document.createElement('div');
             officeElement.classList.add('form-check');
+
+            // Восстанавливаем состояние чекбокса
+            const isChecked = previouslySelectedOffices.has(office.id.toString());
+
             officeElement.innerHTML = `
-                <input class="form-check-input" type="checkbox" name="selected_offices" value="${office.id}" id="office_${office.id}" ${office.selected ? 'checked' : ''}>
+                <input class="form-check-input" type="checkbox" name="selected_offices" value="${office.id}" id="office_${office.id}" ${isChecked ? 'checked' : ''}>
                 <label class="form-check-label" for="office_${office.id}">
-                    Офис ${office.number} — Этаж ID: ${office.floors_id}, Корпус ID: ${office.body_id}
+                    Офис ${office.number} — Этаж ID: ${office.floor_id}, Корпус ID: ${office.body_id}
                 </label>
             `;
+
             officesListContent.appendChild(officeElement);
         });
     }
@@ -354,6 +367,8 @@ function updateOfficesList(offices, selectedOffices) {
     // Обновление стилей, чтобы список всегда был видимым
     officesListContent.style.display = 'block';
 }
+
+
 function updatePackageDevicesList(devices, selectedDevices) {
     const devicesList = document.getElementById("devices-list");
     devicesList.innerHTML = "";  // Очистка списка
@@ -489,51 +504,49 @@ function updateDevicesList(devices, selectedDevices) {
     document.addEventListener("change", fetchOfficesAndDevices);
 
     document.getElementById('sendMessage').addEventListener('click', function () {
-        const message = document.getElementById('message').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
 
-        // Собираем данные из формы
-        const formData = new FormData();
-        formData.append('message', message);
+    if (!message) {
+        alert("Пожалуйста, введите сообщение!");
+        return;
+    }
 
-        const selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
-        const selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
-        const selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
-        const selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
-        const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+    if (selectedFilteredDevices.length === 0) {
+        alert("Пожалуйста, выберите хотя бы одно устройство!");
+        return;
+    }
 
-        selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
-        selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
-        selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
-        selectedDevices.forEach(checkbox => formData.append('selected_package_devices', checkbox.value));
-        selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
+    // Формируем объект с данными
+    const data = {
+        message: message,
+        selected_filtered_devices: Array.from(selectedFilteredDevices).map(cb => parseInt(cb.value))
+    };
 
-        // Отправка данных на сервер
-        fetch('send-message/', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCSRFToken(),
-            },
-            body: formData,
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                } else {
-                    alert('Ошибка: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка при отправке сообщения:', error);
-            });
-
-
-        if (message.trim() !== "") {
-            document.getElementById("message").value = ""; // Очищаем текстовое поле
-            resetCheckboxes(); // Сбрасываем чекбоксы
+    // Отправка данных на сервер
+    fetch('send-message/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(),
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert("Сообщение успешно отправлено!");
+            // Очистка формы после успешной отправки
+            document.getElementById('message').value = '';
+            selectedFilteredDevices.forEach(checkbox => checkbox.checked = false);
         } else {
-            alert("Пожалуйста, введите сообщение!");
+            alert('Ошибка: ' + data.message);
         }
+    })
+    .catch(error => {
+        console.error('Ошибка при отправке сообщения:', error);
     });
+});
 
     // Функция для сброса всех чекбоксов
     // Функция для сброса всех чекбоксов
