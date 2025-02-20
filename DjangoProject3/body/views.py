@@ -507,7 +507,7 @@ def get_iam_token(oauth_token):
 @api_view(["GET", "POST"])  # Теперь поддерживает GET-запросы
 def yagpt_page(request):
     if request.method == "GET":
-        return render(request, "./yandex/ya_index.html")  # Возвращаем HTML-страницу
+        return render(request, "./body/ya_index.html")  # Возвращаем HTML-страницу
 
     elif request.method == "POST":
         user_text = None

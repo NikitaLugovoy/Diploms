@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'type_devices',
     'body',
-    'yagpt',
     'chat',
     'account',
     'rest_framework',
