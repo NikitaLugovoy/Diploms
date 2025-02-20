@@ -149,7 +149,7 @@
     <h3>Ваши активные расписания</h3>
     {% for schedule in schedules %}
         <div class="schedule-item" data-name="{{ schedule.name }}" data-office="{{ schedule.office.id }}">
-            <strong>{{ schedule.name }}</strong> — Офис <span class="office-number">{{ schedule.office.id }}</span>
+            <strong>{{ schedule.name }}</strong> — Офис <span class="office-number">{{ schedule.office.number }}</span>
         </div>
     {% endfor %}
 </div>

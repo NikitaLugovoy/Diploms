@@ -13,6 +13,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from drf_spectacular.utils import extend_schema
@@ -29,63 +30,42 @@ from .serializers import (
 from DjangoProject3 import settings
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 BOT_TOKEN = settings.BOT_TOKEN
 CHAT_ID = settings.CHAT_ID
 
 
-from DjangoProject3 import settings
-from .models import Application, Device, Office, Status
-from .serializers import ApplicationSerializer, CloseApplicationSerializer, SaveApplicationSerializer, \
-    ScheduleSerializer
 
-logger = logging.getLogger(__name__)
-
-
-import logging
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-from .serializers import SendMessageSerializer
-from .models import Device
-
-
-
-logger = logging.getLogger(__name__)
-
-BOT_TOKEN = '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA'
-CHAT_ID = '5006892820'
-import logging
-import telebot
-from django.http import JsonResponse
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-from .serializers import SendMessageSerializer
-import requests
-from requests.exceptions import RequestException  # Добавьте этот импорт
-
-from asgiref.sync import sync_to_async
-from django.shortcuts import get_object_or_404
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .models import Device, Body, Office
-from .serializers import DeviceSerializer, BodySerializer, OfficeSerializer
-from .serializers import DeviceRequestSerializer
-
+class ApplicationPagination(PageNumberPagination):
+    page_size = 15  # Количество записей на странице
+    page_size_query_param = "page_size"
+    max_page_size = 100
 
 @swagger_auto_schema(method='get', responses={200: ApplicationSerializer(many=True)})
-@api_view(['GET'])
+@api_view(["GET"])
 def application_list(request):
-    applications = Application.objects.all()
-    serializer = ApplicationSerializer(applications, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    status_id = request.GET.get("status_id")  # Получаем статус из параметров запроса
+    applications = Application.objects.select_related("office", "device", "status")
+
+    if status_id:
+        applications = applications.filter(status_id=status_id)  # Фильтр по статусу
+
+    applications = applications.order_by("-data")  # Сортировка по дате
+
+    paginator = ApplicationPagination()
+    result_page = paginator.paginate_queryset(applications, request)
+    serializer = ApplicationSerializer(result_page, many=True)
+
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        return paginator.get_paginated_response(serializer.data)
+
+    statuses = Status.objects.all()  # Получаем все статусы для селекта
+    return render(request, "body/application_list.html", {
+        "applications": serializer.data,
+        "statuses": statuses,
+        "page": paginator.page
+    })
 
 
 @swagger_auto_schema(method='post', request_body=CloseApplicationSerializer)
@@ -135,7 +115,6 @@ def save_application(request):
 
 
 
-# Исправляем get_device, если в ней неправильно передаются аргументы
 def get_device(device_id):
     try:
         return Device.objects.get(id=device_id)
@@ -168,11 +147,6 @@ def get_office_number(office_id: int) -> Response:
     """
     office = get_object_or_404(Office, id=office_id)
     return str(office.number)
-
-
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 # Кэшируем объект бота
 def get_telegram_bot(token):
@@ -274,6 +248,29 @@ def send_message_to_telegram(request):
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
 
+
+
+
+
+@swagger_auto_schema(
+    method='get',
+    operation_summary="Получение списка корпусов, этажей и офисов",
+    responses={200: "Список корпусов, этажей и офисов"}
+)
+@swagger_auto_schema(
+    method='post',
+    operation_summary="Фильтрация офисов, пакетов устройств и устройств",
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            "selected_bodies": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
+            "selected_floors": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
+            "selected_offices": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
+            "selected_package_devices": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
+        },
+    ),
+    responses={200: "Отфильтрованные офисы, пакеты устройств и устройства"}
+)
 @api_view(["GET", "POST"])  # Разрешаем оба метода
 def body_list(request):
     if request.method == "POST":
@@ -348,6 +345,33 @@ def body_list(request):
         "devices": [],
     })
 
+
+
+
+@swagger_auto_schema(
+    method="get",
+    operation_summary="Получение списка заявок",
+    responses={200: "Успешный ответ"},
+)
+@swagger_auto_schema(
+    method="post",
+    operation_summary="Фильтрация заявок",
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            "selected_schedules": openapi.Schema(
+                type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_INTEGER)
+            ),
+            "selected_packages": openapi.Schema(
+                type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_INTEGER)
+            ),
+            "selected_devices": openapi.Schema(
+                type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_INTEGER)
+            ),
+        },
+    ),
+    responses={200: "Успешный ответ"},
+)
 @api_view(["GET", "POST"])
 @login_required
 def fastapplication_list(request):
@@ -425,4 +449,112 @@ def fastapplication_list(request):
     })
 
 
+
+
+import json
+import pytesseract
+from PIL import Image
+import requests
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view
+
+from DjangoProject3 import settings
+
+# https://oauth.yandex.ru/verification_code
+OAUTH_TOKEN = settings.OAUTH_TOKEN
+FOLDER_ID = settings.FOLDER_ID
+
+# Устанавливаем путь к Tesseract
+pytesseract.pytesseract.tesseract_cmd = settings.TESSERACT_PATH
+
+def get_iam_token(oauth_token):
+    """Функция для получения IAM-токена из OAuth-токена"""
+    url = "https://iam.api.cloud.yandex.net/iam/v1/tokens"
+    response = requests.post(url, json={"yandexPassportOauthToken": oauth_token})
+
+    if response.status_code == 200:
+        return response.json().get("iamToken")
+    else:
+        raise Exception(f"IAM-токен не получен: {response.text}")
+
+
+@csrf_exempt
+@swagger_auto_schema(
+    method="post",
+    operation_summary="Генерация текста с Yandex GPT",
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            "user_text": openapi.Schema(type=openapi.TYPE_STRING, description="Текст запроса"),
+        },
+        required=["user_text"],
+    ),
+    responses={
+        200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "generated_text": openapi.Schema(type=openapi.TYPE_STRING, description="Сгенерированный текст")
+            }
+        ),
+        400: "Некорректный запрос",
+        500: "Ошибка сервера"
+    },
+)
+@api_view(["GET", "POST"])  # Теперь поддерживает GET-запросы
+def yagpt_page(request):
+    if request.method == "GET":
+        return render(request, "./yandex/ya_index.html")  # Возвращаем HTML-страницу
+
+    elif request.method == "POST":
+        user_text = None
+
+        # Распознавание текста с изображения
+        if 'image_file' in request.FILES:
+            image_file = request.FILES['image_file']
+            image = Image.open(image_file)
+            user_text = "Как решить " + pytesseract.image_to_string(image, lang='rus+eng').strip()
+
+            if not user_text:
+                return JsonResponse({'error': 'Не удалось распознать текст'}, status=400)
+
+        elif 'user_text' in request.POST:
+            user_text = request.POST['user_text'].strip()
+        else:
+            return JsonResponse({'error': 'Текст не передан'}, status=400)
+
+        try:
+            # Получаем IAM-токен
+            IAM_TOKEN = get_iam_token(OAUTH_TOKEN)
+
+            # Запрос в Yandex GPT с IAM-токеном
+            response = requests.post(
+                "https://llm.api.cloud.yandex.net/foundationModels/v1/completion",
+                headers={
+                    "Authorization": f"Bearer {IAM_TOKEN}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "modelUri": f"gpt://{FOLDER_ID}/yandexgpt/latest",
+                    "completionOptions": {"stream": False, "temperature": 0.7},
+                    "messages": [
+                        {"role": "system", "text": "Ты — опытный компьютерный мастер. Помогай пользователям с компьютерными проблемами, настройками, сборкой ПК и программным обеспечением."},
+                        {"role": "user", "text": user_text}
+                    ]
+                }
+            )
+
+            # Проверка ответа
+            if response.status_code == 200:
+                generated_text = response.json()["result"]["alternatives"][0]["message"]["text"]
+                truncated_text = generated_text[:20]
+                return JsonResponse({'generated_text': truncated_text}, json_dumps_params={"ensure_ascii": False})
+            else:
+                return JsonResponse({'error': response.text}, status=response.status_code)
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="111">
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/yagpt/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/yagpt/views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {}
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/NikitaLugovoy/Diploms.git&quot;,
+    &quot;accountId&quot;: &quot;839f2213-16fc-4b26-86b6-784a5d788aac&quot;
+  }
+}</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2qhb5E8IJmh5YBzilqHd65fURsz" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Django Server.diplom.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/hp/PycharmProjects/diplom/DjangoProject3/body/templates/body&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.python.django.customization.DjangoModulesConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\body\templates\body" />
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3" />
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\account" />
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\yagpt" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\chat" />
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\account" />
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\chat\templates" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Django Server.diplomAPI">
+    <configuration name="Test: " type="DjangoTestsConfigurationType" temporary="true">
+      <module name="diplom" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="TARGET" value="" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="diplom" type="Python.DjangoServer" factoryName="Django server">
+      <module name="diplom" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="localhost" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="diplomAPI" type="Python.DjangoServer" factoryName="Django server">
+      <module name="diplomAPI" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="localhost" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-PY-243.21565.199" />
+        <option value="bundled-python-sdk-cab1f2013843-4ae2d6a61b08-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.21565.199" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="" />
+      <created>1735117568556</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1735117568556</updated>
+      <workItem from="1735117569717" duration="178000" />
+      <workItem from="1735120558761" duration="480000" />
+      <workItem from="1735144746636" duration="1893000" />
+      <workItem from="1735146666318" duration="2849000" />
+      <workItem from="1735222257066" duration="5523000" />
+      <workItem from="1735279298775" duration="851000" />
+      <workItem from="1736922432932" duration="11403000" />
+      <workItem from="1736951837331" duration="6839000" />
+      <workItem from="1737015539400" duration="2000" />
+      <workItem from="1737032281008" duration="1037000" />
+      <workItem from="1737044699477" duration="6063000" />
+      <workItem from="1737093752818" duration="193000" />
+      <workItem from="1737094454184" duration="6392000" />
+      <workItem from="1737373111553" duration="136000" />
+      <workItem from="1737556939610" duration="8329000" />
+      <workItem from="1738084403200" duration="4540000" />
+      <workItem from="1738130479842" duration="13611000" />
+      <workItem from="1738146673917" duration="2012000" />
+      <workItem from="1739187505455" duration="3937000" />
+      <workItem from="1739353916438" duration="75000" />
+      <workItem from="1739354270328" duration="183000" />
+      <workItem from="1739437793859" duration="22702000" />
+      <workItem from="1739864271095" duration="6000" />
+      <workItem from="1739866973775" duration="18242000" />
+      <workItem from="1739944898950" duration="1000000" />
+      <workItem from="1739954256909" duration="2793000" />
+      <workItem from="1740038478293" duration="12755000" />
+    </task>
+    <task id="LOCAL-00001" summary="111">
+      <option name="closed" value="true" />
+      <created>1735146699750</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1735146699750</updated>
+    </task>
+    <task id="LOCAL-00002" summary="111">
+      <option name="closed" value="true" />
+      <created>1735146710300</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1735146710300</updated>
+    </task>
+    <task id="LOCAL-00003" summary="111">
+      <option name="closed" value="true" />
+      <created>1735147401017</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1735147401017</updated>
+    </task>
+    <task id="LOCAL-00004" summary="111">
+      <option name="closed" value="true" />
+      <created>1735148729420</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1735148729420</updated>
+    </task>
+    <task id="LOCAL-00005" summary="1111">
+      <option name="closed" value="true" />
+      <created>1735227781636</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1735227781636</updated>
+    </task>
+    <task id="LOCAL-00006" summary="111">
+      <option name="closed" value="true" />
+      <created>1736922615169</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1736922615169</updated>
+    </task>
+    <task id="LOCAL-00007" summary="111">
+      <option name="closed" value="true" />
+      <created>1737094499414</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1737094499415</updated>
+    </task>
+    <task id="LOCAL-00008" summary="111">
+      <option name="closed" value="true" />
+      <created>1737370035620</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1737370035620</updated>
+    </task>
+    <task id="LOCAL-00009" summary="111">
+      <option name="closed" value="true" />
+      <created>1738130688963</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1738130688963</updated>
+    </task>
+    <task id="LOCAL-00010" summary="111">
+      <option name="closed" value="true" />
+      <created>1738132168501</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1738132168501</updated>
+    </task>
+    <task id="LOCAL-00011" summary="111">
+      <option name="closed" value="true" />
+      <created>1738140169722</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1738140169723</updated>
+    </task>
+    <task id="LOCAL-00012" summary="111">
+      <option name="closed" value="true" />
+      <created>1739531077827</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1739531077827</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="1111" />
+    <MESSAGE value="111" />
+    <option name="LAST_COMMIT_MESSAGE" value="111" />
+  </component>
+</project>

@@ -37,6 +37,19 @@
             border: 1px solid #8FBC8F;
         }
 
+        .tooltip {
+    display: none;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+
         th {
             background-color: #8FBC8F;
             color: white;
@@ -94,84 +107,180 @@
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            // Отправка формы через AJAX
-            $("form").on("submit", function(event){
-                event.preventDefault(); // Предотвращаем обычную отправку формы
+<script>
 
-                var form = $(this);
-                var button = form.find("button");
-                var row = form.closest("tr"); // Находим строку таблицы, в которой находится кнопка
+    $(document).on("mouseenter", ".office-tooltip", function (event) {
+    var tooltip = $("#tooltip");
+    var floor = $(this).data("floor");
+    var body = $(this).data("body");
+    var office = $(this).text();
 
-                // Логирование для дебага
-                console.log("Запрос на закрытие заявки отправлен.");
-
-                $.ajax({
-                    url: form.attr("action"),  // URL для обработки
-                    type: "POST",
-                    data: form.serialize(),    // Данные формы (включая csrf_token)
-                    success: function(response) {
-                        console.log("Заявка закрыта.");
-
-                        // Обновляем строку таблицы
-                        button.prop("disabled", true); // Отключаем кнопку
-                        row.find("td").eq(5).text("Заботает"); // Обновляем статус заявки в таблице
-                        button.addClass("hidden-button"); // Скрываем кнопку
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Ошибка при отправке запроса: " + error);
-                        alert("Произошла ошибка при закрытии заявки.");
-                    }
-                });
-            });
+    tooltip.text(`Офис: ${office}, Этаж: ${floor}, Корпус: ${body}`)
+        .css({
+            display: "block",
+            top: event.pageY + 10 + "px",
+            left: event.pageX + 10 + "px"
         });
-    </script>
-</head>
-<body>
-    <h1>Все Заявки</h1>
+});
 
-    <div class="text-center">
-            <!-- Кнопка "Назад" с таким же стилем -->
-            <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
-        </div>
+$(document).on("mousemove", function (event) {
+    $("#tooltip").css({
+        top: event.pageY + 10 + "px",
+        left: event.pageX + 10 + "px"
+    });
+});
 
-    <table>
-        <thead>
+$(document).on("mouseleave", ".office-tooltip", function () {
+    $("#tooltip").hide();
+});
+
+
+    $(document).ready(function(){
+        let currentPage = 1;
+
+        function formatDate(isoString) {
+            if (!isoString) return "";
+            var date = new Date(isoString);
+            var day = String(date.getDate()).padStart(2, "0");
+            var month = String(date.getMonth() + 1).padStart(2, "0");
+            var year = date.getFullYear();
+            var hours = String(date.getHours()).padStart(2, "0");
+            var minutes = String(date.getMinutes()).padStart(2, "0");
+            return `${day}.${month}.${year} ${hours}:${minutes}`;
+        }
+
+        function loadApplications(status_id = "", page = 1) {
+            currentPage = page;
+            $.ajax({
+                url: "{% url 'application_list' %}",
+                type: "GET",
+                data: { status_id: status_id, page: page },
+                success: function(response) {
+                    var tbody = $("tbody");
+                    tbody.empty();
+
+                    response.results.forEach(function(application) {
+                        var row = `<tr>
+                            <td>${application.id}</td>
+                            <td class="office-tooltip"
+                            data-floor="${application.floor_number}"
+                            data-body="${application.body_number}">
+                            ${application.office_number}
+                        </td>
+                            <td>${application.device_serial_number}</td>
+                            <td>${application.reason}</td>
+                            <td>${formatDate(application.data)}</td>
+                            <td>${application.status_name}</td>
+                            <td>${application.user_id}</td>
+                            <td>
+                                ${application.status_id != 3
+                                    ? `<form action="/close_application/${application.id}/" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit">Закрыть заявку</button>
+                                    </form>`
+                                    : `<span class="hidden-button"></span>`}
+                            </td>
+                        </tr>`;
+                        tbody.append(row);
+                    });
+
+                    updatePagination(response.count, page);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Ошибка загрузки: " + error);
+                }
+            });
+        }
+
+        function updatePagination(totalCount, page) {
+            var pagination = $("#pagination");
+            pagination.empty();
+
+            var totalPages = Math.ceil(totalCount / 15);
+
+            if (page > 1) {
+                pagination.append(`<button class="page-btn" data-page="${page - 1}">« Назад</button>`);
+            }
+
+            for (var i = 1; i <= totalPages; i++) {
+                pagination.append(`<button class="page-btn ${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`);
+            }
+
+            if (page < totalPages) {
+                pagination.append(`<button class="page-btn" data-page="${page + 1}">Вперёд »</button>`);
+            }
+        }
+
+        $("#statusFilter").on("change", function(){
+            var status_id = $(this).val();
+            loadApplications(status_id, currentPage);
+        });
+
+        $(document).on("click", ".page-btn", function(){
+            var status_id = $("#statusFilter").val();
+            var page = $(this).data("page");
+            loadApplications(status_id, page);
+        });
+
+        loadApplications();
+    });
+</script>
+
+
+<h1>Все Заявки</h1>
+
+<div class="text-center">
+    <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
+</div>
+
+<!-- Фильтр статусов -->
+<label for="statusFilter">Фильтр по статусу:</label>
+<select id="statusFilter">
+    <option value="">Все</option>
+    {% for status in statuses %}
+        <option value="{{ status.id }}">{{ status.name }}</option>
+    {% endfor %}
+</select>
+
+<div id="tooltip" class="tooltip"></div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Номер Офиса</th>
+            <th>Серийный Номер Устройства</th>
+            <th>Причина</th>
+            <th>Дата</th>
+            <th>Статус</th>
+            <th>ID Пользователя</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for application in applications %}
             <tr>
-                <th>ID</th>
-                <th>Номер Офиса</th>
-                <th>Серийный Номер Устройства</th>
-                <th>Причина</th>
-                <th>Дата</th>
-                <th>Статус</th>
-                <th>ID Пользователя</th>
-                <th>Действие</th>
+                <td>{{ application.id }}</td>
+                <td>{{ application.office_number }}</td>
+                <td>{{ application.device_serial_number }}</td>
+                <td>{{ application.reason }}</td>
+                <td>{{ application.data }}</td>
+                <td>{{ application.status_name }}</td>
+                <td>{{ application.user_id }}</td>
+                <td>
+                    {% if application.status_id != 3 %}
+                        <form action="{% url 'close_application' application.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Закрыть заявку</button>
+                        </form>
+                    {% else %}
+                        <span class="hidden-button"></span>
+                    {% endif %}
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            {% for application in applications %}
-                <tr>
-                    <td>{{ application.id }}</td>
-                    <td>{{ application.office_number }}</td>
-                    <td>{{ application.device_serial_number }}</td>
-                    <td>{{ application.reason }}</td>
-                    <td>{{ application.data }}</td>
-                    <td>{{ application.status_name }}</td>
-                    <td>{{ application.user_id }}</td>
-                    <td>
-                        {% if application.status_id != 3 %}
-                            <form action="{% url 'close_application' application.id %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit">Закрыть заявку</button>
-                            </form>
-                        {% else %}
-                            <span class="hidden-button"></span> <!-- Пустой элемент для сохранения места -->
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</body>
+        {% endfor %}
+    </tbody>
+</table>
+<div id="pagination"></div>
+</head>
 </html>

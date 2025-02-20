@@ -47,13 +47,19 @@ class StatusSerializer(serializers.ModelSerializer):
 
 
 class ApplicationSerializer(serializers.ModelSerializer):
-    office = OfficeSerializer(read_only=True)
-    device = DeviceSerializer(read_only=True)
-    status = StatusSerializer(read_only=True)
+    office_number = serializers.CharField(source='office.number', read_only=True)
+    floor_number = serializers.IntegerField(source='office.floor.number', read_only=True)
+    body_number = serializers.CharField(source='office.body.number', read_only=True)
+    device_serial_number = serializers.CharField(source='device.serial_number', read_only=True)
+    status_name = serializers.CharField(source='status.name', read_only=True)
+    status_id = serializers.IntegerField(source='status.id', read_only=True)
 
     class Meta:
         model = Application
-        fields = ["id", "office", "device", "reason", "user_id", "data", "status"]
+        fields = [
+            'id', 'office_number', 'floor_number', 'body_number',
+            'device_serial_number', 'reason', 'data', 'status_name', 'status_id', 'user_id'
+        ]
 
 
 class ScheduleSerializer(serializers.ModelSerializer):

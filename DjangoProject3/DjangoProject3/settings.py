@@ -33,6 +33,14 @@ TELEGRAM_CHAT_ID = '5006892820'
 
 BASE_URL = "http://localhost:8000"  # Или другой ваш URL
 
+# Yandex OAuth и GPT настройки
+OAUTH_TOKEN = "y0__xDb65qfAhjB3RMgx9vHqRL-nTzxy4_H8SOVUt0AjSB2s_ZbtA"
+FOLDER_ID = "b1grkccohtd3ffp7p9p3"
+
+# Путь к Tesseract (если требуется)
+TESSERACT_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+
 # settings.py
 import os
 

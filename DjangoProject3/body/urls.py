@@ -6,7 +6,8 @@ urlpatterns = [
     path('', views.body_list, name='body_list'),
     path('send-message/', views.send_message_to_telegram, name='send_message_to_telegram'),
 
-    path('application', views.application_list, name='application_list'),
+    path('yagpt/', views.yagpt_page, name='ya_page'),
+    path('application/', views.application_list, name='application_list'),
 
     path('save-application/', views.save_application, name='save_application'),
 
