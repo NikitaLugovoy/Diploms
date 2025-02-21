@@ -3,31 +3,36 @@ import json
 import requests
 import telebot
 from requests.exceptions import RequestException
-from asgiref.sync import sync_to_async
-from django.shortcuts import render, get_object_or_404
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from drf_spectacular.utils import extend_schema
 
+from asgiref.sync import sync_to_async
+
 from .models import (
-    Schedule, PackageDevice, Device, Office, Body, Floor, Application, Status
+    Schedule, PackageDevice, Device, Office, Body, Floor, Application, Status, User
 )
+from .forms import ScheduleForm
 from .serializers import (
     ScheduleSerializer, PackageDeviceSerializer, DeviceSerializer, OfficeSerializer, BodySerializer,
     FastApplicationRequestSerializer, DeviceRequestSerializer, PackageNameRequestSerializer,
     ScheduleNameRequestSerializer, SendMessageSerializer, SendToTelegramSerializer,
     ApplicationSerializer, CloseApplicationSerializer, SaveApplicationSerializer
 )
-from DjangoProject3 import settings
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -558,3 +563,79 @@ def yagpt_page(request):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
+
+@login_required
+@swagger_auto_schema(
+    method='post',
+    request_body=ScheduleSerializer,
+    responses={201: "Schedule created", 400: "Bad Request"}
+)
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def add_schedule(request):
+    offices = Office.objects.all()
+    teachers = User.objects.all()
+
+    if request.method == "POST":
+        form = ScheduleForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data["name"]
+            office_id = form.cleaned_data["office"]
+            teacher_id = request.POST.get("teacher")
+            datetime_start = form.cleaned_data["datetime_start"]
+            datetime_end = form.cleaned_data["datetime_end"]
+
+            if timezone.is_naive(datetime_start):
+                datetime_start = timezone.make_aware(datetime_start)
+            if timezone.is_naive(datetime_end):
+                datetime_end = timezone.make_aware(datetime_end)
+
+            year = datetime_start.year
+            limit_date = timezone.make_aware(datetime(year, 6, 30, 23, 59, 59)) if datetime_start.month <= 6 else \
+                         timezone.make_aware(datetime(year, 12, 31, 23, 59, 59))
+
+            try:
+                office = Office.objects.get(id=office_id)
+                teacher = User.objects.get(id=teacher_id)
+            except (Office.DoesNotExist, User.DoesNotExist):
+                return Response({"error": "Invalid office or teacher"}, status=400)
+
+            current_start = datetime_start
+            current_end = datetime_end
+
+            while current_start <= limit_date:
+                if not Schedule.objects.filter(name=name, office=office, datetime_start=current_start,
+                                               datetime_end=current_end, user=teacher).exists():
+                    Schedule.objects.create(
+                        name=name,
+                        office=office,
+                        datetime_start=current_start,
+                        datetime_end=current_end,
+                        user=teacher,
+                    )
+
+                current_start += timedelta(weeks=2)
+                current_end += timedelta(weeks=2)
+
+            if request.content_type == 'application/json':
+                return Response({"message": "Schedule created successfully"}, status=201)
+            return redirect("schedule_list")
+    else:
+        form = ScheduleForm()
+
+    return render(request, "body/add_schedule.html", {"form": form, "offices": offices, "teachers": teachers})
+
+
+
+@swagger_auto_schema(
+    method='get',
+    responses={200: ScheduleSerializer(many=True)}
+)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def schedule_list(request):
+    schedules = Schedule.objects.all().order_by("datetime_start")
+    if request.content_type == 'application/json':
+        serializer = ScheduleSerializer(schedules, many=True)
+        return Response(serializer.data, status=200)
+    return render(request, "body/schedule_list.html", {"schedules": schedules})

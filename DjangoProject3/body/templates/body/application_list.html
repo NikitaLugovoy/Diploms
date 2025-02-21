@@ -17,7 +17,7 @@
             margin-top: 10px;
             border-radius: 5px;
         }
-        
+
         h1 {
             text-align: center;
             color: #8FBC8F;
@@ -109,18 +109,28 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
-    $(document).on("mouseenter", ".office-tooltip", function (event) {
+    $(document).on("mouseenter", ".office-tooltip, .device-tooltip", function (event) {
     var tooltip = $("#tooltip");
-    var floor = $(this).data("floor");
-    var body = $(this).data("body");
-    var office = $(this).text();
+    var isOffice = $(this).hasClass("office-tooltip");
 
-    tooltip.text(`Офис: ${office}, Этаж: ${floor}, Корпус: ${body}`)
-        .css({
-            display: "block",
-            top: event.pageY + 10 + "px",
-            left: event.pageX + 10 + "px"
-        });
+    if (isOffice) {
+        var floor = $(this).data("floor");
+        var body = $(this).data("body");
+        var office = $(this).text();
+
+        tooltip.text(`Офис: ${office}, Этаж: ${floor}, Корпус: ${body}`);
+    } else {
+        var packageDevice = $(this).data("package");
+        var serialNumber = $(this).text();
+
+        tooltip.text(`Серийный номер: ${serialNumber}, Пакет устройства: ${packageDevice}`);
+    }
+
+    tooltip.css({
+        display: "block",
+        top: event.pageY + 10 + "px",
+        left: event.pageX + 10 + "px"
+    });
 });
 
 $(document).on("mousemove", function (event) {
@@ -130,9 +140,10 @@ $(document).on("mousemove", function (event) {
     });
 });
 
-$(document).on("mouseleave", ".office-tooltip", function () {
+$(document).on("mouseleave", ".office-tooltip, .device-tooltip", function () {
     $("#tooltip").hide();
 });
+
 
 
     $(document).ready(function(){
@@ -166,8 +177,11 @@ $(document).on("mouseleave", ".office-tooltip", function () {
                             data-floor="${application.floor_number}"
                             data-body="${application.body_number}">
                             ${application.office_number}
-                        </td>
-                            <td>${application.device_serial_number}</td>
+                            </td>
+                            <td class="device-tooltip"
+        data-package="${application.package_id}">
+        ${application.device_serial_number}
+    </td>
                             <td>${application.reason}</td>
                             <td>${formatDate(application.data)}</td>
                             <td>${application.status_name}</td>
@@ -224,6 +238,62 @@ $(document).on("mouseleave", ".office-tooltip", function () {
 
         loadApplications();
     });
+
+
+let originalRows = []; // Хранит изначальный порядок строк
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Сохраняем изначальные строки таблицы при первой загрузке
+    originalRows = Array.from(document.querySelector("tbody").querySelectorAll("tr"));
+});
+
+function resetTable() {
+    let tbody = document.querySelector("tbody");
+    tbody.innerHTML = ""; // Очищаем тело таблицы
+
+    // Вставляем исходные строки обратно
+    originalRows.forEach(row => tbody.appendChild(row.cloneNode(true)));
+}
+
+function groupTable(column) {
+    resetTable(); // Сбрасываем предыдущую группировку
+
+    let tbody = document.querySelector("tbody");
+    let rows = Array.from(tbody.querySelectorAll("tr"));
+
+    let groupedData = {};
+
+    rows.forEach(row => {
+        let cell = row.querySelector(`td:nth-child(${getColumnIndex(column)})`);
+        let key = cell ? cell.textContent.trim() : "";
+
+        if (!groupedData[key]) {
+            groupedData[key] = [];
+        }
+        groupedData[key].push(row);
+    });
+
+    tbody.innerHTML = "";
+
+    for (let key in groupedData) {
+        let groupHeader = document.createElement("tr");
+        groupHeader.innerHTML = `<td colspan="8" style="background:#d3f4d3; font-weight:bold; text-align:center;">${key}</td>`;
+        tbody.appendChild(groupHeader);
+
+        groupedData[key].forEach(row => tbody.appendChild(row));
+    }
+}
+
+function getColumnIndex(column) {
+    switch (column) {
+        case "office_number": return 2;
+        case "device_serial_number": return 3;
+        case "data": return 5;
+        case "status_name": return 6;
+        case "user_id": return 7;
+        default: return 1;
+    }
+}
 </script>
 
 
@@ -241,6 +311,14 @@ $(document).on("mouseleave", ".office-tooltip", function () {
         <option value="{{ status.id }}">{{ status.name }}</option>
     {% endfor %}
 </select>
+
+<div style="text-align: center; margin: 10px;">
+    <button onclick="groupTable('office_number')">Группировать по офису</button>
+    <button onclick="groupTable('device_serial_number')">Группировать по устройству</button>
+    <button onclick="groupTable('data')">Группировать по дате</button>
+    <button onclick="groupTable('status_name')">Группировать по статусу</button>
+    <button onclick="groupTable('user_id')">Группировать по пользователю</button>
+</div>
 
 <div id="tooltip" class="tooltip"></div>
 

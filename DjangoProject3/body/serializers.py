@@ -51,6 +51,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     floor_number = serializers.IntegerField(source='office.floor.number', read_only=True)
     body_number = serializers.CharField(source='office.body.number', read_only=True)
     device_serial_number = serializers.CharField(source='device.serial_number', read_only=True)
+    package_id = serializers.IntegerField(source="device.package.id", read_only=True)
     status_name = serializers.CharField(source='status.name', read_only=True)
     status_id = serializers.IntegerField(source='status.id', read_only=True)
 
@@ -58,16 +59,18 @@ class ApplicationSerializer(serializers.ModelSerializer):
         model = Application
         fields = [
             'id', 'office_number', 'floor_number', 'body_number',
-            'device_serial_number', 'reason', 'data', 'status_name', 'status_id', 'user_id'
+            'device_serial_number', 'package_id', 'reason', 'data', 'status_name', 'status_id', 'user_id'
         ]
-
 
 class ScheduleSerializer(serializers.ModelSerializer):
     office = OfficeSerializer(read_only=True)
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
+    user_name = serializers.CharField(source='user.username', read_only=True)
 
     class Meta:
         model = Schedule
-        fields = ["id", "name", "office", "datetime_start", "datetime_end", "user_id"]
+        fields = ["id", "name", "office", "datetime_start", "datetime_end", "user_id", "user_name"]
+
 
 
 # **Сериализаторы для обработки данных API**
