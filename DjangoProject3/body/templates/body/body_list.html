@@ -254,6 +254,13 @@
             <h3>Устройства</h3>
             <div id="filtered-devices-list-content"></div>
             <div id="messageForm">
+            <div class="form-group">
+    <label for="breakdownType">Выберите тип поломки:</label>
+    <select class="form-control" id="breakdownType">
+        <option value="">-- Выберите тип --</option>
+    </select>
+</div>
+
                 <h4>Напишите сообщение:</h4>
                 <textarea class="form-control" rows="4" id="message" placeholder="Введите ваше сообщение"></textarea>
                 <button type="button" class="btn btn-primary btn-secondary mt-3" id="sendMessage">Отправить сообщение</button>
@@ -323,13 +330,42 @@ function fetchOfficesAndDevices() {
     })
     .then(response => response.json())
     .then(data => {
+
+            console.log("⚠ Типы поломок:", data.breakdown_types);
         updateOfficesList(data.offices, selectedOffices);
         updatePackageDevicesList(data.package_devices, selectedDevices);
         updateDevicesList(data.devices, selectedFilteredDevices);
+        updateBreakdownTypeSelect(data.breakdown_types);
     })
     .catch(error => {
         console.error('Ошибка при выполнении запроса:', error);
     });
+}
+
+
+function updateBreakdownTypeSelect(breakdownTypes) {
+    const breakdownTypeSelect = document.getElementById("breakdownType");
+
+    // Сохраняем текущее выбранное значение
+    const previouslySelectedValue = breakdownTypeSelect.value;
+
+    // Очищаем select
+    breakdownTypeSelect.innerHTML = '<option value="">-- Выберите тип --</option>';
+
+    if (breakdownTypes && breakdownTypes.length > 0) {
+        breakdownTypes.forEach(type => {
+            const option = document.createElement("option");
+            option.value = type.id;
+            option.textContent = type.name;
+
+            // Восстанавливаем ранее выбранное значение
+            if (option.value === previouslySelectedValue) {
+                option.selected = true;
+            }
+
+            breakdownTypeSelect.appendChild(option);
+        });
+    }
 }
 
 
@@ -506,6 +542,7 @@ function updateDevicesList(devices, selectedDevices) {
     document.getElementById('sendMessage').addEventListener('click', function () {
     const message = document.getElementById('message').value.trim();
     const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+    const breakdownType = document.getElementById('breakdownType').value;
 
     if (!message) {
         alert("Пожалуйста, введите сообщение!");
@@ -517,9 +554,15 @@ function updateDevicesList(devices, selectedDevices) {
         return;
     }
 
+    if (!breakdownType) {
+        alert("Пожалуйста, выберите тип поломки!");
+        return;
+    }
+
     // Формируем объект с данными
     const data = {
         message: message,
+        breakdown_type: parseInt(breakdownType), // Добавлено поле типа поломки
         selected_filtered_devices: Array.from(selectedFilteredDevices).map(cb => parseInt(cb.value))
     };
 
@@ -538,6 +581,7 @@ function updateDevicesList(devices, selectedDevices) {
             alert("Сообщение успешно отправлено!");
             // Очистка формы после успешной отправки
             document.getElementById('message').value = '';
+            document.getElementById('breakdownType').value = ''; // Очистка выбора типа поломки
             selectedFilteredDevices.forEach(checkbox => checkbox.checked = false);
         } else {
             alert('Ошибка: ' + data.message);

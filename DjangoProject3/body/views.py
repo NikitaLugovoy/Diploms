@@ -341,6 +341,12 @@ def body_list(request):
         # Фильтрация устройств
         devices = Device.objects.filter(package_id__in=selected_package_devices) if selected_package_devices else Device.objects.all()
 
+        breakdown_types = BreakdownType.objects.all()
+        breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
+
+        print("Breakdown Types:", breakdown_types)  # Логируем в консоль
+
+
         # Проставляем `condition_id` для пакетов устройств
         package_devices_with_condition = []
         for package_device in package_devices:
@@ -364,6 +370,7 @@ def body_list(request):
             print("Сериализованные офисы:", offices_data)
             return JsonResponse({
                 "offices": offices_data,
+                "breakdown_types": breakdown_types_data,
                 "package_devices": package_devices_with_condition,
                 "devices": [
                     {
