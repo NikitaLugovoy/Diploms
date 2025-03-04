@@ -147,97 +147,72 @@ $(document).on("mouseleave", ".office-tooltip, .device-tooltip", function () {
 
 
     $(document).ready(function(){
-        let currentPage = 1;
+    function formatDate(isoString) {
+        if (!isoString) return "";
+        var date = new Date(isoString);
+        var day = String(date.getDate()).padStart(2, "0");
+        var month = String(date.getMonth() + 1).padStart(2, "0");
+        var year = date.getFullYear();
+        var hours = String(date.getHours()).padStart(2, "0");
+        var minutes = String(date.getMinutes()).padStart(2, "0");
+        return `${day}.${month}.${year} ${hours}:${minutes}`;
+    }
 
-        function formatDate(isoString) {
-            if (!isoString) return "";
-            var date = new Date(isoString);
-            var day = String(date.getDate()).padStart(2, "0");
-            var month = String(date.getMonth() + 1).padStart(2, "0");
-            var year = date.getFullYear();
-            var hours = String(date.getHours()).padStart(2, "0");
-            var minutes = String(date.getMinutes()).padStart(2, "0");
-            return `${day}.${month}.${year} ${hours}:${minutes}`;
-        }
+    function loadApplications(status_id = "") {
+    $.ajax({
+        url: "{% url 'application_list' %}",
+        type: "GET",
+        data: { status_id: status_id },
+        success: function(response) {
+            console.log("Полученные данные:", response); // Вывод всех данных в консоль
 
-        function loadApplications(status_id = "", page = 1) {
-            currentPage = page;
-            $.ajax({
-                url: "{% url 'application_list' %}",
-                type: "GET",
-                data: { status_id: status_id, page: page },
-                success: function(response) {
-                    var tbody = $("tbody");
-                    tbody.empty();
+            var tbody = $("tbody");
+            tbody.empty();
 
-                    response.results.forEach(function(application) {
-                        var row = `<tr>
-                            <td>${application.id}</td>
-                            <td class="office-tooltip"
-                            data-floor="${application.floor_number}"
-                            data-body="${application.body_number}">
-                            ${application.office_number}
-                            </td>
-                            <td class="device-tooltip"
-        data-package="${application.package_id}">
-        ${application.device_serial_number}
-    </td>
-                            <td>${application.reason}</td>
-                            <td>${formatDate(application.data)}</td>
-                            <td>${application.status_name}</td>
-                            <td>${application.user_id}</td>
-                            <td>
-                                ${application.status_id != 3
-                                    ? `<form action="/close_application/${application.id}/" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit">Закрыть заявку</button>
-                                    </form>`
-                                    : `<span class="hidden-button"></span>`}
-                            </td>
-                        </tr>`;
-                        tbody.append(row);
-                    });
-
-                    updatePagination(response.count, page);
-                },
-                error: function(xhr, status, error) {
-                    console.error("Ошибка загрузки: " + error);
-                }
+            response.forEach(function(application) {
+                var row = `<tr>
+                    <td>${application.id}</td>
+                    <td class="office-tooltip"
+                        data-floor="${application.floor_number}"
+                        data-body="${application.body_number}">
+                        ${application.office_number}
+                    </td>
+                    <td class="device-tooltip"
+                        data-package="${application.package_id}">
+                        ${application.device_serial_number}
+                    </td>
+                    <td>${application.reason}</td>
+                    <td>${application.breakdown_type_name || "Не указано"}</td> <!-- Добавлено -->
+                    <td>${formatDate(application.data)}</td>
+                    <td>${application.status_name}</td>
+                    <td>${application.user_name}</td>
+                    <td>
+                        ${application.status_id != 3
+                            ? `<form action="/body/close_application/${application.id}/" method="post">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                <button type="submit">Закрыть заявку</button>
+                            </form>`
+                            : `<span class="hidden-button"></span>`}
+                    </td>
+                </tr>`;
+                tbody.append(row);
             });
+        },
+        error: function(xhr, status, error) {
+            console.error("Ошибка загрузки: " + error);
         }
-
-        function updatePagination(totalCount, page) {
-            var pagination = $("#pagination");
-            pagination.empty();
-
-            var totalPages = Math.ceil(totalCount / 15);
-
-            if (page > 1) {
-                pagination.append(`<button class="page-btn" data-page="${page - 1}">« Назад</button>`);
-            }
-
-            for (var i = 1; i <= totalPages; i++) {
-                pagination.append(`<button class="page-btn ${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`);
-            }
-
-            if (page < totalPages) {
-                pagination.append(`<button class="page-btn" data-page="${page + 1}">Вперёд »</button>`);
-            }
-        }
-
-        $("#statusFilter").on("change", function(){
-            var status_id = $(this).val();
-            loadApplications(status_id, currentPage);
-        });
-
-        $(document).on("click", ".page-btn", function(){
-            var status_id = $("#statusFilter").val();
-            var page = $(this).data("page");
-            loadApplications(status_id, page);
-        });
-
-        loadApplications();
     });
+}
+
+
+    $("#statusFilter").on("change", function(){
+        var status_id = $(this).val();
+        loadApplications(status_id);
+    });
+
+    loadApplications();
+});
+
 
 
 let originalRows = []; // Хранит изначальный порядок строк
@@ -329,6 +304,7 @@ function getColumnIndex(column) {
             <th>Номер Офиса</th>
             <th>Серийный Номер Устройства</th>
             <th>Причина</th>
+            <th>Тип Поломки</th> <!-- Новый столбец -->
             <th>Дата</th>
             <th>Статус</th>
             <th>ID Пользователя</th>
@@ -342,9 +318,10 @@ function getColumnIndex(column) {
                 <td>{{ application.office_number }}</td>
                 <td>{{ application.device_serial_number }}</td>
                 <td>{{ application.reason }}</td>
+                <td>{{ application.breakdown_type_name }}</td> <!-- Вывод типа поломки -->
                 <td>{{ application.data }}</td>
                 <td>{{ application.status_name }}</td>
-                <td>{{ application.user_id }}</td>
+                <td>{{ application.user_name }}</td>
                 <td>
                     {% if application.status_id != 3 %}
                         <form action="{% url 'close_application' application.id %}" method="post">
@@ -359,6 +336,6 @@ function getColumnIndex(column) {
         {% endfor %}
     </tbody>
 </table>
-<div id="pagination"></div>
+
 </head>
 </html>

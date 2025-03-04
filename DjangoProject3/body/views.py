@@ -24,7 +24,7 @@ from drf_spectacular.utils import extend_schema
 from asgiref.sync import sync_to_async
 
 from .models import (
-    Schedule, PackageDevice, Device, Office, Body, Floor, Application, Status, User
+    Schedule, PackageDevice, Device, Office, Body, Floor, Application, Status, User, BreakdownType
 )
 from .forms import ScheduleForm
 from .serializers import (
@@ -34,49 +34,68 @@ from .serializers import (
     ApplicationSerializer, CloseApplicationSerializer, SaveApplicationSerializer
 )
 
+from django.utils.timezone import now
+
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 BOT_TOKEN = settings.BOT_TOKEN
 CHAT_ID = settings.CHAT_ID
 
+import json
+import pytesseract
+from PIL import Image
+import requests
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import api_view
 
+from DjangoProject3 import settings
 
-class ApplicationPagination(PageNumberPagination):
-    page_size = 15  # Количество записей на странице
-    page_size_query_param = "page_size"
-    max_page_size = 100
+# https://oauth.yandex.ru/verification_code
+OAUTH_TOKEN = settings.OAUTH_TOKEN
+FOLDER_ID = settings.FOLDER_ID
+
+# Устанавливаем путь к Tesseract
+pytesseract.pytesseract.tesseract_cmd = settings.TESSERACT_PATH
 
 @swagger_auto_schema(method='get', responses={200: ApplicationSerializer(many=True)})
 @api_view(["GET"])
 def application_list(request):
     status_id = request.GET.get("status_id")  # Получаем статус из параметров запроса
-    applications = Application.objects.select_related("office", "device", "status")
+    applications = Application.objects.select_related("office", "device", "status", "breakdown_type")
 
     if status_id:
         applications = applications.filter(status_id=status_id)  # Фильтр по статусу
 
     applications = applications.order_by("-data")  # Сортировка по дате
 
-    paginator = ApplicationPagination()
-    result_page = paginator.paginate_queryset(applications, request)
-    serializer = ApplicationSerializer(result_page, many=True)
+    serializer = ApplicationSerializer(applications, many=True)
+
+
+    print("🔹 Полученные данные:", serializer.data)
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        return paginator.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
     statuses = Status.objects.all()  # Получаем все статусы для селекта
     return render(request, "body/application_list.html", {
         "applications": serializer.data,
-        "statuses": statuses,
-        "page": paginator.page
+        "statuses": statuses
     })
 
 
 @swagger_auto_schema(method='post', request_body=CloseApplicationSerializer)
 @api_view(['POST'])
 def close_application(request, application_id):
+    print(f"Received request to close application {application_id}")
     application = get_object_or_404(Application, id=application_id)
+    print(f"Found application: {application}")
+
     application.status_id = 3
     application.save()
 
@@ -85,8 +104,9 @@ def close_application(request, application_id):
     device.save()
 
     logger.info(f"Application {application_id} closed successfully.")
-    return Response({"message": "Application closed successfully."}, status=status.HTTP_200_OK)
 
+    # Перенаправляем обратно на страницу списка заявок
+    return redirect('application_list')
 
 @swagger_auto_schema(method='post', request_body=SaveApplicationSerializer)
 @api_view(['POST'])
@@ -96,6 +116,10 @@ def save_application(request):
         office_id = serializer.validated_data['office_id']
         device_ids = serializer.validated_data['device_ids']
         reason = serializer.validated_data['reason']
+        breakdown_type_id = serializer.validated_data.get('breakdown_type_id')
+
+        logger.info(f"Выбранный тип поломки_________: {breakdown_type_id}")
+
 
         application_ids = []
         for device_id in device_ids:
@@ -105,7 +129,8 @@ def save_application(request):
                 reason=reason,
                 user_id=1,
                 data=now(),
-                status_id=1
+                status_id=1,
+                breakdown_type_id=breakdown_type_id
             )
             application.save()
             application_ids.append(application.id)
@@ -189,7 +214,19 @@ def send_message_to_telegram(request):
     data = serializer.validated_data
     user_message = data.get('message', '')
     selected_filtered_devices = data.get('selected_filtered_devices', [])
+    breakdown_type_id = request.data.get('breakdown_type')
+    breakdown_type = BreakdownType.objects.get(id=breakdown_type_id)
 
+    # Получение имени типа поломки
+    breakdown_type_name = "Не указан"
+    if breakdown_type_id:
+        try:
+            breakdown_type = BreakdownType.objects.get(id=breakdown_type_id)
+            breakdown_type_name = breakdown_type.name
+        except BreakdownType.DoesNotExist:
+            logger.warning(f"Неизвестный тип поломки: {breakdown_type_id}")
+
+    logger.info(f"Выбранный тип поломки: {breakdown_type_id}")
     if not selected_filtered_devices:
         return JsonResponse({'status': 'error', 'message': 'Не выбрано ни одного устройства!'}, status=400)
 
@@ -207,7 +244,6 @@ def send_message_to_telegram(request):
             ).get(id=device_id)
 
             updated_device = update_device_condition_by_id(device_id)
-
             package = device.package
             office = package.office
             floor = office.floor
@@ -217,8 +253,10 @@ def send_message_to_telegram(request):
                 first_office_id = office.id  # Запоминаем первый найденный офис
 
 
+
             device_details_list.append(
                 f"Устройство ID: {device.id}\n"
+                f"Тип поломки: {breakdown_type.name}\n"
                 f"Серийный номер: {device.serial_number}\n"
                 f"Пакет: {package.number}\n"
                 f"Офис: {office.number}\n"
@@ -237,7 +275,7 @@ def send_message_to_telegram(request):
     try:
         response = requests.post(
             save_application_url,
-            json={'office_id': first_office_id, 'device_ids': selected_filtered_devices, 'reason': user_message},
+            json={'office_id': first_office_id, 'device_ids': selected_filtered_devices, 'reason': user_message,'breakdown_type_id':breakdown_type.id},
         )
         response.raise_for_status()
     except RequestException as e:
@@ -432,18 +470,28 @@ def fastapplication_list(request):
 
     print("Package Devices:", package_devices_with_condition)
 
+    print(f"Текущее время: {current_time}")
+    print("Все расписания пользователя:", Schedule.objects.filter(user=request.user))
+
+    breakdown_types = BreakdownType.objects.all()
+    breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
+
+    print("Breakdown Types:", breakdown_types)  # Логируем в консоль
+
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         schedules_data = ScheduleSerializer(schedules, many=True).data
         package_devices_data = PackageDeviceSerializer(package_devices, many=True).data
         devices_data = DeviceSerializer(devices, many=True).data
+        breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
 
         print("Serialized Schedules:", schedules_data)
 
         return JsonResponse({
             "schedules": schedules_data,
             "package_devices": package_devices_with_condition,
-            "devices": devices_data
+            "devices": devices_data,
+            "breakdown_types": breakdown_types_data
         })
 
     # Отображение страницы с уже обработанными данными
@@ -451,30 +499,13 @@ def fastapplication_list(request):
         "schedules": schedules,
         "package_devices": package_devices_with_condition,
         "devices": devices,
+        "breakdown_types": breakdown_types_data
     })
 
 
 
 
-import json
-import pytesseract
-from PIL import Image
-import requests
-from django.http import JsonResponse
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework.decorators import api_view
 
-from DjangoProject3 import settings
-
-# https://oauth.yandex.ru/verification_code
-OAUTH_TOKEN = settings.OAUTH_TOKEN
-FOLDER_ID = settings.FOLDER_ID
-
-# Устанавливаем путь к Tesseract
-pytesseract.pytesseract.tesseract_cmd = settings.TESSERACT_PATH
 
 def get_iam_token(oauth_token):
     """Функция для получения IAM-токена из OAuth-токена"""

@@ -31,6 +31,16 @@ class Office(models.Model):
     def __str__(self):
         return f"Офис {self.number} (Этаж: {self.floor.number}, Корпус: {self.body.number})"
 
+class BreakdownType(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    class Meta:
+        db_table = 'breakdown_types'
+
+    def __str__(self):
+        return self.name
+
+
 class PackageDevice(models.Model):
     office = models.ForeignKey(Office, on_delete=models.CASCADE, related_name='package_devices')
     number = models.CharField(max_length=100)
@@ -60,6 +70,8 @@ class Application(models.Model):
     data = models.DateTimeField(auto_now_add=True)
     status = models.ForeignKey('Status', on_delete=models.CASCADE, related_name='applications')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
+    breakdown_type = models.ForeignKey(BreakdownType, on_delete=models.CASCADE, related_name='applications', null=True,
+                                       blank=True)
 
     class Meta:
         db_table = 'applications'
@@ -89,3 +101,4 @@ class Schedule(models.Model):
 
     def __str__(self):
         return self.name
+

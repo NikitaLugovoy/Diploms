@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Application, Device, Office, Status, PackageDevice, Body, Floor, Schedule
+    Application, Device, Office, Status, PackageDevice, Body, Floor, Schedule, BreakdownType
 )
 
 
@@ -54,13 +54,21 @@ class ApplicationSerializer(serializers.ModelSerializer):
     package_id = serializers.IntegerField(source="device.package.id", read_only=True)
     status_name = serializers.CharField(source='status.name', read_only=True)
     status_id = serializers.IntegerField(source='status.id', read_only=True)
+    breakdown_type_id = serializers.IntegerField(source='breakdown_type.id', read_only=True, allow_null=True)
+    breakdown_type_name = serializers.CharField(source='breakdown_type.name', read_only=True, allow_null=True)
+    user_name = serializers.CharField(source='user.username', read_only=True)  # Добавляем имя пользователя
+
+    def get_breakdown_type_id(self, obj):
+        return obj.breakdown_type.id if obj.breakdown_type else None
+
+    def get_breakdown_type_name(self, obj):
+        return obj.breakdown_type.name if obj.breakdown_type else "Не указано"
+
 
     class Meta:
         model = Application
-        fields = [
-            'id', 'office_number', 'floor_number', 'body_number',
-            'device_serial_number', 'package_id', 'reason', 'data', 'status_name', 'status_id', 'user_id'
-        ]
+        fields = "__all__"
+
 
 class ScheduleSerializer(serializers.ModelSerializer):
     office = OfficeSerializer(read_only=True)
@@ -82,6 +90,7 @@ class SaveApplicationSerializer(serializers.Serializer):
     office_id = serializers.IntegerField()
     device_ids = serializers.ListField(child=serializers.IntegerField())
     reason = serializers.CharField(max_length=255)
+    breakdown_type_id = serializers.IntegerField(required=False, allow_null=True)
 
 class SendMessageSerializer(serializers.Serializer):
     message = serializers.CharField()
@@ -112,3 +121,9 @@ class PackageNameRequestSerializer(serializers.Serializer):
 
 class DeviceRequestSerializer(serializers.Serializer):
     device_id = serializers.IntegerField()
+
+
+class BreakdownTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BreakdownType
+        fields = ["id", "name"]

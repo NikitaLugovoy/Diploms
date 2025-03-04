@@ -5,16 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="111">
-      <change afterPath="$PROJECT_DIR$/DjangoProject3/account/serializers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/add_schedule.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/schedule_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/add_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/add_schedule.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/schedule_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/schedule_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -56,28 +56,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "Django Server.diplom.executor": "Run",
-    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
-    "django.template.preview.state": "SHOW_EDITOR",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/hp/PycharmProjects/diplomAPI/DjangoProject3/account",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.intellij.python.django.customization.DjangoModulesConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;Django Server.diplom.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
+    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/hp/PycharmProjects/diplomAPI/DjangoProject3/account&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.intellij.python.django.customization.DjangoModulesConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\hp\PycharmProjects\diplomAPI\DjangoProject3\account" />
@@ -206,7 +206,11 @@
       <workItem from="1739944898950" duration="1000000" />
       <workItem from="1739954256909" duration="2793000" />
       <workItem from="1740038478293" duration="13431000" />
-      <workItem from="1740125179551" duration="11981000" />
+      <workItem from="1740125179551" duration="12019000" />
+      <workItem from="1740583259450" duration="2111000" />
+      <workItem from="1740643351769" duration="593000" />
+      <workItem from="1740654541796" duration="1563000" />
+      <workItem from="1741074806096" duration="11681000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -312,7 +316,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740085504021</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="111">
+      <option name="closed" value="true" />
+      <created>1740148319539</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1740148319539</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

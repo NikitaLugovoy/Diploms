@@ -57,8 +57,15 @@
 </head>
 <body>
 
+<div class="text-center">
+    <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
+</div>
+
 <div class="container">
     <h2>Расписание</h2>
+
+
+    <li><a href="{% url 'add_schedule' %}">Добавить расписание</a></li>
 
     <div class="buttons">
         <button onclick="groupBy('date')">Группировать по дате</button>

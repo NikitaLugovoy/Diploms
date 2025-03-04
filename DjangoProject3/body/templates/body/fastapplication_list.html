@@ -136,6 +136,7 @@
     </style>
 </head>
 <body class="container">
+
     <h1 class="my-4 text-center">Выбор поломанного устройства</h1>
 
     <form method="POST" id="selectionForm">
@@ -187,6 +188,13 @@
             <h3>Выбранные устройства</h3>
             <div id="filtered-devices-list-content" ></div>
             <div id="messageForm">
+                <div class="form-group">
+    <label for="breakdownType">Выберите тип поломки:</label>
+    <select class="form-control" id="breakdownType">
+        <option value="">-- Выберите тип --</option>
+    </select>
+</div>
+
                 <h4>Напишите сообщение:</h4>
                 <textarea class="form-control" rows="4" id="message" placeholder="Введите ваше сообщение"></textarea>
                 <button type="button" class="btn btn-primary mt-3" id="sendMessage">Отправить сообщение</button>
@@ -215,8 +223,20 @@
         .then(response => response.json())
         .then(data => {
             console.log("Полученные данные устройств:", data.devices);
+
+            console.log("⚠ Типы поломок:", data.breakdown_types);
             // Очищаем список перед заполнением
             devicesList.innerHTML = "";
+
+            const breakdownSelect = document.getElementById("breakdownType");
+            breakdownSelect.innerHTML = '<option value="">-- Выберите тип --</option>'; // Очищаем перед добавлением новых
+
+            data.breakdown_types.forEach(type => {
+    const option = document.createElement("option");
+    option.value = type.id;
+    option.textContent = type.name;
+    breakdownSelect.appendChild(option);
+});
 
             // Проходим по всем устройствам из ответа
             data.devices.forEach(device => {
@@ -264,6 +284,9 @@
 
     document.getElementById('sendMessage').addEventListener('click', function () {
     const message = document.getElementById('message').value.trim();
+
+    const breakdownType = document.getElementById('breakdownType').value;
+
     if (!message) {
         alert("Пожалуйста, введите сообщение!");
         return;
@@ -271,6 +294,9 @@
 
     const formData = new FormData();
     formData.append('message', message);
+
+    formData.append('breakdown_type', breakdownType);
+    console.log("Выбранный тип "+breakdownType);
     formData.append('csrfmiddlewaretoken', document.querySelector("input[name=csrfmiddlewaretoken]").value);
 
     function getCheckedValues(name) {
@@ -310,6 +336,7 @@ selectedDevices.forEach(deviceId => {
 
     console.log("Отправляемые данные:", {
         message,
+        breakdown_type: breakdownType,
         selected_filtered_devices: selectedDevices,  // ← Числовой массив!
         selected_packages: selectedPackages,
         all_schedules: schedules,
@@ -328,6 +355,7 @@ selectedDevices.forEach(deviceId => {
         if (data.status === "success") {
             alert("Сообщение успешно отправлено в Telegram!");
             document.getElementById("message").value = "";
+            document.getElementById("breakdownType").value = "";
             document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                 checkbox.checked = false;
             });

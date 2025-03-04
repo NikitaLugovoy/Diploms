@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from body.models import Body, Floor, Office, PackageDevice, Device, Application, Status, Schedule
+from body.models import Body, Floor, Office, PackageDevice, Device, Application, Status, Schedule, BreakdownType
 from type_devices.models import TypeDevice
 
 
@@ -34,8 +34,8 @@ class DeviceAdmin(admin.ModelAdmin):
 
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
-    list_display = ('office_id', 'device_id', 'reason', 'data', 'status_id', 'user_id')
-    search_fields = ('office_id', 'device_id', 'reason')
+    list_display = ('office', 'device', 'reason', 'data', 'status', 'user', 'breakdown_type')
+    search_fields = ('office__number', 'device__serial_number', 'reason', 'breakdown_type__name')
 
 @admin.register(Status)
 class StatusAdmin(admin.ModelAdmin):
@@ -52,3 +52,9 @@ class TypeDeviceAdmin(admin.ModelAdmin):
 class ScheduleAdmin(admin.ModelAdmin):
     list_display = ('name', 'office', 'datetime_start', 'datetime_end', 'user')
     search_fields = ('name', 'office__number', 'user__username')
+
+@admin.register(BreakdownType)
+class BreakdownTypeAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+
