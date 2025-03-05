@@ -2,6 +2,10 @@ import logging
 import json
 import requests
 import telebot
+from django.contrib.auth import logout
+from django.contrib.auth.views import PasswordChangeView
+from django.urls import reverse_lazy
+from pyexpat.errors import messages
 from requests.exceptions import RequestException
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -10,6 +14,20 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
+
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Application
+from .serializers import ApplicationSerializer
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .serializers import ApplicationSerializer
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -108,6 +126,8 @@ def close_application(request, application_id):
     # Перенаправляем обратно на страницу списка заявок
     return redirect('application_list')
 
+
+
 @swagger_auto_schema(method='post', request_body=SaveApplicationSerializer)
 @api_view(['POST'])
 def save_application(request):
@@ -117,9 +137,9 @@ def save_application(request):
         device_ids = serializer.validated_data['device_ids']
         reason = serializer.validated_data['reason']
         breakdown_type_id = serializer.validated_data.get('breakdown_type_id')
+        user_id = serializer.validated_data.get('user_id')
 
-        logger.info(f"Выбранный тип поломки_________: {breakdown_type_id}")
-
+        logger.info(f"------------- User ID: {user_id}")
 
         application_ids = []
         for device_id in device_ids:
@@ -127,7 +147,7 @@ def save_application(request):
                 office_id=office_id,
                 device_id=device_id,
                 reason=reason,
-                user_id=1,
+                user_id=user_id,
                 data=now(),
                 status_id=1,
                 breakdown_type_id=breakdown_type_id
@@ -234,6 +254,8 @@ def send_message_to_telegram(request):
     device_details_list = []
     first_office_id = None
 
+    logger.info(f"------------- User ID: {request.user.id}")
+
 
     for device_id in selected_filtered_devices:
         try:
@@ -275,7 +297,7 @@ def send_message_to_telegram(request):
     try:
         response = requests.post(
             save_application_url,
-            json={'office_id': first_office_id, 'device_ids': selected_filtered_devices, 'reason': user_message,'breakdown_type_id':breakdown_type.id},
+            json={'office_id': first_office_id, 'device_ids': selected_filtered_devices, 'reason': user_message,'breakdown_type_id':breakdown_type.id, 'user_id': request.user.id },
         )
         response.raise_for_status()
     except RequestException as e:
@@ -677,3 +699,53 @@ def schedule_list(request):
         serializer = ScheduleSerializer(schedules, many=True)
         return Response(serializer.data, status=200)
     return render(request, "body/schedule_list.html", {"schedules": schedules})
+
+
+@login_required
+def user_dashboard(request):
+    user = request.user
+    applications = Application.objects.filter(user=user).order_by("-data")
+
+    # Подсчитываем количество заявок с статусом "1"
+    notifications_count = Application.objects.filter(user=user, status_id=1).count()
+
+    # Сериализация заявок для API-ответа
+    application_serializer = ApplicationSerializer(applications, many=True)
+
+    return render(
+        request,
+        "body/lkuser.html",
+        {
+            "user": user,
+            "applications": application_serializer.data,
+            "notifications_count": notifications_count,  # Передаем количество заявок с статусом 1
+        }
+    )
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from .models import Application
+
+@login_required
+def delete_application(request, application_id):
+    if request.method == "POST":
+        application = get_object_or_404(Application, id=application_id, user=request.user)
+        application.delete()
+        return JsonResponse({"message": "Заявка удалена"}, status=200)
+
+    return JsonResponse({"error": "Метод не разрешен"}, status=405)
+
+
+@swagger_auto_schema(method='post', responses={200: 'Выход выполнен'})
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+# Смена пароля
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = "body/password_change.html"  # Создай этот шаблон
+    success_url = reverse_lazy("user_dashboard")  # Перенаправление после смены пароля

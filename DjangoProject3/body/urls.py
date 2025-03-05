@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import body_list, send_message_to_telegram
+from .views import body_list, send_message_to_telegram, delete_application, CustomPasswordChangeView, logout_view
 
 urlpatterns = [
     path('', views.body_list, name='body_list'),
@@ -13,9 +13,16 @@ urlpatterns = [
 
     path('fastapplication', views.fastapplication_list, name='fastapplication_list'),
 
+    path('lkuser/', views.user_dashboard, name='lkuser'),
+    path("delete_application/<int:application_id>/", delete_application, name="delete_application"),
+
     path('close_application/<int:application_id>/', views.close_application, name='close_application'),  # Новый путь
 
     path("add-schedule/", views.add_schedule, name="add_schedule"),
+
+    path("logout/", logout_view, name="logout"),
+    path("password_change/", CustomPasswordChangeView.as_view(), name="password_change"),
+
     path("schedule/list/", views.schedule_list, name="schedule_list"),  # <-- Добавляем маршрут
 
   ]

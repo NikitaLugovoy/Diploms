@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: white;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .link-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .link-container a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .link-container a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div class="notification-container">
+    <span class="bell">🔔</span>
+    <span class="count">{{ notifications_count }}</span>
+</div>
+
+<div class="link-container">
+    <a href="{% url 'password_change' %}">Сменить пароль</a>
+    <form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Выйти</button>
+</form>
+
+</div>
+
+    <div class="container">
+        <h2>Личный кабинет пользователя</h2>
+        <p>Добро пожаловать, {{ user.username }}!</p>
+
+        <h3>Ваши заявки</h3>
+        <div class="table-container">
+            <table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Офис</th>
+            <th>Серийный номер</th>
+            <th>Причина</th>
+            <th>Тип поломки</th>
+            <th>Дата</th>
+            <th>Статус</th>
+            <th>Действия</th> <!-- Добавлен столбец -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for application in applications %}
+            <tr>
+                <td>{{ application.id }}</td>
+                <td>{{ application.office_number }}</td>
+                <td>{{ application.device_serial_number }}</td>
+                <td>{{ application.reason }}</td>
+                <td>{{ application.breakdown_type_name }}</td>
+                <td>{{ application.data }}</td>
+                <td>{{ application.status_name }}</td>
+                <td>
+                    <button class="delete-btn" data-id="{{ application.id }}">Удалить</button>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="8">Заявок пока нет</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+        </div>
+
+    </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".delete-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let applicationId = this.dataset.id;
+                let row = this.closest("tr"); // Получаем строку, которую нужно удалить
+
+                if (confirm("Вы уверены, что хотите удалить заявку?")) {
+                    fetch(`/body/delete_application/${applicationId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": getCookie("csrftoken"),
+                            "X-Requested-With": "XMLHttpRequest"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            alert("Заявка удалена!");
+                            row.remove(); // Удаляем строку из таблицы без перезагрузки
+
+                            // Обновляем количество уведомлений
+                            updateNotificationCount();
+                        } else {
+                            alert("Ошибка при удалении заявки!");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Ошибка:", error);
+                        alert("Не удалось удалить заявку.");
+                    });
+                }
+            });
+        });
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            let cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith(name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function updateNotificationCount() {
+        let countElement = document.querySelector(".count");
+
+        // Получаем текущее количество уведомлений
+        let currentCount = parseInt(countElement.textContent);
+
+        // Обновляем значение, уменьшая на 1
+        if (currentCount > 0) {
+            countElement.textContent = currentCount - 1;
+        }
+    }
+</script>
+
+
+
+</body>
+</html>

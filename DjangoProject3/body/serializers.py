@@ -91,6 +91,7 @@ class SaveApplicationSerializer(serializers.Serializer):
     device_ids = serializers.ListField(child=serializers.IntegerField())
     reason = serializers.CharField(max_length=255)
     breakdown_type_id = serializers.IntegerField(required=False, allow_null=True)
+    user_id = serializers.IntegerField(required=False)
 
 class SendMessageSerializer(serializers.Serializer):
     message = serializers.CharField()
