@@ -139,7 +139,6 @@ def save_application(request):
         breakdown_type_id = serializer.validated_data.get('breakdown_type_id')
         user_id = serializer.validated_data.get('user_id')
 
-        logger.info(f"------------- User ID: {user_id}")
 
         application_ids = []
         for device_id in device_ids:
