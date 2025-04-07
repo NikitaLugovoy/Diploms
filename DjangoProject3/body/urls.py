@@ -23,6 +23,8 @@ urlpatterns = [
     path("logout/", logout_view, name="logout"),
     path("password_change/", CustomPasswordChangeView.as_view(), name="password_change"),
 
+    path("device_stats/", views.device_breakdown_stats, name="device_breakdown_stats"),
+
     path("schedule/list/", views.schedule_list, name="schedule_list"),  # <-- Добавляем маршрут
 
   ]

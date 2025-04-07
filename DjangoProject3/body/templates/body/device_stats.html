@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Статистика поломок</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            padding: 2rem;
+            background-color: #f8f9fa;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="mb-4">📊 Статистика поломанных устройств по офисам</h2>
+
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Корпус</th>
+                <th>Офис</th>
+                <th>Кол-во сломанных устройств</th>
+                <th>Детали</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in stats_data %}
+            <tr>
+                <td>{{ stat.body_number }}</td>
+                <td>{{ stat.office_number }}</td>
+                <td>{{ stat.broken_count }}</td>
+                <td>
+                    <a href="?office_id={{ stat.office_id }}" class="btn btn-sm btn-outline-primary">
+                        Показать
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if broken_devices %}
+    <div id="brokenDevicesSection" class="mt-5">
+        <h4>🔧 Сломанные устройства в выбранном офисе:</h4>
+        <ul class="list-group">
+            {% for device in broken_devices %}
+            <li class="list-group-item">
+                <strong>Серийный номер:</strong> {{ device.device_serial_number }} <br>
+                <strong>Причина:</strong> {{ device.reason }} <br>
+                <strong>Тип поломки:</strong> {{ device.breakdown_type_name }} <!-- Тип поломки -->
+            </li>
+            {% endfor %}
+        </ul>
+
+        <button id="hideDevicesButton" class="btn btn-outline-danger mt-3">Скрыть список</button>
+    </div>
+    {% endif %}
+
+    <hr class="my-5">
+
+    <h4 class="mb-3">📈 График количества поломок</h4>
+    <canvas id="barChart" width="200" height="100"></canvas>
+
+    <hr class="my-5">
+    <h4 class="mb-3">🛠️ Типы поломок в выбранном офисе</h4>
+    <canvas id="breakdownTypeChart" width="200" height="100"></canvas>
+
+    <hr class="my-5">
+    <h4 class="mb-3">📅 Поломки по дням</h4>
+    <canvas id="heatmap" width="100" height="200"></canvas>
+
+</div>
+
+<script>
+    // Скроем список поломок при нажатии на кнопку "Скрыть список"
+    document.getElementById('hideDevicesButton')?.addEventListener('click', function() {
+        document.getElementById('brokenDevicesSection').classList.add('hidden');
+
+        // Удалим параметр office_id из URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete('office_id');
+        window.history.replaceState({}, '', url);
+    });
+
+    const breakdownTypeData = {{ breakdown_type_data|safe }};
+    const breakdownLabels = breakdownTypeData.map(item => item.type);
+    const breakdownCounts = breakdownTypeData.map(item => item.count);
+
+    const breakdownTypeChart = new Chart(document.getElementById('breakdownTypeChart'), {
+        type: 'pie',
+        data: {
+            labels: breakdownLabels,
+            datasets: [{
+                label: 'Типы поломок',
+                data: breakdownCounts,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(153, 102, 255, 0.5)',
+                    'rgba(255, 159, 64, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Типы поломок в выбранном офисе'
+                }
+            }
+        }
+    });
+
+    const heatmapData = {{ heatmap_data|safe }};
+    const parsedData = {};
+    heatmapData.forEach(entry => {
+        const date = new Date(entry.date);
+        const timestamp = Math.floor(date.getTime() / 1000);
+        parsedData[timestamp] = entry.count;
+    });
+
+    const heatmapChart = new Chart(document.getElementById('heatmap'), {
+        type: 'line',
+        data: {
+            labels: Object.keys(parsedData).map(timestamp => new Date(timestamp * 1000).toLocaleDateString()),
+            datasets: [{
+                label: 'Поломки по дням',
+                data: Object.values(parsedData),
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Поломки по дням'
+                }
+            }
+        }
+    });
+
+    const chartData = {{ chart_data|safe }};
+    const labels = chartData.map(e => "Офис " + e.office_number);
+    const data = chartData.map(e => e.broken_count);
+
+    new Chart(document.getElementById("barChart"), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Сломанные устройства',
+                data: data,
+                backgroundColor: 'rgba(255, 99, 132, 0.5)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Поломки по офисам'
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

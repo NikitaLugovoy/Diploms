@@ -6,6 +6,7 @@ import requests
 import telebot
 from django.contrib.auth import logout
 from django.contrib.auth.views import PasswordChangeView
+from django.db.models.functions import TruncDate
 from django.urls import reverse_lazy
 from pyexpat.errors import messages
 from requests.exceptions import RequestException
@@ -811,3 +812,78 @@ def logout_view(request):
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = "body/password_change.html"
     success_url = reverse_lazy("user_dashboard")
+
+
+from django.db.models import Count
+
+def device_breakdown_stats(request):
+    # Получаем количество поломанных устройств в каждом офисе (исключаем статус id=3)
+    office_stats = (
+        Application.objects
+        .exclude(status__id=3)  # вместо .filter(...__ne=3)
+        .values("office__id", "office__number", "office__body__number")
+        .annotate(broken_count=Count("device"))
+    )
+
+    # Собираем данные для графика и таблицы
+    stats_data = []
+    for entry in office_stats:
+        stats_data.append({
+            "office_id": entry["office__id"],
+            "office_number": entry["office__number"],
+            "body_number": entry["office__body__number"],
+            "broken_count": entry["broken_count"],
+        })
+
+    heatmap_raw = (
+        Application.objects
+        .exclude(status__id=3)
+        .annotate(date_only=TruncDate('data'))
+        .values('date_only')
+        .annotate(count=Count('id'))
+        .order_by('date_only')
+    )
+
+    # Преобразуем данные в формат [{date: "YYYY-MM-DD", count: N}]
+    heatmap_data = [
+        {"date": entry["date_only"].strftime("%Y-%m-%d"), "count": entry["count"]}
+        for entry in heatmap_raw
+    ]
+
+    # Получаем список поломанных устройств по выбранному офису
+    if request.GET.get("office_id"):
+        office_id = int(request.GET["office_id"])
+        broken_devices = (
+            Application.objects
+            .exclude(status__id=3)
+            .filter(office__id=office_id)
+            .select_related("device", "office", "breakdown_type")  # Подключаем breakdown_type
+        )
+
+        # Подсчитываем количество типов поломок для выбранного офиса
+        breakdown_type_counts = (
+            broken_devices
+            .values('breakdown_type__name')
+            .annotate(count=Count('breakdown_type'))
+        )
+
+        breakdown_type_data = [
+            {"type": entry["breakdown_type__name"], "count": entry["count"]}
+            for entry in breakdown_type_counts
+        ]
+
+        broken_serializer = ApplicationSerializer(broken_devices, many=True)
+        broken_devices_data = broken_serializer.data
+
+    else:
+        broken_devices_data = []
+        breakdown_type_data = []
+
+    return render(request, "body/device_stats.html", {
+        "stats_data": stats_data,
+        "selected_office": request.GET.get("office_id"),
+        "broken_devices": broken_devices_data,  # Передаем список поломок в шаблон
+        "chart_data": json.dumps(stats_data),
+        "heatmap_data": json.dumps(heatmap_data),
+        "breakdown_type_data": json.dumps(breakdown_type_data)  # Передаем данные для круговой диаграммы
+    })
