@@ -23,6 +23,13 @@
         .hidden {
             display: none;
         }
+
+        canvas {
+        max-width: 100%;  /* Ограничивает ширину контейнера */
+        width: 100%;      /* Устанавливает ширину на 100% */
+        height: auto;     /* Автоматическая высота, чтобы сохранить пропорции */
+        max-height: 400px; /* Ограничение максимальной высоты */
+    }
     </style>
 </head>
 <body>
@@ -33,7 +40,7 @@
         <thead class="table-light">
             <tr>
                 <th>Корпус</th>
-                <th>Офис</th>
+                <th>Кабинет</th>
                 <th>Кол-во сломанных устройств</th>
                 <th>Детали</th>
             </tr>
@@ -45,69 +52,106 @@
                 <td>{{ stat.office_number }}</td>
                 <td>{{ stat.broken_count }}</td>
                 <td>
-                    <a href="?office_id={{ stat.office_id }}" class="btn btn-sm btn-outline-primary">
-                        Показать
-                    </a>
+                    <button class="btn btn-sm btn-outline-primary btn-show-devices" data-office-id="{{ stat.office_id }}">
+    Показать
+</button>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    {% if broken_devices %}
-    <div id="brokenDevicesSection" class="mt-5">
-        <h4>🔧 Сломанные устройства в выбранном офисе:</h4>
-        <ul class="list-group">
-            {% for device in broken_devices %}
-            <li class="list-group-item">
-                <strong>Серийный номер:</strong> {{ device.device_serial_number }} <br>
-                <strong>Причина:</strong> {{ device.reason }} <br>
-                <strong>Тип поломки:</strong> {{ device.breakdown_type_name }} <!-- Тип поломки -->
-            </li>
-            {% endfor %}
-        </ul>
+    <div id="brokenDevicesSection" class="mt-5 hidden">
+    <h4>🔧 Сломанные устройства в выбранном офисе:</h4>
+    <ul class="list-group" id="brokenDeviceList">
 
-        <button id="hideDevicesButton" class="btn btn-outline-danger mt-3">Скрыть список</button>
-    </div>
-    {% endif %}
-
-    <hr class="my-5">
-
-    <h4 class="mb-3">📈 График количества поломок</h4>
-    <canvas id="barChart" width="200" height="100"></canvas>
+    </ul>
 
     <hr class="my-5">
     <h4 class="mb-3">🛠️ Типы поломок в выбранном офисе</h4>
-    <canvas id="breakdownTypeChart" width="200" height="100"></canvas>
+    <canvas id="breakdownTypeChart" width="50" height="50"></canvas>
+
+    <button id="hideDevicesButton" class="btn btn-outline-danger mt-3">Скрыть список</button>
+</div>
+
+    <h4 class="mb-3">📈 График количества поломок</h4>
+    <canvas id="barChart" width="100" height="50"></canvas>
+
 
     <hr class="my-5">
     <h4 class="mb-3">📅 Поломки по дням</h4>
-    <canvas id="heatmap" width="100" height="200"></canvas>
+    <canvas id="heatmap" width="100" height="50"></canvas>
 
 </div>
 
 <script>
-    // Скроем список поломок при нажатии на кнопку "Скрыть список"
-    document.getElementById('hideDevicesButton')?.addEventListener('click', function() {
-        document.getElementById('brokenDevicesSection').classList.add('hidden');
+    document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.btn-show-devices').forEach(button => {
+        button.addEventListener('click', function () {
+            const officeId = this.getAttribute('data-office-id');
 
-        // Удалим параметр office_id из URL
-        const url = new URL(window.location.href);
-        url.searchParams.delete('office_id');
-        window.history.replaceState({}, '', url);
+            fetch("{% url 'device_breakdown_stats' %}?office_id=" + officeId, {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                renderBrokenDevices(data.broken_devices);
+                renderBreakdownTypeChart(data.breakdown_type_data);
+            });
+        });
     });
 
-    const breakdownTypeData = {{ breakdown_type_data|safe }};
-    const breakdownLabels = breakdownTypeData.map(item => item.type);
-    const breakdownCounts = breakdownTypeData.map(item => item.count);
+    function renderBrokenDevices(devices) {
+        const section = document.getElementById("brokenDevicesSection");
+        if (!section) {
+            console.warn("⚠️ Элемент #brokenDevicesSection не найден");
+            return;
+        }
 
-    const breakdownTypeChart = new Chart(document.getElementById('breakdownTypeChart'), {
+        section.classList.remove("hidden");
+
+        const list = section.querySelector("ul");
+        if (!list) {
+            console.warn("⚠️ ul внутри #brokenDevicesSection не найден");
+            return;
+        }
+
+        list.innerHTML = '';
+
+        devices.forEach(device => {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            li.innerHTML = `
+                <strong>Серийный номер:</strong> ${device.device_serial_number} <br>
+                <strong>Причина:</strong> ${device.reason} <br>
+                <strong>Тип поломки:</strong> ${device.breakdown_type_name}
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    let breakdownTypeChartInstance = null; // глобальная переменная для хранения экземпляра
+
+function renderBreakdownTypeChart(data) {
+    const labels = data.map(item => item.type);
+    const counts = data.map(item => item.count);
+
+    // Уничтожим предыдущую диаграмму, если она уже существует
+    if (breakdownTypeChartInstance) {
+        breakdownTypeChartInstance.destroy();
+    }
+
+    const ctx = document.getElementById('breakdownTypeChart').getContext('2d');
+
+    breakdownTypeChartInstance = new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: breakdownLabels,
+            labels: labels,
             datasets: [{
                 label: 'Типы поломок',
-                data: breakdownCounts,
+                data: counts,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.5)',
                     'rgba(54, 162, 235, 0.5)',
@@ -137,6 +181,24 @@
             }
         }
     });
+}
+
+});
+
+    // Скроем список поломок при нажатии на кнопку "Скрыть список"
+    document.getElementById('hideDevicesButton')?.addEventListener('click', function() {
+        document.getElementById('brokenDevicesSection').classList.add('hidden');
+
+        // Удалим параметр office_id из URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete('office_id');
+        window.history.replaceState({}, '', url);
+    });
+
+    const breakdownTypeData = {{ breakdown_type_data|safe }};
+    const breakdownLabels = breakdownTypeData.map(item => item.type);
+    const breakdownCounts = breakdownTypeData.map(item => item.count);
+
 
     const heatmapData = {{ heatmap_data|safe }};
     const parsedData = {};
@@ -195,6 +257,17 @@
             }
         }
     });
+
+
+function updatePieChart(newData) {
+    const labels = newData.map(item => item.type);
+    const values = newData.map(item => item.count);
+
+    breakdownTypeChart.data.labels = labels;
+    breakdownTypeChart.data.datasets[0].data = values;
+    breakdownTypeChart.update();
+}
 </script>
+
 </body>
 </html>
