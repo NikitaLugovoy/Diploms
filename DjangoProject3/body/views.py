@@ -1,5 +1,7 @@
 import logging
 import json
+
+import pytz
 import requests
 import telebot
 from django.contrib.auth import logout
@@ -446,8 +448,88 @@ def body_list(request):
 @api_view(["GET", "POST"])
 @login_required
 def fastapplication_list(request):
-    print("Current User:", request.user)
 
+    full_name = f"{request.user.last_name} {request.user.first_name}"
+    print("Текущее имя пользователя:", full_name)
+
+    # Вызов API для получения расписания преподавателя
+    teacher_name = f"{request.user.last_name} {request.user.first_name}"
+
+    # Получаем текущую дату
+
+    moscow_tz = pytz.timezone('Europe/Moscow')
+    current_time = datetime.now(moscow_tz)
+
+    print("Текущая дата:", current_time)
+
+    # Извлекаем только дату (без времени)
+    current_date = current_time.date()
+
+    # Преобразуем текущее время в формат HH:MM:SS
+    current_time_str = current_time.strftime('%H:%M:%S')
+    office = None
+    api_url = f"http://api.bgitu-compass.ru/v2/teacherSearch?teacher={teacher_name}&dateFrom={current_date}&dateTo={current_date}"
+
+    try:
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            teacher_schedule = response.json()
+            print(f"Расписание преподавателя {teacher_name}: {teacher_schedule}")
+            # Фильтрация записей по времени
+            filtered_schedule = []
+            for record in teacher_schedule:
+                start_time = datetime.strptime(record['startAt'], '%H:%M:%S').time()
+                end_time = datetime.strptime(record['endAt'], '%H:%M:%S').time()
+                current_time_only = datetime.strptime(current_time_str, '%H:%M:%S').time()
+
+                # Проверяем, попадает ли текущее время в интервал
+                if start_time <= current_time_only <= end_time:
+                    filtered_schedule.append(record)
+
+            # Выводим отфильтрованные записи
+            if filtered_schedule:
+                print(f"Отфильтрованное расписание на {current_date}:")
+                for item in filtered_schedule:
+                    classroom = item['classroom']
+                    building = item['building']
+                    subject = item['subjectName']
+                    group = item['groupName']
+                    start = item['startAt']
+                    end = item['endAt']
+
+                    print(f"Аудитория {classroom}, корпус {building} — {subject} — {group} ({start}–{end})")
+
+                    # Ищем офис по номеру (номер аудитории = classroom)
+                    try:
+                        office = Office.objects.get(number=classroom)
+                        print(f"ID офиса: {office.id}")
+                    except Office.DoesNotExist:
+                        print(f"Офис с номером {classroom} не найден в базе.")
+            else:
+                print("Нет занятий в текущий момент.")
+                office = None
+        else:
+            print(f"Ошибка при запросе расписания преподавателя: {response.status_code}")
+            teacher_schedule = []
+    except requests.exceptions.RequestException as e:
+        print(f"Ошибка при соединении с API: {e}")
+        teacher_schedule = []
+        office = None
+
+
+    # Фильтруем расписания для пользователя
+    schedules = Schedule.objects.filter(
+        user=request.user,
+        datetime_start__lte=current_time,
+        datetime_end__gte=current_time
+    )
+
+    if office is not None:
+        office_ids = office.id
+    else:
+        office_ids = None  # Или другое значение по умолчанию
+
+    print(f"ID офиса: {office_ids}")
     # Получаем переданные параметры (если их нет — пустые списки)
     selected_schedules = list(map(int, request.POST.getlist("selected_schedules", [])))
     selected_packages = list(map(int, request.POST.getlist("selected_packages", [])))
@@ -457,17 +539,7 @@ def fastapplication_list(request):
     print("Selected Packages:", selected_packages)
     print("Selected Devices:", selected_devices)
 
-    current_time = now()
-
-    # Фильтруем расписания для пользователя
-    schedules = Schedule.objects.filter(
-        user=request.user,
-        datetime_start__lte=current_time,
-        datetime_end__gte=current_time
-    )
-
-    office_ids = schedules.values_list('office_id', flat=True).distinct()
-    package_devices = PackageDevice.objects.filter(office_id__in=office_ids)
+    package_devices = PackageDevice.objects.filter(office_id__in=[office_ids])
 
     if selected_packages:
         package_devices = package_devices.filter(id__in=selected_packages)
@@ -496,27 +568,19 @@ def fastapplication_list(request):
             "has_warning": condition == 4
         })
 
-    print("Package Devices:", package_devices_with_condition)
-
-    print(f"Текущее время: {current_time}")
-    print("Все расписания пользователя:", Schedule.objects.filter(user=request.user))
 
     breakdown_types = BreakdownType.objects.all()
     breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
 
-    print("Breakdown Types:", breakdown_types)  # Логируем в консоль
-
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        schedules_data = ScheduleSerializer(schedules, many=True).data
         package_devices_data = PackageDeviceSerializer(package_devices, many=True).data
         devices_data = DeviceSerializer(devices, many=True).data
         breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
 
-        print("Serialized Schedules:", schedules_data)
 
         return JsonResponse({
-            "schedules": schedules_data,
+            "schedules": filtered_schedule,
             "package_devices": package_devices_with_condition,
             "devices": devices_data,
             "breakdown_types": breakdown_types_data
@@ -524,7 +588,7 @@ def fastapplication_list(request):
 
     # Отображение страницы с уже обработанными данными
     return render(request, "body/fastapplication_list.html", {
-        "schedules": schedules,
+        "schedules": filtered_schedule,
         "package_devices": package_devices_with_condition,
         "devices": devices,
         "breakdown_types": breakdown_types_data
@@ -744,7 +808,6 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-# Смена пароля
 class CustomPasswordChangeView(PasswordChangeView):
-    template_name = "body/password_change.html"  # Создай этот шаблон
-    success_url = reverse_lazy("user_dashboard")  # Перенаправление после смены пароля
+    template_name = "body/password_change.html"
+    success_url = reverse_lazy("user_dashboard")

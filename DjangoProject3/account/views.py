@@ -13,15 +13,18 @@ from .serializers import UserSerializer
 @api_view(['POST', 'GET'])
 @permission_classes([AllowAny])
 def register_view(request):
+    reg_form = CustomUserCreationForm()  # форма по умолчанию (на случай GET или невалидного POST)
+
     if request.method == 'POST':
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        reg_form = CustomUserCreationForm(request.POST)
+        if reg_form.is_valid():
+            reg_form.save()
             messages.success(request, "Регистрация успешна! Теперь войдите.")
             return redirect('login')
         else:
             messages.error(request, "Ошибка регистрации. Проверьте введенные данные.")
-    return render(request, 'register.html')
+
+    return render(request, 'register.html', {'reg_form': reg_form})
 
 @swagger_auto_schema(method='post', request_body=openapi.Schema(
     type=openapi.TYPE_OBJECT,
