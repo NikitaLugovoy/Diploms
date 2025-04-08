@@ -1,6 +1,20 @@
-from django.urls import path
+from django.urls import path, re_path
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 from . import views
 from .views import body_list, send_message_to_telegram, delete_application, CustomPasswordChangeView, logout_view
+
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Документация API",
+      default_version='v1',
+      description="Swagger UI для твоего проекта",
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 urlpatterns = [
     path('', views.body_list, name='body_list'),
@@ -27,4 +41,6 @@ urlpatterns = [
 
     path("schedule/list/", views.schedule_list, name="schedule_list"),  # <-- Добавляем маршрут
 
-  ]
+    re_path(r'^swagger-ui/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+
+]

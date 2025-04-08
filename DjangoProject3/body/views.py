@@ -770,7 +770,6 @@ def user_dashboard(request):
     user = request.user
     applications = Application.objects.filter(user=user).order_by("-data")
 
-    # Подсчитываем количество заявок с статусом "1"
     notifications_count = Application.objects.filter(user=user, status_id=1).count()
 
     # Сериализация заявок для API-ответа
@@ -815,11 +814,25 @@ class CustomPasswordChangeView(PasswordChangeView):
 
 
 from django.db.models import Count
-
 from django.http import JsonResponse
 
-from django.http import JsonResponse
 
+
+@swagger_auto_schema(
+    method='get',
+    manual_parameters=[
+        openapi.Parameter(
+            'office_id',
+            openapi.IN_QUERY,
+            description="ID кабинета для вывода сломанных устройств и типа поломок",
+            type=openapi.TYPE_INTEGER,
+            required=False
+        )
+    ],
+    responses={200: "Успешно", 400: "Некорректный запрос"}
+)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def device_breakdown_stats(request):
     # Получаем общую статистику
     office_stats = (

@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление статистики">
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление динамики для статистики">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/device_stats.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/device_stats.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -207,7 +209,8 @@
       <workItem from="1741679638058" duration="2235000" />
       <workItem from="1741757668054" duration="343000" />
       <workItem from="1742195579179" duration="136000" />
-      <workItem from="1744015547763" duration="16101000" />
+      <workItem from="1744015547763" duration="16223000" />
+      <workItem from="1744098681455" duration="737000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -377,7 +380,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744033533998</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Добавление динамики для статистики">
+      <option name="closed" value="true" />
+      <created>1744047789204</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1744047789204</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -401,6 +412,7 @@
     <MESSAGE value="Удалилась заглушка и добавился ЛК" />
     <MESSAGE value="Добавление API компаса" />
     <MESSAGE value="Добавление статистики" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавление статистики" />
+    <MESSAGE value="Добавление динамики для статистики" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавление динамики для статистики" />
   </component>
 </project>
