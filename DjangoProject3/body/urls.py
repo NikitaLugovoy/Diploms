@@ -5,15 +5,14 @@ from drf_yasg import openapi
 from . import views
 from .views import body_list, send_message_to_telegram, delete_application, CustomPasswordChangeView, logout_view
 
-
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Документация API",
-      default_version='v1',
-      description="Swagger UI для твоего проекта",
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="Документация API",
+        default_version='v1',
+        description="Swagger UI для твоего проекта",
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [

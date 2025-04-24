@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выбор Body и Floors</title>
+    <title>Выбор поломанного устройства</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f0f8ff; /* Светло-голубой фон */
-            color: #333; /* Темный текст для контраста */
+            background-color: #f0f8ff;
+            color: #333;
         }
 
         h1 {
-            color: #8FBC8F; /* Лаймово-зеленый */
+            color: #8FBC8F;
             margin-bottom: 20px;
         }
 
         label {
             font-weight: bold;
-            color: #6B8E23; /* Оливковый зеленый */
+            color: #6B8E23;
         }
 
         input, button {
@@ -26,10 +26,9 @@
             border-radius: 5px;
         }
 
-        /* Увеличиваем ширину поля ввода и выравниваем его по центру */
         .input-group {
             max-width: 600px;
-            margin: 0 auto; /* Центрируем поле */
+            margin: 0 auto;
         }
 
         input {
@@ -50,7 +49,7 @@
         }
 
         .btn-secondary {
-            background-color: #B0E57C; /* Лаймово-бледный фон для кнопки "Назад" */
+            background-color: #B0E57C;
             border: none;
         }
 
@@ -70,17 +69,6 @@
             box-sizing: border-box;
         }
 
-        .device-item label {
-            font-size: 10px;
-            line-height: 1.2;
-        }
-
-        .filtered-devices-list {
-            display: none;
-            max-width: 600px; /* Устанавливаем максимальную ширину */
-            margin: 0 auto; /* Центрируем контейнер */
-        }
-
         .device-image-container {
             position: relative;
             display: inline-block;
@@ -98,21 +86,18 @@
         }
 
         .devices-list {
-            flex: 1 1 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             position: relative;
-            background-image: url('https://fsd.multiurok.ru/html/2021/08/21/s_61212f0da4dc8/phpwowL5U_OU-YUbilej-SHkoly_html_f97f782edb34b027.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             padding: 20px;
             min-height: 300px;
             width: 100%;
-            height: 741px;
             display: none;
-        }
-
-        #devices-list {
-            margin-left: 350px;
         }
 
         .devices-list::before {
@@ -126,17 +111,6 @@
             z-index: -1;
         }
 
-        .devices-grid {
-            display: grid;
-            grid-auto-flow: column;
-            grid-template-rows: repeat(5, max-content);
-            grid-auto-columns: minmax(50px, 150px);
-            gap: 1px;
-            row-gap: 35px;
-            justify-content: start;
-            align-content: start;
-        }
-
         .device-item {
             display: flex;
             flex-direction: column;
@@ -144,14 +118,15 @@
             justify-content: center;
             text-align: center;
             background-color: rgba(255, 255, 255, 0.8);
-            padding: 2px;
+            padding: 10px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid #ccc;
             max-width: 120px;
-            margin: 3px;
+            margin: 5px;
             height: auto;
             position: relative;
+            cursor: pointer;
         }
 
         .status-message {
@@ -179,104 +154,197 @@
             align-items: center;
         }
 
-        #messageForm {
-            margin-top: 20px;
-            max-width: 600px; /* Устанавливаем максимальную ширину */
-            margin: 0 auto; /* Центрируем блок */
-        }
-
         .btn-back {
             position: absolute;
             top: 10px;
             left: 10px;
         }
+
+        .devices-grid {
+            display: grid;
+            gap: 10px;
+            justify-content: center;
+            align-content: center;
+            margin: auto;
+            max-width: 100%;
+        }
+
+        .device-item.broken {
+            border: 2px solid red;
+        }
+
+        /* Стили для модального окна */
+        .modal-content {
+            background-color: #f0f8ff;
+            color: #333;
+        }
+
+        .modal-title {
+            color: #8FBC8F;
+        }
+
+        .modal-body label {
+            font-weight: bold;
+            color: #6B8E23;
+        }
+
+        .modal-body .form-control {
+            border: 2px solid #8FBC8F;
+            border-radius: 5px;
+        }
+
+        .modal-footer .btn-primary {
+            background-color: #8FBC8F;
+            border: none;
+        }
+
+        .modal-footer .btn-primary:hover {
+            background-color: #6B8E23;
+        }
+
+        .modal-footer .btn-secondary {
+            background-color: #B0E57C;
+            border: none;
+        }
+
+        .modal-footer .btn-secondary:hover {
+            background-color: #8FBC8F;
+        }
+
+        .filtered-devices-list {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .device-label {
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .device-item.selected {
+            border: 2px solid #0d6efd;
+            box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
+            border-radius: 8px;
+        }
+
+        .broken-device {
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 8px;
+            background-color: #fff0f0;
+        }
+
+        #deviceModal .form-check-input {
+            display: none;
+        }
+
+        .form-check.selected {
+            border: 2px solid #0d6efd;
+            border-radius: 8px;
+            background-color: #e9f2ff;
+            padding: 10px;
+            transition: all 0.2s ease-in-out;
+        }
     </style>
 </head>
 <body class="container">
-    <h1 class="my-4 text-center">Выбор поломанного устройства</h1>
+<h1 class="my-4 text-center">Выбор поломанного устройства</h1>
 
-    <form method="POST" id="selectionForm">
-        <div class="text-center">
-            <!-- Кнопка "Назад" с таким же стилем -->
-            <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
-        </div>
-        {% csrf_token %}
-        <div class="content-container">
-            <div class="body-list">
-                <h3>Список Корпусов</h3>
-                {% for body in bodies %}
-                    <div class="form-check">
-                        <input
+<form method="POST" id="selectionForm">
+    <div class="text-center">
+        <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
+    </div>
+    {% csrf_token %}
+    <div class="content-container">
+        <div class="body-list">
+            <h3>Список Корпусов</h3>
+            {% for body in bodies %}
+                <div class="form-check">
+                    <input
                             class="form-check-input"
-                            type="checkbox"
+                            type="radio"
                             name="selected_bodies"
                             value="{{ body.id }}"
                             id="body_{{ body.id }}"
                             {% if body.id|stringformat:"s" in selected_bodies %}checked{% endif %}>
-                        <label class="form-check-label" for="body_{{ body.id }}">
-                            <strong>{{ body.number }}</strong> — {{ body.address }}
-                        </label>
-                    </div>
-                {% endfor %}
-            </div>
+                    <label class="form-check-label" for="body_{{ body.id }}">
+                        <strong>{{ body.number }}</strong> — {{ body.address }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
 
-            <div class="floors-list">
-                <h3>Список этажей</h3>
-                {% for floor in floors %}
-                    <div class="form-check">
-                        <input
+        <div class="floors-list">
+            <h3>Список этажей</h3>
+            {% for floor in floors %}
+                <div class="form-check">
+                    <input
                             class="form-check-input"
-                            type="checkbox"
+                            type="radio"
                             name="selected_floors"
                             value="{{ floor.id }}"
                             id="floor_{{ floor.id }}"
                             {% if floor.id|stringformat:"s" in selected_floors %}checked{% endif %}>
-                        <label class="form-check-label" for="floor_{{ floor.id }}">
-                            Этаж №{{ floor.number }}
-                        </label>
+                    <label class="form-check-label" for="floor_{{ floor.id }}">
+                        Этаж №{{ floor.number }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="offices-list" id="offices-list" style="display: none;">
+            <h3>Список кабинетов</h3>
+            <div id="offices-list-content"></div>
+        </div>
+
+        <div class="devices-list">
+            <h3>Схема кабинета</h3>
+            <div id="devices-list" class="devices-grid"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal fade" id="deviceModal" tabindex="-1" aria-labelledby="deviceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deviceModalLabel">Информация об устройстве</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="filtered-devices-list text-center">
+                        <h3>Устройства</h3>
+                        <div id="modal-filtered-devices-list-content"></div>
+                        <div id="modal-messageForm">
+                            <div class="form-group">
+                                <label for="modalBreakdownType">Выберите тип поломки:</label>
+                                <select class="form-control" id="modalBreakdownType">
+                                    <option value="">-- Выберите тип --</option>
+                                </select>
+                            </div>
+                            <h4>Напишите сообщение:</h4>
+                            <textarea class="form-control" rows="4" id="modalMessage"
+                                      placeholder="Введите ваше сообщение"></textarea>
+                            <button type="button" class="btn btn-primary btn-secondary mt-3" id="modalSendMessage">
+                                Отправить сообщение
+                            </button>
+                        </div>
                     </div>
-                {% endfor %}
-            </div>
-
-            <div class="offices-list" id="offices-list" style="display: none;">
-                <h3>Список кабинетов</h3>
-                <div id="offices-list-content"></div>
-            </div>
-
-            <div class="devices-list">
-                <h3>Схема кабинета</h3>
-                <div id="devices-list" class="devices-grid"></div>
-            </div>
-
-        </div>
-
-        <div class="filtered-devices-list text-center" >
-            <h3>Устройства</h3>
-            <div id="filtered-devices-list-content"></div>
-            <div id="messageForm">
-            <div class="form-group">
-    <label for="breakdownType">Выберите тип поломки:</label>
-    <select class="form-control" id="breakdownType">
-        <option value="">-- Выберите тип --</option>
-    </select>
-</div>
-
-                <h4>Напишите сообщение:</h4>
-                <textarea class="form-control" rows="4" id="message" placeholder="Введите ваше сообщение"></textarea>
-                <button type="button" class="btn btn-primary btn-secondary mt-3" id="sendMessage">Отправить сообщение</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
             </div>
         </div>
+    </div>
+</form>
 
-    </form>
-</body>
-</html>
-
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Получение CSRF токена
     function getCSRFToken() {
         var token = null;
-        document.cookie.split(';').forEach(function(cookie) {
+        document.cookie.split(';').forEach(function (cookie) {
             if (cookie.trim().startsWith('csrftoken=')) {
                 token = cookie.split('=')[1];
             }
@@ -284,350 +352,309 @@
         return token;
     }
 
-    // Загрузка офисов и устройств
-function fetchOfficesAndDevices() {
-    var selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
-    var selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
-    var selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
-    var selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
-    var selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
-
-    var formData = new FormData();
-    selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
-    selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
-    selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
-    selectedDevices.forEach(checkbox => formData.append('selected_package_devices', checkbox.value));
-    selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
-
-    // Управляем видимостью списка офисов
-    if (selectedBodies.length > 0 && selectedFloors.length > 0) {
-        document.getElementById("offices-list").style.display = 'block';
-    } else {
-        document.getElementById("offices-list").style.display = 'none';
+    function updateOfficesList(offices, selectedOffices) {
+        const officesListContent = document.getElementById("offices-list-content");
+        const previouslySelectedOffices = new Set(
+            Array.from(document.querySelectorAll('input[name="selected_offices"]:checked'))
+                .map(radio => radio.value)
+        );
+        officesListContent.innerHTML = "";
+        if (offices && offices.length > 0) {
+            offices.forEach(office => {
+                const officeElement = document.createElement('div');
+                officeElement.classList.add('form-check');
+                const isChecked = previouslySelectedOffices.has(office.id.toString());
+                officeElement.innerHTML = `
+                        <input class="form-check-input" type="radio" name="selected_offices" value="${office.id}" id="office_${office.id}" ${isChecked ? 'checked' : ''}>
+                        <label class="form-check-label" for="office_${office.id}">
+                            Офис ${office.number} — Этаж ID: ${office.floor_id}, Корпус ID: ${office.body_id}
+                        </label>
+                    `;
+                officesListContent.appendChild(officeElement);
+            });
+        }
+        officesListContent.style.display = 'block';
     }
 
-    // Управляем видимостью списка устройств
-    if (selectedOffices.length > 0) {
-        document.querySelector('.devices-list').style.display = 'block';
-    } else {
-        document.querySelector('.devices-list').style.display = 'none';
+    function updateBreakdownTypeSelect(breakdownTypes) {
+        const modalBreakdownTypeSelect = document.getElementById("modalBreakdownType");
+        const previouslySelectedValue = modalBreakdownTypeSelect.value;
+        modalBreakdownTypeSelect.innerHTML = '<option value="">-- Выберите тип --</option>';
+        if (breakdownTypes && breakdownTypes.length > 0) {
+            breakdownTypes.forEach(type => {
+                const option = document.createElement("option");
+                option.value = type.id;
+                option.textContent = type.name;
+                if (option.value === previouslySelectedValue) {
+                    option.selected = true;
+                }
+                modalBreakdownTypeSelect.appendChild(option);
+            });
+        }
     }
 
-    // Управляем видимостью фильтрованных устройств
-    if (selectedDevices.length > 0) {
-        document.querySelector('.filtered-devices-list').style.display = 'block';
-    } else {
-        document.querySelector('.filtered-devices-list').style.display = 'none';
-    }
+    function updatePackageDevicesList(devices, selectedDevices, layout) {
+        const devicesList = document.getElementById("devices-list");
+        devicesList.innerHTML = "";
 
-    fetch('/body/', {
-        method: 'POST',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
+        if (!layout || !layout.width || !layout.height || !layout.device_positions) {
+            devicesList.innerHTML = "<p>Схема кабинета не задана.</p>";
+            return;
+        }
 
-            console.log("⚠ Типы поломок:", data.breakdown_types);
-        updateOfficesList(data.offices, selectedOffices);
-        updatePackageDevicesList(data.package_devices, selectedDevices);
-        updateDevicesList(data.devices, selectedFilteredDevices);
-        updateBreakdownTypeSelect(data.breakdown_types);
-    })
-    .catch(error => {
-        console.error('Ошибка при выполнении запроса:', error);
-    });
-}
+        const grid = document.createElement("div");
+        grid.classList.add("devices-grid");
+        grid.style.gridTemplateRows = `repeat(${layout.height}, 120px)`;
+        grid.style.gridTemplateColumns = `repeat(${layout.width}, 120px)`;
 
+        layout.device_positions.forEach(position => {
+            if (position.is_active) {
+                const device = devices.find(d => d.id === position.package_device_id);
+                if (device) {
+                    const deviceItem = document.createElement("div");
+                    deviceItem.classList.add("device-item");
+                    deviceItem.style.gridRow = `${position.y + 1}`;
+                    deviceItem.style.gridColumn = `${position.x + 1}`;
 
-function updateBreakdownTypeSelect(breakdownTypes) {
-    const breakdownTypeSelect = document.getElementById("breakdownType");
+                    let deviceImage = `
+                            <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
+                        `;
+                    if (Number(device.condition_id) === 4) {
+                        deviceItem.classList.add('broken');
+                    }
 
-    // Сохраняем текущее выбранное значение
-    const previouslySelectedValue = breakdownTypeSelect.value;
+                    const imageContainer = document.createElement("div");
+                    imageContainer.classList.add("device-image-container");
+                    imageContainer.innerHTML = deviceImage;
 
-    // Очищаем select
-    breakdownTypeSelect.innerHTML = '<option value="">-- Выберите тип --</option>';
+                    deviceItem.innerHTML += `
+    <input type="radio" name="selected_package_devices" value="${device.id}" id="device_${device.id}" style="display: none;">
+    <div class="device-label">Серийный номер: ${device.number}</div>
+`;
 
-    if (breakdownTypes && breakdownTypes.length > 0) {
-        breakdownTypes.forEach(type => {
-            const option = document.createElement("option");
-            option.value = type.id;
-            option.textContent = type.name;
+                    deviceItem.appendChild(imageContainer);
+                    grid.appendChild(deviceItem);
 
-            // Восстанавливаем ранее выбранное значение
-            if (option.value === previouslySelectedValue) {
-                option.selected = true;
+                    // Обработчик клика для открытия модального окна
+                    deviceItem.addEventListener('click', function () {
+                        const radio = deviceItem.querySelector(`input[type="radio"]`);
+                        radio.checked = true;
+                        radio.dispatchEvent(new Event('change', {bubbles: true}));
+
+                        // Открытие модального окна
+                        const modalFilteredDevicesListContent = document.getElementById('modal-filtered-devices-list-content');
+                        modalFilteredDevicesListContent.innerHTML = `
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" checked>
+            <label class="form-check-label" for="modal_filtered_device_${device.id}">
+                Серийный номер: ${device.number}, ID: ${device.id}, Кондиция: ${device.condition_id}
+                ${device.condition_id === 4 ? '<span class="status-message">СЛОМАНО !!!</span>' : ''}
+            </label>
+        </div>
+    `;
+
+                        document.getElementById('modalMessage').value = '';
+
+                        const modal = new bootstrap.Modal(document.getElementById('deviceModal'));
+                        modal.show();
+                    });
+                }
             }
-
-            breakdownTypeSelect.appendChild(option);
-        });
-    }
-}
-
-
-function updateOfficesList(offices, selectedOffices) {
-    const officesListContent = document.getElementById("offices-list-content");
-
-    // Сохранение текущего состояния чекбоксов
-    const previouslySelectedOffices = new Set(
-        Array.from(document.querySelectorAll('input[name="selected_offices"]:checked'))
-            .map(checkbox => checkbox.value)
-    );
-
-    // Очистка списка
-    officesListContent.innerHTML = "";
-
-    if (offices && offices.length > 0) {
-        offices.forEach(office => {
-            const officeElement = document.createElement('div');
-            officeElement.classList.add('form-check');
-
-            // Восстанавливаем состояние чекбокса
-            const isChecked = previouslySelectedOffices.has(office.id.toString());
-
-            officeElement.innerHTML = `
-                <input class="form-check-input" type="checkbox" name="selected_offices" value="${office.id}" id="office_${office.id}" ${isChecked ? 'checked' : ''}>
-                <label class="form-check-label" for="office_${office.id}">
-                    Офис ${office.number} — Этаж ID: ${office.floor_id}, Корпус ID: ${office.body_id}
-                </label>
-            `;
-
-            officesListContent.appendChild(officeElement);
-        });
-    }
-
-    // Обновление стилей, чтобы список всегда был видимым
-    officesListContent.style.display = 'block';
-}
-
-
-function updatePackageDevicesList(devices, selectedDevices) {
-    const devicesList = document.getElementById("devices-list");
-    devicesList.innerHTML = "";  // Очистка списка
-
-    // Массив для хранения всех отфильтрованных устройств
-    let filteredDevices = [];
-
-    if (devices && devices.length > 0) {
-        devices.forEach(device => {
-            const deviceItem = document.createElement('div');
-            deviceItem.classList.add('device-item');
-
-            // Преобразуем condition_id в число для уверенности, что сравнение будет корректным
-            let conditionId = Number(device.condition_id);
-
-            // Лог для проверки типа и значения condition_id
-            console.log(`Device ID: ${device.id}, Condition: ${conditionId}, Type: ${typeof conditionId}`);
-
-            // Стандартное изображение устройства
-            let deviceImage = `
-                <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
-            `;
-
-            // Если кондиция 4 или 6, добавляем восклицательный знак поверх изображения
-            if (conditionId === 4) {
-                console.log(`Adding warning icon for Device ID: ${device.id}, Condition: ${conditionId}`);
-                deviceImage += `
-                    <div class="warning-icon-container">
-                        <img src="https://i.pinimg.com/736x/8d/ef/54/8def54ebab6fc164e50a6ec426e19937.jpg" alt="Warning Icon" class="warning-icon">
-                    </div>
-                `;
-            }
-
-            // Теперь контейнер для изображений
-            const imageContainer = document.createElement('div');
-            imageContainer.classList.add('device-image-container');
-            imageContainer.innerHTML = deviceImage;
-
-            // Контейнер для чекбокса и метки
-            const checkboxContainer = document.createElement('div');
-            checkboxContainer.classList.add('device-checkbox-container');
-            checkboxContainer.innerHTML = `
-                <input class="form-check-input" type="checkbox" name="selected_package_devices" value="${device.id}" id="device_${device.id}">
-                <label class="form-check-label" for="device_${device.id}">
-                    Серийный номер: ${device.number}, ID: ${device.id}
-                </label>
-            `;
-
-            // Добавляем оба контейнера в основной элемент устройства
-            deviceItem.appendChild(imageContainer);
-            deviceItem.appendChild(checkboxContainer);
-
-            // Добавляем устройство в список
-            devicesList.appendChild(deviceItem);
-
-            // Вывод кондиции устройства в консоль
-            console.log(`Device ID: ${device.id}, Condition: ${device.condition_id}`);
-
-            // Добавляем устройство в список отфильтрованных устройств
-            filteredDevices.push(device);
         });
 
-        // Восстановление состояния выбранных чекбоксов
+        devicesList.appendChild(grid);
+
         selectedDevices.forEach(checkbox => {
-            const selectedCheckbox = document.getElementById('device_' + checkbox.value);
+            const selectedCheckbox = document.getElementById(`device_${checkbox.value}`);
             if (selectedCheckbox) {
                 selectedCheckbox.checked = true;
             }
         });
     }
-}
 
+    function updateDevicesList(devices, selectedDevices) {
+        const modalFilteredDevicesListContent = document.getElementById("modal-filtered-devices-list-content");
+        const previouslySelectedDeviceIds = Array.from(
+            document.querySelectorAll('input[name="selected_filtered_devices"]:checked')
+        ).map(radio => radio.value);
+        modalFilteredDevicesListContent.innerHTML = "";
 
+        if (devices && devices.length > 0) {
+            devices.forEach(device => {
+                const deviceItem = document.createElement('div');
+                deviceItem.classList.add('form-check');
+                if (device.condition_id === 4) {
+                    deviceItem.classList.add('broken-device');
+                }
+                if (device.condition_id === 4) {
+                    deviceItem.classList.add('broken-device');
+                    deviceItem.classList.add('disabled'); // Для применения стилей отключения
+                }
+                const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
 
-function updateDevicesList(devices, selectedDevices) {
-    const filteredDevicesListContent = document.getElementById("filtered-devices-list-content");
-
-    // Сохраняем текущие выбранные устройства
-    const previouslySelectedDeviceIds = Array.from(
-        document.querySelectorAll('input[name="selected_filtered_devices"]:checked')
-    ).map(checkbox => checkbox.value);
-
-    // Очищаем текущий список устройств
-    filteredDevicesListContent.innerHTML = "";
-
-    if (devices && devices.length > 0) {
-        devices.forEach(device => {
-            const deviceItem = document.createElement('div');
-            deviceItem.classList.add('form-check');
-
-            // Проверяем, был ли текущий ID ранее выбран
-            const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
-
-            // Добавляем сообщение "СЛОМАНО !!!" для устройств с condition_id = 4
-            const statusMessage = device.condition_id === 4 ? '<span class="status-message">СЛОМАНО !!!</span>' : '';
-
-            // Создаём чекбокс и метку
-            deviceItem.innerHTML = `
-                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="filtered_device_${device.id}"
-                    ${isChecked ? 'checked' : ''}>
-                <label class="form-check-label" for="filtered_device_${device.id}">
-                    Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id} ${statusMessage}
+                deviceItem.innerHTML = `
+                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" ${isChecked ? 'checked' : ''}>
+                <label class="form-check-label" for="modal_filtered_device_${device.id}">
+                    Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id}
                 </label>
             `;
+                modalFilteredDevicesListContent.appendChild(deviceItem);
 
-            // Добавляем элемент в контейнер
-            filteredDevicesListContent.appendChild(deviceItem);
-        });
-    }
+                const checkbox = deviceItem.querySelector('input[type="checkbox"]');
 
-    // Лог состояния для отладки
-    console.log("Сохранённые устройства:", previouslySelectedDeviceIds);
-    console.log("Обновлённые устройства:", devices);
-}
+                // Если чекбокс выбран, выделяем элемент
+                if (isChecked) {
+                    deviceItem.classList.add('selected');
+                }
+                if (device.condition_id === 4) {
+                    checkbox.disabled = true; // Отключаем возможность выбора
+                }
 
+                // Если устройство сломано, добавляем специальное выделение
+                if (device.condition_id === 4) {
+                    deviceItem.classList.add('broken-device');
+                }
+                // Добавляем обработчик на чекбокс, чтобы он сохранял выделение
+                checkbox.addEventListener('change', function () {
+                    if (checkbox.checked) {
+                        deviceItem.classList.add('selected');
+                    } else {
+                        deviceItem.classList.remove('selected');
+                    }
+                });
 
-
-    document.addEventListener('change', function (event) {
-    if (event.target.name === 'selected_filtered_devices') {
-        const selectedDeviceId = event.target.value;
-        const isChecked = event.target.checked;
-
-        if (isChecked) {
-            console.log(`Выбран ID устройства: ${selectedDeviceId}`);
-        } else {
-            console.log(`Снята галочка с устройства ID: ${selectedDeviceId}`);
+                // Обработчик на клики по элементу
+                deviceItem.addEventListener('click', function () {
+                    // Это нужно, чтобы чекбокс менял состояние при клике
+                    if (!checkbox.disabled) { // Проверяем, что устройство не сломано
+                        checkbox.checked = !checkbox.checked;
+                        if (checkbox.checked) {
+                            deviceItem.classList.add('selected');
+                        } else {
+                            deviceItem.classList.remove('selected');
+                        }
+                    }
+                });
+            });
         }
     }
-});
 
+    function fetchOfficesAndDevices() {
+        var selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
+        var selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
+        var selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
+        var selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
+        var selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
 
-    // Добавляем обработчик изменений для всех чекбоксов
-    document.addEventListener("change", fetchOfficesAndDevices);
+        var formData = new FormData();
+        selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
+        selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
+        selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
+        selectedDevices.forEach(radio => formData.append('selected_package_devices', radio.value));
+        selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
 
-    document.getElementById('sendMessage').addEventListener('click', function () {
-    const message = document.getElementById('message').value.trim();
-    const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
-    const breakdownType = document.getElementById('breakdownType').value;
-
-    if (!message) {
-        alert("Пожалуйста, введите сообщение!");
-        return;
-    }
-
-    if (selectedFilteredDevices.length === 0) {
-        alert("Пожалуйста, выберите хотя бы одно устройство!");
-        return;
-    }
-
-    if (!breakdownType) {
-        alert("Пожалуйста, выберите тип поломки!");
-        return;
-    }
-
-    // Формируем объект с данными
-    const data = {
-        message: message,
-        breakdown_type: parseInt(breakdownType), // Добавлено поле типа поломки
-        selected_filtered_devices: Array.from(selectedFilteredDevices).map(cb => parseInt(cb.value))
-    };
-
-    // Отправка данных на сервер
-    fetch('send-message/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert("Сообщение успешно отправлено!");
-            // Очистка формы после успешной отправки
-            document.getElementById('message').value = '';
-            document.getElementById('breakdownType').value = ''; // Очистка выбора типа поломки
-            selectedFilteredDevices.forEach(checkbox => checkbox.checked = false);
+        if (selectedBodies.length > 0 && selectedFloors.length > 0) {
+            document.getElementById("offices-list").style.display = 'block';
         } else {
-            alert('Ошибка: ' + data.message);
+            document.getElementById("offices-list").style.display = 'none';
         }
-    })
-    .catch(error => {
-        console.error('Ошибка при отправке сообщения:', error);
+
+        if (selectedOffices.length > 0) {
+            document.querySelector('.devices-list').style.display = 'block';
+        } else {
+            document.querySelector('.devices-list').style.display = 'none';
+        }
+
+        fetch('/body/', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                updateOfficesList(data.offices, selectedOffices);
+                updatePackageDevicesList(data.package_devices, selectedDevices, data.layouts[0] || null);
+                updateDevicesList(data.devices, selectedFilteredDevices);
+                updateBreakdownTypeSelect(data.breakdown_types);
+            })
+            .catch(error => {
+                console.error('Ошибка при выполнении запроса:', error);
+            });
+    }
+
+    document.addEventListener("change", function (event) {
+        if (event.target.name === 'selected_filtered_devices') {
+            const selectedDeviceId = event.target.value;
+            const isChecked = event.target.checked;
+            console.log(isChecked ? `Выбран ID устройства: ${selectedDeviceId}` : `Снята галочка с устройства ID: ${selectedDeviceId}`);
+        }
+        fetchOfficesAndDevices();
     });
-});
 
-    // Функция для сброса всех чекбоксов
-    // Функция для сброса всех чекбоксов
-function resetCheckboxes() {
-    // Сбрасываем чекбоксы для корпусов
-    document.querySelectorAll('input[name="selected_bodies"]').forEach(checkbox => {
-        checkbox.checked = false;
+    document.getElementById('modalSendMessage').addEventListener('click', function () {
+        const message = document.getElementById('modalMessage').value.trim();
+        const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+        const breakdownType = document.getElementById('modalBreakdownType').value;
+
+        if (!message) {
+            alert("Пожалуйста, введите сообщение!");
+            return;
+        }
+
+        if (selectedFilteredDevices.length === 0) {
+            alert("Пожалуйста, выберите хотя бы одно устройство!");
+            return;
+        }
+
+        if (!breakdownType) {
+            alert("Пожалуйста, выберите тип поломки!");
+            return;
+        }
+
+        const data = {
+            message: message,
+            breakdown_type: parseInt(breakdownType),
+            selected_filtered_devices: Array.from(selectedFilteredDevices).map(cb => parseInt(cb.value))
+        };
+
+        fetch('send-message/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert("Сообщение успешно отправлено!");
+                    document.getElementById('modalMessage').value = '';
+                    document.getElementById('modalBreakdownType').value = '';
+                    selectedFilteredDevices.forEach(radio => radio.checked = false);
+                    bootstrap.Modal.getInstance(document.getElementById('deviceModal')).hide();
+                } else {
+                    alert('Ошибка: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке сообщения:', error);
+            });
     });
 
-    // Сбрасываем чекбоксы для этажей
-    document.querySelectorAll('input[name="selected_floors"]').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-
-    // Сбрасываем чекбоксы для офисов
-    document.querySelectorAll('input[name="selected_offices"]').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-
-    // Сбрасываем чекбоксы для пакетов девайсов
-    document.querySelectorAll('input[name="selected_package_devices"]').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-
-    // Сбрасываем чекбоксы для отдельных девайсов
-    document.querySelectorAll('input[name="selected_filtered_devices"]').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-
-    // Скрываем секции, зависящие от выборов
-    document.getElementById("offices-list").style.display = "none";
-    document.querySelector(".devices-list").style.display = "none";
-    document.querySelector(".filtered-devices-list").style.display = "none";
-    document.querySelector(".device-packages").style.display = "none";
-    document.querySelector(".devices").style.display = "none";
-}
-
+    function resetCheckboxes() {
+        document.querySelectorAll('input[name="selected_bodies"]').forEach(radio => radio.checked = false);
+        document.querySelectorAll('input[name="selected_floors"]').forEach(radio => radio.checked = false);
+        document.querySelectorAll('input[name="selected_offices"]').forEach(radio => radio.checked = false);
+        document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => radio.checked = false);
+        document.querySelectorAll('input[name="selected_filtered_devices"]').forEach(checkbox => checkbox.checked = false);
+        document.getElementById("offices-list").style.display = "none";
+        document.querySelector(".devices-list").style.display = "none";
+    }
 
 </script>
-
+</body>
+</html>

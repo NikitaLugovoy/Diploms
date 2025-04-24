@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import (
-    Application, Device, Office, Status, PackageDevice, Body, Floor, Schedule, BreakdownType
+    Application, Device, Office, Status, PackageDevice, Body, Floor, Schedule, BreakdownType, DevicePosition,
+    OfficeLayout
 )
 
 
@@ -64,7 +65,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def get_breakdown_type_name(self, obj):
         return obj.breakdown_type.name if obj.breakdown_type else "Не указано"
 
-
     class Meta:
         model = Application
         fields = "__all__"
@@ -80,7 +80,6 @@ class ScheduleSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "office", "datetime_start", "datetime_end", "user_id", "user_name"]
 
 
-
 # **Сериализаторы для обработки данных API**
 class CloseApplicationSerializer(serializers.Serializer):
     application_id = serializers.IntegerField()
@@ -93,11 +92,14 @@ class SaveApplicationSerializer(serializers.Serializer):
     breakdown_type_id = serializers.IntegerField(required=False, allow_null=True)
     user_id = serializers.IntegerField(required=False)
 
+
 class SendMessageSerializer(serializers.Serializer):
     message = serializers.CharField()
     selected_filtered_devices = serializers.ListField(
         child=serializers.IntegerField()
     )
+
+
 class FastApplicationRequestSerializer(serializers.Serializer):
     selected_schedules = serializers.ListField(child=serializers.IntegerField(), required=False)
     selected_packages = serializers.ListField(child=serializers.IntegerField(), required=False)
@@ -114,11 +116,14 @@ class SendToTelegramSerializer(serializers.Serializer):
 
 from rest_framework import serializers
 
+
 class ScheduleNameRequestSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
 
+
 class PackageNameRequestSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
+
 
 class DeviceRequestSerializer(serializers.Serializer):
     device_id = serializers.IntegerField()
@@ -128,3 +133,21 @@ class BreakdownTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = BreakdownType
         fields = ["id", "name"]
+
+
+class DevicePositionSerializer(serializers.ModelSerializer):
+    package_device_id = serializers.IntegerField(source='package_device.id')
+    number = serializers.CharField(source='package_device.number')
+
+    class Meta:
+        model = DevicePosition
+        fields = ['id', 'package_device_id', 'number', 'x', 'y', 'is_active']
+
+
+class OfficeLayoutSerializer(serializers.ModelSerializer):
+    device_positions = DevicePositionSerializer(many=True, read_only=True)
+    office_id = serializers.IntegerField(source='office.id')
+
+    class Meta:
+        model = OfficeLayout
+        fields = ['id', 'name', 'office_id', 'width', 'height', 'device_positions']

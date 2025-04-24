@@ -4,10 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление динамики для статистики">
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="ADD Type_Breakdown">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
     </list>
@@ -36,7 +40,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/NikitaLugovoy/Diploms.git&quot;,
-    &quot;accountId&quot;: &quot;839f2213-16fc-4b26-86b6-784a5d788aac&quot;
+    &quot;accountId&quot;: &quot;946da460-b03e-4f03-b6ef-258370d08fb0&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -54,6 +58,7 @@
   &quot;keyToString&quot;: {
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;Django Server.diplom.executor&quot;: &quot;Run&quot;,
+    &quot;Django Server.diplomAPI.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -139,6 +144,7 @@
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="DjangoProject3.settings" />
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
@@ -211,6 +217,19 @@
       <workItem from="1742195579179" duration="136000" />
       <workItem from="1744015547763" duration="16223000" />
       <workItem from="1744098681455" duration="737000" />
+      <workItem from="1744566134026" duration="14638000" />
+      <workItem from="1744620607160" duration="2849000" />
+      <workItem from="1744876727684" duration="253000" />
+      <workItem from="1745048287960" duration="2335000" />
+      <workItem from="1745050945417" duration="744000" />
+      <workItem from="1745065559036" duration="722000" />
+      <workItem from="1745066298956" duration="3161000" />
+      <workItem from="1745478658309" duration="1297000" />
+      <workItem from="1745479982819" duration="1395000" />
+      <workItem from="1745481402037" duration="3390000" />
+      <workItem from="1745486678420" duration="1569000" />
+      <workItem from="1745488279046" duration="70000" />
+      <workItem from="1745488362744" duration="399000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />

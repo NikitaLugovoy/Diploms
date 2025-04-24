@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from body.models import Body, Floor, Office, PackageDevice, Device, Application, Status, Schedule, BreakdownType
+from body.models import Body, Floor, Office, PackageDevice, Device, Application, Status, Schedule, BreakdownType, \
+    OfficeLayout, DevicePosition
 from type_devices.models import TypeDevice
 
 
@@ -58,3 +59,24 @@ class BreakdownTypeAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
 
+class DevicePositionInline(admin.TabularInline):
+    model = DevicePosition
+    extra = 1
+    fields = ('package_device', 'x', 'y', 'is_active')
+    # Если используется django-autocomplete-light, можно включить:
+    # autocomplete_fields = ['device']
+
+@admin.register(OfficeLayout)
+class OfficeLayoutAdmin(admin.ModelAdmin):
+    list_display = ('name', 'office', 'width', 'height', 'created_at')
+    list_filter = ('office',)
+    search_fields = ('name', 'office__number')
+    inlines = [DevicePositionInline]
+    fieldsets = (
+        (None, {
+            'fields': ('office', 'name')
+        }),
+        ('Размеры сетки', {
+            'fields': ('width', 'height')
+        }),
+    )

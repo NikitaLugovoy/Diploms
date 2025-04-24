@@ -28,8 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-TELEGRAM_BOT_TOKEN = '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA'
-TELEGRAM_CHAT_ID = '5006892820'
+TELEGRAM_BOT_TOKEN = '8197023195:AAGYwXOa7IbcbxMEVYyZaaXkb3KpHle4HzU'
+TELEGRAM_CHAT_ID = '822471294'
 
 BASE_URL = "http://localhost:8000"  # Или другой ваш URL
 
@@ -44,8 +44,8 @@ TESSERACT_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 # settings.py
 import os
 
-BOT_TOKEN = os.getenv('BOT_TOKEN', '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA')
-CHAT_ID = os.getenv('CHAT_ID', '5006892820')
+BOT_TOKEN = os.getenv('BOT_TOKEN', '8197023195:AAGYwXOa7IbcbxMEVYyZaaXkb3KpHle4HzU')
+CHAT_ID = os.getenv('CHAT_ID', '822471294')
 
 
 LOGIN_URL = '/login/'
@@ -112,9 +112,9 @@ WSGI_APPLICATION = 'DjangoProject3.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_DATABASE', default='diplom_test'),
+        'NAME': config('DB_DATABASE', default='diplom'),
         'USER': config('DB_USERNAME', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default='n1i2k3i4t5a6'),
+        'PASSWORD': config('DB_PASSWORD', default='Nikita'),
         'HOST': config('DB_HOST', default='127.0.0.1'),
         'PORT': config('DB_PORT', default='5432'),
         # Дополнительные параметры можно указать через OPTIONS

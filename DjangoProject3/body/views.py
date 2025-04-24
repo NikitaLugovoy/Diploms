@@ -18,13 +18,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
-
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Application
-from .serializers import ApplicationSerializer
+from .models import Application, OfficeLayout
+from .serializers import ApplicationSerializer, OfficeLayoutSerializer
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -57,7 +56,6 @@ from .serializers import (
 
 from django.utils.timezone import now
 
-
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
@@ -84,6 +82,7 @@ FOLDER_ID = settings.FOLDER_ID
 # Устанавливаем путь к Tesseract
 pytesseract.pytesseract.tesseract_cmd = settings.TESSERACT_PATH
 
+
 @swagger_auto_schema(method='get', responses={200: ApplicationSerializer(many=True)})
 @api_view(["GET"])
 def application_list(request):
@@ -96,7 +95,6 @@ def application_list(request):
     applications = applications.order_by("-data")  # Сортировка по дате
 
     serializer = ApplicationSerializer(applications, many=True)
-
 
     print("🔹 Полученные данные:", serializer.data)
 
@@ -130,7 +128,6 @@ def close_application(request, application_id):
     return redirect('application_list')
 
 
-
 @swagger_auto_schema(method='post', request_body=SaveApplicationSerializer)
 @api_view(['POST'])
 def save_application(request):
@@ -141,7 +138,6 @@ def save_application(request):
         reason = serializer.validated_data['reason']
         breakdown_type_id = serializer.validated_data.get('breakdown_type_id')
         user_id = serializer.validated_data.get('user_id')
-
 
         application_ids = []
         for device_id in device_ids:
@@ -166,13 +162,11 @@ def save_application(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 def get_device(device_id):
     try:
         return Device.objects.get(id=device_id)
     except Device.DoesNotExist:
         return None
-
 
 
 def update_device_condition_by_id(device_id: int):
@@ -200,6 +194,7 @@ def get_office_number(office_id: int) -> Response:
     office = get_object_or_404(Office, id=office_id)
     return str(office.number)
 
+
 # Кэшируем объект бота
 def get_telegram_bot(token):
     if hasattr(get_telegram_bot, 'bot'):
@@ -207,6 +202,7 @@ def get_telegram_bot(token):
 
     get_telegram_bot.bot = telebot.TeleBot(token)
     return get_telegram_bot.bot
+
 
 # Отправка сообщения в Telegram
 def send_telegram_message(chat_bot: str, chat_id: str, message: str):
@@ -216,6 +212,7 @@ def send_telegram_message(chat_bot: str, chat_id: str, message: str):
         bot.send_message(chat_id, message)
     except Exception as e:
         logger.error(f"{send_telegram_message.__name__} {e}")
+
 
 @swagger_auto_schema(
     method='post',
@@ -258,7 +255,6 @@ def send_message_to_telegram(request):
 
     logger.info(f"------------- User ID: {request.user.id}")
 
-
     for device_id in selected_filtered_devices:
         try:
             # Используем select_related для оптимизации запросов
@@ -275,8 +271,6 @@ def send_message_to_telegram(request):
 
             if not first_office_id:
                 first_office_id = office.id  # Запоминаем первый найденный офис
-
-
 
             device_details_list.append(
                 f"Устройство ID: {device.id}\n"
@@ -299,7 +293,8 @@ def send_message_to_telegram(request):
     try:
         response = requests.post(
             save_application_url,
-            json={'office_id': first_office_id, 'device_ids': selected_filtered_devices, 'reason': user_message,'breakdown_type_id':breakdown_type.id, 'user_id': request.user.id },
+            json={'office_id': first_office_id, 'device_ids': selected_filtered_devices, 'reason': user_message,
+                  'breakdown_type_id': breakdown_type.id, 'user_id': request.user.id},
         )
         response.raise_for_status()
     except RequestException as e:
@@ -313,10 +308,6 @@ def send_message_to_telegram(request):
     except Exception as e:
         logger.error(f"Ошибка при отправке сообщения в Telegram: {str(e)}")
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-
-
-
-
 
 
 @swagger_auto_schema(
@@ -333,12 +324,13 @@ def send_message_to_telegram(request):
             "selected_bodies": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
             "selected_floors": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
             "selected_offices": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
-            "selected_package_devices": openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Items(type=openapi.TYPE_INTEGER)),
+            "selected_package_devices": openapi.Schema(type=openapi.TYPE_ARRAY,
+                                                       items=openapi.Items(type=openapi.TYPE_INTEGER)),
         },
     ),
     responses={200: "Отфильтрованные офисы, пакеты устройств и устройства"}
 )
-@api_view(["GET", "POST"])  # Разрешаем оба метода
+@api_view(["GET", "POST"])
 def body_list(request):
     if request.method == "POST":
         selected_bodies = list(map(int, request.POST.getlist("selected_bodies", [])))
@@ -363,13 +355,17 @@ def body_list(request):
         package_devices = PackageDevice.objects.filter(office_id__in=selected_offices) if selected_offices else []
 
         # Фильтрация устройств
-        devices = Device.objects.filter(package_id__in=selected_package_devices) if selected_package_devices else Device.objects.all()
+        devices = Device.objects.filter(
+            package_id__in=selected_package_devices) if selected_package_devices else Device.objects.all()
+
+        # Получение схем для выбранных офисов
+        layouts = OfficeLayout.objects.filter(office_id__in=selected_offices).prefetch_related(
+            'device_positions') if selected_offices else []
 
         breakdown_types = BreakdownType.objects.all()
         breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
 
-        print("Breakdown Types:", breakdown_types)  # Логируем в консоль
-
+        print("Breakdown Types:", breakdown_types)
 
         # Проставляем `condition_id` для пакетов устройств
         package_devices_with_condition = []
@@ -388,26 +384,15 @@ def body_list(request):
             })
 
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-            offices_data = OfficeSerializer(offices, many=True).data
-
-            # Отладочный вывод
-            print("Сериализованные офисы:", offices_data)
             return JsonResponse({
-                "offices": offices_data,
+                "offices": OfficeSerializer(offices, many=True).data,
                 "breakdown_types": breakdown_types_data,
                 "package_devices": package_devices_with_condition,
-                "devices": [
-                    {
-                        "id": device.id,
-                        "serial_number": device.serial_number,
-                        "package_id": device.package_id or None,  # Обрабатываем `None`
-                        "condition_id": device.condition_id,
-                    }
-                    for device in devices
-                ]
+                "devices": DeviceSerializer(devices, many=True).data,
+                "layouts": OfficeLayoutSerializer(layouts, many=True).data
             })
 
-    # Если `GET`, отрисовываем страницу
+    # GET-запрос
     bodies = Body.objects.all()
     floors = Floor.objects.all()
     offices = Office.objects.all()
@@ -418,8 +403,6 @@ def body_list(request):
         "package_devices": [],
         "devices": [],
     })
-
-
 
 
 @swagger_auto_schema(
@@ -449,7 +432,6 @@ def body_list(request):
 @api_view(["GET", "POST"])
 @login_required
 def fastapplication_list(request):
-
     full_name = f"{request.user.last_name} {request.user.first_name}"
     print("Текущее имя пользователя:", full_name)
 
@@ -517,7 +499,6 @@ def fastapplication_list(request):
         teacher_schedule = []
         office = None
 
-
     # Фильтруем расписания для пользователя
     schedules = Schedule.objects.filter(
         user=request.user,
@@ -569,16 +550,13 @@ def fastapplication_list(request):
             "has_warning": condition == 4
         })
 
-
     breakdown_types = BreakdownType.objects.all()
     breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
-
 
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         package_devices_data = PackageDeviceSerializer(package_devices, many=True).data
         devices_data = DeviceSerializer(devices, many=True).data
         breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
-
 
         return JsonResponse({
             "schedules": filtered_schedule,
@@ -594,10 +572,6 @@ def fastapplication_list(request):
         "devices": devices,
         "breakdown_types": breakdown_types_data
     })
-
-
-
-
 
 
 def get_iam_token(oauth_token):
@@ -670,7 +644,8 @@ def yagpt_page(request):
                     "modelUri": f"gpt://{FOLDER_ID}/yandexgpt/latest",
                     "completionOptions": {"stream": False, "temperature": 0.7},
                     "messages": [
-                        {"role": "system", "text": "Ты — опытный компьютерный мастер. Помогай пользователям с компьютерными проблемами, настройками, сборкой ПК и программным обеспечением."},
+                        {"role": "system",
+                         "text": "Ты — опытный компьютерный мастер. Помогай пользователям с компьютерными проблемами, настройками, сборкой ПК и программным обеспечением."},
                         {"role": "user", "text": user_text}
                     ]
                 }
@@ -716,7 +691,7 @@ def add_schedule(request):
 
             year = datetime_start.year
             limit_date = timezone.make_aware(datetime(year, 6, 30, 23, 59, 59)) if datetime_start.month <= 6 else \
-                         timezone.make_aware(datetime(year, 12, 31, 23, 59, 59))
+                timezone.make_aware(datetime(year, 12, 31, 23, 59, 59))
 
             try:
                 office = Office.objects.get(id=office_id)
@@ -748,7 +723,6 @@ def add_schedule(request):
         form = ScheduleForm()
 
     return render(request, "body/add_schedule.html", {"form": form, "offices": offices, "teachers": teachers})
-
 
 
 @swagger_auto_schema(
@@ -791,6 +765,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Application
 
+
 @login_required
 def delete_application(request, application_id):
     if request.method == "POST":
@@ -808,6 +783,7 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = "body/password_change.html"
     success_url = reverse_lazy("user_dashboard")
@@ -815,7 +791,6 @@ class CustomPasswordChangeView(PasswordChangeView):
 
 from django.db.models import Count
 from django.http import JsonResponse
-
 
 
 @swagger_auto_schema(
