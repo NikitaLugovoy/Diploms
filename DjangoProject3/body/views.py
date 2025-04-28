@@ -435,143 +435,107 @@ def fastapplication_list(request):
     full_name = f"{request.user.last_name} {request.user.first_name}"
     print("Текущее имя пользователя:", full_name)
 
-    # Вызов API для получения расписания преподавателя
-    teacher_name = f"{request.user.last_name} {request.user.first_name}"
-
-    # Получаем текущую дату
-
     moscow_tz = pytz.timezone('Europe/Moscow')
     current_time = datetime.now(moscow_tz)
-
-    print("Текущая дата:", current_time)
-
-    # Извлекаем только дату (без времени)
-    current_date = current_time.date()
-
-    # Преобразуем текущее время в формат HH:MM:SS
     current_time_str = current_time.strftime('%H:%M:%S')
+
+    # Получение расписания преподавателя
+    teacher_name = f"{request.user.last_name} {request.user.first_name}"
+    api_url = f"http://api.bgitu-compass.ru/v2/teacherSearch?teacher={teacher_name}&dateFrom={current_time.date()}&dateTo={current_time.date()}"
     office = None
-    api_url = f"http://api.bgitu-compass.ru/v2/teacherSearch?teacher={teacher_name}&dateFrom={current_date}&dateTo={current_date}"
+    filtered_schedule = []
 
     try:
         response = requests.get(api_url)
         if response.status_code == 200:
             teacher_schedule = response.json()
-            print(f"Расписание преподавателя {teacher_name}: {teacher_schedule}")
-            # Фильтрация записей по времени
-            filtered_schedule = []
             for record in teacher_schedule:
                 start_time = datetime.strptime(record['startAt'], '%H:%M:%S').time()
                 end_time = datetime.strptime(record['endAt'], '%H:%M:%S').time()
                 current_time_only = datetime.strptime(current_time_str, '%H:%M:%S').time()
-
-                # Проверяем, попадает ли текущее время в интервал
                 if start_time <= current_time_only <= end_time:
                     filtered_schedule.append(record)
-
-            # Выводим отфильтрованные записи
-            if filtered_schedule:
-                print(f"Отфильтрованное расписание на {current_date}:")
-                for item in filtered_schedule:
-                    classroom = item['classroom']
-                    building = item['building']
-                    subject = item['subjectName']
-                    group = item['groupName']
-                    start = item['startAt']
-                    end = item['endAt']
-
-                    print(f"Аудитория {classroom}, корпус {building} — {subject} — {group} ({start}–{end})")
-
-                    # Ищем офис по номеру (номер аудитории = classroom)
+                    classroom = record['classroom']
                     try:
                         office = Office.objects.get(number=classroom)
                         print(f"ID офиса: {office.id}")
                     except Office.DoesNotExist:
                         print(f"Офис с номером {classroom} не найден в базе.")
-            else:
-                print("Нет занятий в текущий момент.")
-                office = None
         else:
             print(f"Ошибка при запросе расписания преподавателя: {response.status_code}")
-            teacher_schedule = []
     except requests.exceptions.RequestException as e:
         print(f"Ошибка при соединении с API: {e}")
-        teacher_schedule = []
-        office = None
 
-    # Фильтруем расписания для пользователя
-    schedules = Schedule.objects.filter(
-        user=request.user,
-        datetime_start__lte=current_time,
-        datetime_end__gte=current_time
-    )
+    # Получаем ID офиса
+    office_ids = [office.id] if office else []
 
-    if office is not None:
-        office_ids = office.id
-    else:
-        office_ids = None  # Или другое значение по умолчанию
+    if request.method == "POST":
+        selected_schedules = list(map(int, request.POST.getlist("selected_schedules", office_ids)))
+        selected_packages = list(
+            map(int, request.POST.getlist("selected_package_devices", [])))  # Изменено на selected_package_devices
+        selected_devices = list(map(int, request.POST.getlist("selected_filtered_devices", [])))
 
-    print(f"ID офиса: {office_ids}")
-    # Получаем переданные параметры (если их нет — пустые списки)
-    selected_schedules = list(map(int, request.POST.getlist("selected_schedules", [])))
-    selected_packages = list(map(int, request.POST.getlist("selected_packages", [])))
-    selected_devices = list(map(int, request.POST.getlist("selected_devices", [])))
+        # Фильтрация офисов
+        offices = Office.objects.all()
+        if selected_schedules:
+            offices = offices.filter(id__in=selected_schedules)
 
-    print("Selected Schedules:", selected_schedules)
-    print("Selected Packages:", selected_packages)
-    print("Selected Devices:", selected_devices)
+        # Фильтрация пакетов устройств
+        package_devices = PackageDevice.objects.filter(office_id__in=selected_schedules or office_ids)
+        if selected_packages:
+            devices = Device.objects.filter(package_id__in=selected_packages)
+        else:
+            devices = Device.objects.all()
 
-    package_devices = PackageDevice.objects.filter(office_id__in=[office_ids])
+        # Фильтрация устройств по package_id
+        devices = Device.objects.filter(package_id__in=selected_packages) if selected_packages else Device.objects.all()
 
-    if selected_packages:
-        package_devices = package_devices.filter(id__in=selected_packages)
+        # Получаем схемы для выбранных офисов
+        layouts = OfficeLayout.objects.filter(office_id__in=selected_schedules or office_ids).prefetch_related(
+            'device_positions')
 
-    devices = Device.objects.filter(package_id__in=selected_packages) if selected_packages else Device.objects.none()
+        # Сериализация устройств с package_id
+        package_devices_with_condition = []
+        for package_device in package_devices:
+            devices_in_package = Device.objects.filter(package_id=package_device.id)
+            condition = "1"
+            for device in devices_in_package:
+                if device.condition_id in [4, 6]:
+                    condition = str(device.condition_id)
+                    break
+            package_devices_with_condition.append({
+                "id": package_device.id,
+                "number": package_device.number,
+                "office_id": package_device.office_id or None,
+                "condition_id": condition,
+                "has_warning": condition == "4"
+            })
 
-    # Проставляем `condition_id` для пакетов устройств
-    package_devices_with_condition = []
-    for package_device in package_devices:
-        devices_in_package = Device.objects.filter(package_id=package_device.id)
-        print(f"Package {package_device.id} содержит устройства: {[device.id for device in devices_in_package]}")
-
-        condition = "1"  # По умолчанию
-        for device in devices_in_package:
-            print(f"Устройство {device.id} имеет condition_id: {device.condition_id}")
-            if device.condition_id in [4, 6]:
-                condition = device.condition_id
-                print(f"Устройство {device.id} сломано! condition_id = {condition}")
-                break
-
-        package_devices_with_condition.append({
-            "id": package_device.id,
-            "number": package_device.number,
-            "office_id": package_device.office_id or None,
-            "condition_id": condition,
-            "has_warning": condition == 4
-        })
-
-    breakdown_types = BreakdownType.objects.all()
-    breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
-
-    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
-        package_devices_data = PackageDeviceSerializer(package_devices, many=True).data
-        devices_data = DeviceSerializer(devices, many=True).data
+        breakdown_types = BreakdownType.objects.all()
         breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
 
-        return JsonResponse({
-            "schedules": filtered_schedule,
-            "package_devices": package_devices_with_condition,
-            "devices": devices_data,
-            "breakdown_types": breakdown_types_data
-        })
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return JsonResponse({
+                "schedules": filtered_schedule,
+                "offices": OfficeSerializer(offices, many=True).data,
+                "package_devices": package_devices_with_condition,
+                "devices": DeviceSerializer(devices, many=True).data,
+                # Убедитесь, что DeviceSerializer включает package_id
+                "breakdown_types": breakdown_types_data,
+                "layouts": OfficeLayoutSerializer(layouts, many=True).data
+            })
 
-    # Отображение страницы с уже обработанными данными
+    # GET-запрос
+    offices = Office.objects.all()
     return render(request, "body/fastapplication_list.html", {
         "schedules": filtered_schedule,
-        "package_devices": package_devices_with_condition,
-        "devices": devices,
-        "breakdown_types": breakdown_types_data
+        "package_devices": [],
+        "devices": [],
+        "breakdown_types": [],
+        "layouts": [],
+        "offices": offices
     })
+
 
 
 def get_iam_token(oauth_token):
