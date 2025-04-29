@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Схема кабинета">
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Дизайн">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/templates/register.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,7 +229,8 @@
       <workItem from="1745488279046" duration="70000" />
       <workItem from="1745488362744" duration="3191000" />
       <workItem from="1745826635806" duration="660000" />
-      <workItem from="1745828154543" duration="19068000" />
+      <workItem from="1745828154543" duration="19272000" />
+      <workItem from="1745954383525" duration="5480000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -420,7 +424,23 @@
       <option name="project" value="LOCAL" />
       <updated>1745826662552</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Схема кабинета">
+      <option name="closed" value="true" />
+      <created>1745851626187</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1745851626187</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Дизайн">
+      <option name="closed" value="true" />
+      <created>1745851654041</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1745851654041</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -446,6 +466,7 @@
     <MESSAGE value="Добавление статистики" />
     <MESSAGE value="Добавление динамики для статистики" />
     <MESSAGE value="Схема кабинета" />
-    <option name="LAST_COMMIT_MESSAGE" value="Схема кабинета" />
+    <MESSAGE value="Дизайн" />
+    <option name="LAST_COMMIT_MESSAGE" value="Дизайн" />
   </component>
 </project>

@@ -4,84 +4,286 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
     <style>
+        :root {
+            --bg-light: #f8f9fa;
+            --bg-dark: #212529;
+            --text-light: #343a40;
+            --text-dark: #e9ecef;
+            --accent: #007bff;
+        }
+
         body {
-            background-color: #f0f8ff; /* Светло-голубой фон */
-            color: #333; /* Тёмный текст для контраста */
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            margin: 0;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden; /* Убираем полосы прокрутки на теле */
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: #0056b3;
+        }
+
+        #preloader {
+            background: var(--bg-light);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body.dark-mode #preloader {
+            background: var(--bg-dark);
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #dee2e6;
+            border-top: 8px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .form-container {
-            background-color: #ffffff; /* Белый фон формы */
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 500px; /* Увеличена максимальная ширина */
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px #dee2e6, -8px -8px 16px #ffffff;
+            max-width: 500px;
             width: 100%;
             text-align: center;
-            overflow-y: auto; /* Добавляем прокрутку, если форма не помещается */
-            max-height: 90%; /* Ограничиваем максимальную высоту формы */
+            max-height: 90vh;
+            overflow-y: auto;
+            transition: all 0.4s ease;
+        }
+
+        body.dark-mode .form-container {
+            background-color: #343a40;
+            box-shadow: none;
         }
 
         h1 {
-            color: #8FBC8F; /* Лаймово-зеленый цвет */
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent);
             margin-bottom: 20px;
         }
 
-        form button {
-            background-color: #8FBC8F; /* Лаймово-зеленый цвет кнопки */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form p {
+            margin: 0;
+            text-align: left;
+        }
+
+        form label {
             font-size: 16px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        body.dark-mode form label {
+            color: var(--text-dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: var(--text-dark);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        form button {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
         }
 
         form button:hover {
-            background-color: #6B8E23; /* Оливковый цвет при наведении */
+            background-color: #0056b3;
+            transform: translateY(-3px);
         }
 
-        p {
+        .login-link {
             margin-top: 15px;
+            font-size: 16px;
+            color: #6c757d;
         }
 
-        p a {
-            color: #8FBC8F; /* Лаймово-зеленый цвет ссылки */
+        body.dark-mode .login-link {
+            color: #adb5bd;
+        }
+
+        .login-link a {
+            color: var(--accent);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
         }
 
-        p a:hover {
+        .login-link a:hover {
             text-decoration: underline;
         }
 
-        /* Увеличиваем ширину полей ввода */
-        input, select, textarea {
-            width: 100%; /* Поля формы занимают всю доступную ширину */
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 Тема</button>
+
     <div class="form-container">
         <h1>Регистрация</h1>
         <form method="post">
-            {% csrf_token %}
-            {{ reg_form.as_p }}
-            <button type="submit">Зарегистрироваться</button>
-        </form>
-        <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+    {% csrf_token %}
+    <div class="row g-3">
+        {% for field in reg_form %}
+            <div class="col-md-6">
+                <label for="{{ field.id_for_label }}">
+                    {% if field.name == 'username' %}
+                        Имя пользователя
+                    {% elif field.name == 'first_name' %}
+                        Инициалы
+                    {% elif field.name == 'email' %}
+                        Электронная почта
+                    {% elif field.name == 'password1' %}
+                        Пароль
+                    {% elif field.name == 'password2' %}
+                        Подтверждение пароля
+                    {% else %}
+                        {{ field.label }}
+                    {% endif %}
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
+
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary px-4 py-2">
+            <i class="fas fa-user-plus"></i> Зарегистрироваться
+        </button>
+    </div>
+</form>
+
+        <p class="login-link">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+    </div>
+
+    <script>
+        // Hide preloader after page load
+        window.addEventListener('load', () => {
+            document.getElementById('preloader').style.display = 'none';
+        });
+
+        // Toggle theme
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Load theme from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    });
+    </script>
 </body>
-</html>
+</html> 
