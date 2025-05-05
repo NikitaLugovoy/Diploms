@@ -4,95 +4,274 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YaGPT Integration</title>
-    <!-- Подключение Bootstrap 5 -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-light: #f8f9fa; /* Светлый фон */
+            --bg-dark: #212529; /* Темный фон */
+            --text-light: #343a40; /* Текст в светлом режиме */
+            --text-dark: #e9ecef; /* Текст в темном режиме */
+            --accent: #007bff; /* Основной акцентный цвет (синий) */
+        }
+
         body {
-            background-color: #f0f8ff; /* Светло-голубой фон */
-            color: #333; /* Темный текст для контраста */
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            margin: 0;
+            min-height: 100vh;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        h1 {
-            color: #8FBC8F; /* Лаймово-зеленый */
-            margin-bottom: 20px;
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
         }
 
-        label {
-            font-weight: bold;
-            color: #6B8E23; /* Оливковый зеленый */
-        }
-
-        input, button {
-            margin-top: 10px;
-            border-radius: 5px;
-        }
-
-        .input-group {
-            max-width: 600px;
-            margin: 0 auto; /* Центрируем поле */
-        }
-
-        input {
-            padding: 10px;
-            border: 2px solid #8FBC8F;
-        }
-
-        button {
-            background-color: #8FBC8F;
-            color: white;
-            border: none;
-            padding: 10px 20px;
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             cursor: pointer;
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            transition: all 0.3s ease;
         }
 
-        button:hover {
-            background-color: #6B8E23;
+        .theme-toggle:hover {
+            background-color: #0056b3;
         }
 
-        #response {
-            margin-top: 20px;
-            font-size: 1.2em;
-            color: #006400; /* Темно-зеленый для текста ответа */
+        #preloader {
+            background: var(--bg-light);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body.dark-mode #preloader {
+            background: var(--bg-dark);
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #dee2e6;
+            border-top: 8px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .container {
-            max-width: 800px; /* Ширина контейнера увеличена */
-            margin-top: 50px;
+            text-align: center;
+            max-width: 800px;
+            padding: 40px 20px;
         }
 
-        .btn-back {
-            background-color: #B0E57C; /* Лаймово-бледный фон для кнопки "Назад" */
-            color: #333;
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .form-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px #dee2e6, -8px -8px 16px #ffffff;
+            padding: 30px;
+            margin-top: 20px;
+            transition: all 0.4s ease;
+        }
+
+        body.dark-mode .form-card {
+            background: #343a40;
+            box-shadow: none;
+        }
+
+        .form-control {
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .form-control:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .btn-submit {
+            background: var(--accent);
+            color: #ffffff;
             border: none;
-            padding: 10px 20px;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 1.1rem;
-            border-radius: 5px;
-            text-decoration: none;
+            box-shadow: 0 8px 16px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
         }
 
-        .btn-back:hover {
-            background-color: #8FBC8F;
-            color: white;
+        .btn-submit:hover {
+            background: #0056b3;
+            transform: translateY(-3px);
         }
 
         .btn-back-container {
             position: absolute;
-            top: 15px;
-            left: 15px;
+            top: 20px;
+            left: 20px;
         }
 
+        .btn-back {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        #response {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #6c757d;
+        }
+
+        body.dark-mode #response {
+            color: #adb5bd;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: auto;
+        }
+
+        body.dark-mode footer {
+            color: #adb5bd;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            .form-card {
+                padding: 20px;
+            }
+        }
     </style>
-    <script>
-    // Функция для отправки запроса через AJAX с текстом и фото
+</head>
+<body>
+<!-- Preloader -->
+<div id="preloader">
+    <div class="spinner"></div>
+</div>
+
+<!-- Theme Toggle Button -->
+<button class="theme-toggle" onclick="toggleTheme()">🌙 Тема</button>
+
+<div class="container">
+    <!-- Back Button -->
+    <div class="btn-back-container">
+        <a href="{% url 'success' %}" class="btn-back"><i class="fas fa-arrow-left"></i> Назад</a>
+    </div>
+
+    <h1>Помощь от Yandex</h1>
+
+    <!-- Form Card -->
+    <div class="form-card">
+        <form onsubmit="sendRequest(event)" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" id="user_text" name="user_text" class="form-control" placeholder="Введите запрос">
+            </div>
+            <div class="mb-3">
+                <input type="file" id="image_file" name="image_file" class="form-control" accept="image/*">
+            </div>
+            <button type="submit" class="btn-submit"><i class="fas fa-search"></i> Найти</button>
+        </form>
+    </div>
+
+    <!-- Response Area -->
+    <p id="response" class="text-center"></p>
+</div>
+
+<footer>© 2025 Ваш Сервис. Все права защищены.</footer>
+
+<script>
+    // Hide preloader after page load
+    window.addEventListener('load', () => {
+        document.getElementById('preloader').style.display = 'none';
+    });
+
+    // Toggle theme
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Load theme from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    });
+
+    // AJAX request for form submission
     async function sendRequest(event) {
-        event.preventDefault();  // Отменяем стандартное поведение формы
+        event.preventDefault();
 
-        const userText = document.getElementById('user_text').value; // Получение введенного текста
-        const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value; // CSRF токен
-        const imageFile = document.getElementById('image_file').files[0]; // Получение выбранного файла изображения
+        const userText = document.getElementById('user_text').value;
+        const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+        const imageFile = document.getElementById('image_file').files[0];
 
-        // Проверка, что хотя бы одно поле (текст или файл) заполнено
         if (!userText && !imageFile) {
             document.getElementById('response').innerText = "Ошибка: необходимо ввести текст или выбрать файл.";
             return;
@@ -100,27 +279,24 @@
 
         const formData = new FormData();
         if (userText) {
-            formData.append('user_text', userText);  // Добавляем текст, если он есть
+            formData.append('user_text', userText);
         }
         if (imageFile) {
-            formData.append('image_file', imageFile);  // Добавляем файл, если он есть
+            formData.append('image_file', imageFile);
         }
 
         try {
-            // Отправка POST-запроса на сервер с использованием FormData
             const response = await fetch("{% url 'ya_page' %}", {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": csrfToken,
                 },
-                body: formData // Отправляем данные через FormData
+                body: formData
             });
 
             if (response.ok) {
-                const result = await response.json(); // Получение данных из JSON ответа
+                const result = await response.json();
                 const generatedText = result['generated_text'];
-
-                // Отображение текста в DOM
                 document.getElementById('response').innerText = generatedText;
             } else {
                 document.getElementById('response').innerText = "Ошибка при запросе: " + response.statusText;
@@ -131,33 +307,5 @@
         }
     }
 </script>
-
-</head>
-<body>
-<div class="container">
-    <!-- Кнопка "Назад" в левом верхнем углу -->
-    <div class="btn-back-container">
-        <a href="{% url 'success' %}" class="btn-back">Назад</a>
-    </div>
-
-    <h1 class="text-center">Помощь от Yandex</h1>
-    <!-- Форма для ввода запроса -->
-    <form onsubmit="sendRequest(event)" class="text-center" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="mb-3 input-group">
-        <input type="text" id="user_text" name="user_text" class="form-control" placeholder="Введите запрос">
-    </div>
-
-        <!-- Форма для отправки фото -->
-        <div class="mb-3 input-group">
-            <input type="file" id="image_file" name="image_file" class="form-control" accept="image/*">
-        </div>
-
-        <button type="submit" class="btn btn-success">Найти</button>
-    </form>
-
-    <!-- Поле для отображения ответа -->
-    <p id="response" class="text-center mt-3"></p>
-</div>
 </body>
 </html>
