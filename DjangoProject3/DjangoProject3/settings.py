@@ -28,8 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-TELEGRAM_BOT_TOKEN = '8197023195:AAGYwXOa7IbcbxMEVYyZaaXkb3KpHle4HzU'
-TELEGRAM_CHAT_ID = '822471294'
+TELEGRAM_BOT_TOKEN = '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA'
+TELEGRAM_CHAT_ID = '5006892820'
 
 BASE_URL = "http://localhost:8000"  # Или другой ваш URL
 
@@ -112,9 +112,9 @@ WSGI_APPLICATION = 'DjangoProject3.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_DATABASE', default='diplom'),
+        'NAME': config('DB_DATABASE', default='diplom_test'),
         'USER': config('DB_USERNAME', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default='Nikita'),
+        'PASSWORD': config('DB_PASSWORD', default='n1i2k3i4t5a6'),
         'HOST': config('DB_HOST', default='127.0.0.1'),
         'PORT': config('DB_PORT', default='5432'),
         # Дополнительные параметры можно указать через OPTIONS

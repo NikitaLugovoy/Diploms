@@ -713,13 +713,17 @@ def user_dashboard(request):
     # Сериализация заявок для API-ответа
     application_serializer = ApplicationSerializer(applications, many=True)
 
+    groups = user.groups.all()
+    role = groups[0].name if groups.exists() else 'Без роли'
+
     return render(
         request,
         "body/lkuser.html",
         {
             "user": user,
             "applications": application_serializer.data,
-            "notifications_count": notifications_count,  # Передаем количество заявок с статусом 1
+            "notifications_count": notifications_count,
+            "role": role, # Передаем количество заявок с статусом 1
         }
     )
 

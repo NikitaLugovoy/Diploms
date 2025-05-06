@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Дизайн">
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Мелочи">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/device_stats.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/device_stats.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/templates/success.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/lkuser.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/lkuser.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/password_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/password_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/ya_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/ya_index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +37,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/NikitaLugovoy/Diploms.git&quot;,
-    &quot;accountId&quot;: &quot;946da460-b03e-4f03-b6ef-258370d08fb0&quot;
+    &quot;accountId&quot;: &quot;839f2213-16fc-4b26-86b6-784a5d788aac&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -230,12 +229,8 @@
       <workItem from="1745488362744" duration="3191000" />
       <workItem from="1745826635806" duration="660000" />
       <workItem from="1745828154543" duration="19272000" />
-      <workItem from="1745954383525" duration="5737000" />
-      <workItem from="1746019788031" duration="2792000" />
-      <workItem from="1746124094403" duration="656000" />
-      <workItem from="1746298806613" duration="230000" />
-      <workItem from="1746371354498" duration="3283000" />
-      <workItem from="1746391547785" duration="375000" />
+      <workItem from="1745954383525" duration="5480000" />
+      <workItem from="1746557149831" duration="2514000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -445,15 +440,7 @@
       <option name="project" value="LOCAL" />
       <updated>1745851654041</updated>
     </task>
-    <task id="LOCAL-00027" summary="Дизайн">
-      <option name="closed" value="true" />
-      <created>1745960170064</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1745960170064</updated>
-    </task>
-    <option name="localTasksCounter" value="28" />
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

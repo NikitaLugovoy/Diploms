@@ -53,7 +53,15 @@ def login_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def success_view(request):
-    return render(request, 'success.html', {'username': request.user.username})
+    user = request.user
+    groups = user.groups.all()
+    role = groups[0].name if groups.exists() else 'Без роли'
+
+    return render(request, 'success.html', {
+        'username': user.username,
+        'role': role,
+    })
+
 
 @swagger_auto_schema(method='post', responses={200: 'Выход выполнен'})
 @api_view(['POST'])

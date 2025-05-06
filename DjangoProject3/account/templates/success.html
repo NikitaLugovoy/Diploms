@@ -211,36 +211,67 @@
 <button class="theme-toggle" onclick="toggleTheme()">🌙 Тема</button>
 
 <div class="container">
-    <h1>Вход выполнен успешно</h1>
-    <p>Добро пожаловать, <strong>{{ username }}</strong>!</p>
+    <h1>Система мониторинга состояния техники</h1>
+    
+    {% if role == "admin" %}
+        <div class="cards">
+            <a href="{% url 'body_list' %}" class="card-item">
+                <i class="fas fa-tools"></i>
+                <span>Отправить заявку о сломанном устройстве</span>
+            </a>
+            <a href="{% url 'fastapplication_list' %}" class="card-item">
+                <i class="fas fa-bolt"></i>
+                <span>Быстро Оформить заявку</span>
+            </a>
+            <a href="{% url 'device_breakdown_stats' %}" class="card-item">
+                <i class="fas fa-chart-bar"></i>
+                <span>Статистика</span>
+            </a>
+            <a href="/admin/" class="card-item">
+                <i class="fas fa-cogs"></i>
+                <span>Админ-панель</span>
+            </a>
+            <a href="{% url 'lkuser' %}" class="card-item">
+                <i class="fas fa-user-circle"></i>
+                <span>Личный кабинет</span>
+            </a>
+        </div>
+    {% elif role == "teacher" %}
+        <div class="cards">
+            <a href="{% url 'body_list' %}" class="card-item">
+                <i class="fas fa-tools"></i>
+                <span>Отправить заявку о сломанном устройстве</span>
+            </a>
+            <a href="{% url 'fastapplication_list' %}" class="card-item">
+                <i class="fas fa-bolt"></i>
+                <span>Быстро Оформить заявку</span>
+            </a>
+            <a href="{% url 'ya_page' %}" class="card-item">
+                <i class="fas fa-robot"></i>
+                <span>YandexGPT</span>
+            </a>
+            <a href="{% url 'lkuser' %}" class="card-item">
+                <i class="fas fa-user-circle"></i>
+                <span>Личный кабинет</span>
+            </a>
+        </div>
+    {% elif role == "master" %}
+        <div class="cards">
+            <a href="{% url 'body_list' %}" class="card-item">
+                <i class="fas fa-tools"></i>
+                <span>Отправить заявку о сломанном устройстве</span>
+            </a>
+            <a href="{% url 'application_list' %}" class="card-item">
+                <i class="fas fa-file-alt"></i>
+                <span>Заявки</span>
+            </a>
+            <a href="{% url 'lkuser' %}" class="card-item">
+                <i class="fas fa-user-circle"></i>
+                <span>Личный кабинет</span>
+            </a>
+        </div>
+    {% endif %}
 
-    <!-- Navigation Cards -->
-    <div class="cards">
-        <a href="{% url 'body_list' %}" class="card-item">
-            <i class="fas fa-tools"></i>
-            <span>Отправить заявку о сломанном устройстве</span>
-        </a>
-        <a href="{% url 'application_list' %}" class="card-item">
-            <i class="fas fa-file-alt"></i>
-            <span>Заявки</span>
-        </a>
-        <a href="{% url 'ya_page' %}" class="card-item">
-            <i class="fas fa-robot"></i>
-            <span>YandexGPT</span>
-        </a>
-        <a href="{% url 'fastapplication_list' %}" class="card-item">
-            <i class="fas fa-bolt"></i>
-            <span>Быстро Оформить заявку</span>
-        </a>
-        <a href="{% url 'device_breakdown_stats' %}" class="card-item">
-            <i class="fas fa-chart-bar"></i>
-            <span>Статистика</span>
-        </a>
-        <a href="{% url 'lkuser' %}" class="card-item">
-            <i class="fas fa-user-circle"></i>
-            <span>Личный кабинет</span>
-        </a>
-    </div>
 
     <!-- Logout Button -->
     <div class="logout-btn">
