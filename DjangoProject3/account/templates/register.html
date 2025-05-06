@@ -221,22 +221,18 @@
 
     <div class="form-container">
         <h1>Регистрация</h1>
-        <form method="post">
+    <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row g-3">
         {% for field in reg_form %}
             <div class="col-md-6">
                 <label for="{{ field.id_for_label }}">
-                    {% if field.name == 'username' %}
-                        Имя пользователя
-                    {% elif field.name == 'first_name' %}
-                        Инициалы
-                    {% elif field.name == 'email' %}
-                        Электронная почта
-                    {% elif field.name == 'password1' %}
-                        Пароль
-                    {% elif field.name == 'password2' %}
-                        Подтверждение пароля
+                    {% if field.name == 'username' %} Имя пользователя
+                    {% elif field.name == 'first_name' %} Инициалы
+                    {% elif field.name == 'email' %} Электронная почта
+                    {% elif field.name == 'password1' %} Пароль
+                    {% elif field.name == 'password2' %} Подтверждение пароля
+                    {% elif field.name == 'avatar' %} Аватар
                     {% else %}
                         {{ field.label }}
                     {% endif %}
@@ -262,6 +258,7 @@
         </button>
     </div>
 </form>
+
 
         <p class="login-link">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
     </div>

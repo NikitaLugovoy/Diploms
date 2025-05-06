@@ -703,18 +703,22 @@ def schedule_list(request):
     return render(request, "body/schedule_list.html", {"schedules": schedules})
 
 
+from account.models import UserProfile
 @login_required
 def user_dashboard(request):
     user = request.user
     applications = Application.objects.filter(user=user).order_by("-data")
-
     notifications_count = Application.objects.filter(user=user, status_id=1).count()
-
-    # Сериализация заявок для API-ответа
     application_serializer = ApplicationSerializer(applications, many=True)
-
     groups = user.groups.all()
     role = groups[0].name if groups.exists() else 'Без роли'
+
+    # Получаем аватар пользователя
+    try:
+        profile = user.userprofile
+        avatar_url = profile.avatar.url if profile.avatar else None
+    except UserProfile.DoesNotExist:
+        avatar_url = None
 
     return render(
         request,
@@ -723,10 +727,10 @@ def user_dashboard(request):
             "user": user,
             "applications": application_serializer.data,
             "notifications_count": notifications_count,
-            "role": role, # Передаем количество заявок с статусом 1
+            "role": role,
+            "avatar_url": avatar_url,  # ← добавляем в контекст
         }
     )
-
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required

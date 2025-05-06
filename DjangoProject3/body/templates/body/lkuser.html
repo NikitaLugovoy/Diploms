@@ -362,9 +362,21 @@
 </nav>
 
 <div class="container">
-    <h2>Личный кабинет пользователя</h2>
-    <p>Добро пожаловать, <strong>{{ user.username }}</strong>!</p>
+    <h2>Личный кабинет </h2>
 
+    <h3>Информация о пользователе</h3>
+    <ul class="profile-info">
+        {% if avatar_url %}
+        <img src="{{ avatar_url }}" alt="Аватар пользователя" width="150">
+    {% else %}
+        <p>Аватар не загружен</p>
+    {% endif %}
+        <li><strong>Имя:</strong> {{ user.first_name }}</li>
+        <li><strong>Фамилия:</strong> {{ user.last_name }}</li>
+        <li><strong>Отображаемое имя (username):</strong> {{ user.username }}</li>
+        <li><strong>Email:</strong> {{ user.email }}</li>
+        <li><strong>Роль:</strong> {{ role }}</li>
+    </ul>
     <div class="link-container">
         <a href="{% url 'password_change' %}"><i class="fas fa-key"></i> Сменить пароль</a>
         <form method="post" action="{% url 'logout' %}">

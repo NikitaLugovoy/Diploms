@@ -8,17 +8,23 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from .forms import CustomUserCreationForm
 from .serializers import UserSerializer
+from django.contrib.auth.models import Group
 
 @swagger_auto_schema(method='post', request_body=UserSerializer, responses={201: 'Регистрация успешна', 400: 'Ошибка регистрации'})
 @api_view(['POST', 'GET'])
 @permission_classes([AllowAny])
 def register_view(request):
-    reg_form = CustomUserCreationForm()  # форма по умолчанию (на случай GET или невалидного POST)
+    reg_form = CustomUserCreationForm()
 
     if request.method == 'POST':
-        reg_form = CustomUserCreationForm(request.POST)
+        reg_form = CustomUserCreationForm(request.POST, request.FILES)
         if reg_form.is_valid():
-            reg_form.save()
+            user = reg_form.save()
+
+            # Добавление в группу "teacher"
+            teacher_group, created = Group.objects.get_or_create(name='teacher')
+            user.groups.add(teacher_group)
+
             messages.success(request, "Регистрация успешна! Теперь войдите.")
             return redirect('login')
         else:
