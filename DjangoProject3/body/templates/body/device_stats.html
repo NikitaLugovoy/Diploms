@@ -302,7 +302,7 @@
 
             .card-item .btn-show-devices,
             .card-item .btn-hide-devices {
-                padding: />
+                padding:0.5rem 1rem;
                 font-size: 0.75rem;
             }
         }
@@ -377,6 +377,25 @@
                 max-height: 300px;
             }
         }
+        .pagination .btn-outline-primary {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.pagination .btn-outline-primary:hover {
+    background-color: var(--accent);
+    color: #ffffff;
+}
+
+body.dark-mode .pagination .btn-outline-primary {
+    border-color: #0056b3;
+    color: #e9ecef;
+}
+
+body.dark-mode .pagination .btn-outline-primary:hover {
+    background-color: #0056b3;
+    color: #ffffff;
+}
     </style>
 </head>
 <body>
@@ -443,59 +462,74 @@
 <footer>© 2025 Ваш Сервис. Все права защищены.</footer>
 
 <script>
-    // Hide preloader after page load
-    window.addEventListener('load', () => {
-        document.getElementById('preloader').style.display = 'none';
-    });
+// Hide preloader after page load
+window.addEventListener('load', () => {
+    document.getElementById('preloader').style.display = 'none';
+});
 
-    // Toggle theme
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+// Toggle theme
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+// Load theme from localStorage
+window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
     }
+});
 
-    // Load theme from localStorage
-    window.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-    });
+// Pagination settings
+const ITEMS_PER_PAGE = 10;
 
-    // Existing JavaScript for charts and AJAX
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll('.btn-show-devices').forEach(button => {
-            button.addEventListener('click', function () {
-                const officeId = this.getAttribute('data-office-id');
-                fetch("{% url 'device_breakdown_stats' %}?office_id=" + officeId, {
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest"
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    renderBrokenDevices(data.broken_devices);
-                    renderBreakdownTypeChart(data.breakdown_type_data);
-                });
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.btn-show-devices').forEach(button => {
+        button.addEventListener('click', function () {
+            const officeId = this.getAttribute('data-office-id');
+            fetch("{% url 'device_breakdown_stats' %}?office_id=" + officeId, {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                renderBrokenDevices(data.broken_devices);
+                renderBreakdownTypeChart(data.breakdown_type_data);
             });
         });
+    });
 
-        function renderBrokenDevices(devices) {
-            const section = document.getElementById("brokenDevicesSection");
-            if (!section) {
-                console.warn("⚠️ Элемент #brokenDevicesSection не найден");
-                return;
-            }
+    function renderBrokenDevices(devices) {
+        const section = document.getElementById("brokenDevicesSection");
+        if (!section) {
+            console.warn("⚠️ Элемент #brokenDevicesSection не найден");
+            return;
+        }
 
-            section.classList.remove("hidden");
+        section.classList.remove("hidden");
 
-            const list = section.querySelector("ul");
-            if (!list) {
-                console.warn("⚠️ ul внутри #brokenDevicesSection не найден");
-                return;
-            }
+        const list = section.querySelector("ul#brokenDeviceList");
+        if (!list) {
+            console.warn("⚠️ ul#brokenDeviceList не найден");
+            return;
+        }
 
-            list.innerHTML = '';
-            devices.forEach(device => {
+        // Clear previous content
+        list.innerHTML = '';
+
+        // Track current page
+        let currentPage = 1;
+        const totalPages = Math.ceil(devices.length / ITEMS_PER_PAGE);
+
+        function renderPage(page) {
+            list.innerHTML = ''; // Clear the list
+            const start = (page - 1) * ITEMS_PER_PAGE;
+            const end = start + ITEMS_PER_PAGE;
+            const paginatedDevices = devices.slice(start, end);
+
+            // Render devices for the current page
+            paginatedDevices.forEach(device => {
                 const li = document.createElement("li");
                 li.className = "list-group-item";
                 li.innerHTML = `
@@ -505,139 +539,185 @@
                 `;
                 list.appendChild(li);
             });
+
+            // Update pagination controls
+            updatePaginationControls(page);
         }
 
-        let breakdownTypeChartInstance = null;
+        function updatePaginationControls(page) {
+            // Remove existing pagination
+            const existingPagination = section.querySelector(".pagination");
+            if (existingPagination) existingPagination.remove();
 
-        function renderBreakdownTypeChart(data) {
-            const labels = data.map(item => item.type);
-            const counts = data.map(item => item.count);
+            // Create pagination container
+            const pagination = document.createElement("div");
+            pagination.className = "pagination mt-3 d-flex justify-content-center align-items-center";
 
-            if (breakdownTypeChartInstance) {
-                breakdownTypeChartInstance.destroy();
+            // Previous button
+            if (page > 1) {
+                const prevButton = document.createElement("button");
+                prevButton.className = "btn btn-outline-primary mx-1";
+                prevButton.textContent = "Назад";
+                prevButton.addEventListener("click", () => renderPage(page - 1));
+                pagination.appendChild(prevButton);
             }
 
-            const ctx = document.getElementById('breakdownTypeChart').getContext('2d');
-            breakdownTypeChartInstance = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Типы поломок',
-                        data: counts,
-                        backgroundColor: [
-                            'rgba(0, 123, 255, 0.5)',
-                            'rgba(0, 123, 255, 0.3)',
-                            'rgba(0, 123, 255, 0.7)',
-                            'rgba(0, 123, 255, 0.4)',
-                            'rgba(0, 123, 255, 0.6)',
-                            'rgba(0, 123, 255, 0.8)'
-                        ],
-                        borderColor: [
-                            'rgba(0, 123, 255, 1)',
-                            'rgba(0, 123, 255, 1)',
-                            'rgba(0, 123, 255, 1)',
-                            'rgba(0, 123, 255, 1)',
-                            'rgba(0, 123, 255, 1)',
-                            'rgba(0, 123, 255, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Типы поломок в выбранном офисе',
-                            color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
-                        }
-                    }
-                }
-            });
+            // Page indicator
+            const pageIndicator = document.createElement("span");
+            pageIndicator.className = "mx-2";
+            pageIndicator.textContent = `Страница ${page} из ${totalPages}`;
+            pagination.appendChild(pageIndicator);
+
+            // Next button
+            if (page < totalPages) {
+                const nextButton = document.createElement("button");
+                nextButton.className = "btn btn-outline-primary mx-1";
+                nextButton.textContent = "Вперед";
+                nextButton.addEventListener("click", () => renderPage(page + 1));
+                pagination.appendChild(nextButton);
+            }
+
+            // Append pagination if there are multiple pages or a single page with devices
+            if (totalPages > 0) {
+                list.after(pagination);
+            }
         }
 
-        document.getElementById('hideDevicesButton')?.addEventListener('click', function() {
-            document.getElementById('brokenDevicesSection').classList.add('hidden');
-            const url = new URL(window.location.href);
-            url.searchParams.delete('office_id');
-            window.history.replaceState({}, '', url);
-        });
+        // Render the first page
+        renderPage(currentPage);
+    }
 
-        const breakdownTypeData = {{ breakdown_type_data|safe }};
-        const breakdownLabels = breakdownTypeData.map(item => item.type);
-        const breakdownCounts = breakdownTypeData.map(item => item.count);
+    let breakdownTypeChartInstance = null;
 
-        const heatmapData = {{ heatmap_data|safe }};
-        const parsedData = {};
-        heatmapData.forEach(entry => {
-            const date = new Date(entry.date);
-            const timestamp = Math.floor(date.getTime() / 1000);
-            parsedData[timestamp] = entry.count;
-        });
+    function renderBreakdownTypeChart(data) {
+        const labels = data.map(item => item.type);
+        const counts = data.map(item => item.count);
 
-        const heatmapChart = new Chart(document.getElementById('heatmap'), {
-            type: 'line',
-            data: {
-                labels: Object.keys(parsedData).map(timestamp => new Date(timestamp * 1000).toLocaleDateString()),
-                datasets: [{
-                    label: 'Поломки по дням',
-                    data: Object.values(parsedData),
-                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                    borderColor: 'rgba(0, 123, 255, 1)',
-                    borderWidth: 1,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Поломки по дням',
-                        color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
-                    }
-                }
-            }
-        });
+        if (breakdownTypeChartInstance) {
+            breakdownTypeChartInstance.destroy();
+        }
 
-        const chartData = {{ chart_data|safe }};
-        const labels = chartData.map(e => "Офис " + e.office_number);
-        const data = chartData.map(e => e.broken_count);
-
-        new Chart(document.getElementById("barChart"), {
-            type: 'bar',
+        const ctx = document.getElementById('breakdownTypeChart').getContext('2d');
+        breakdownTypeChartInstance = new Chart(ctx, {
+            type: 'pie',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Сломанные устройства',
-                    data: data, /* Fixed typo: changed 'ucks' to 'data' */
-                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                    borderColor: 'rgba(0, 123, 255, 1)',
+                    label: 'Типы поломок',
+                    data: counts,
+                    backgroundColor: [
+                        'rgba(0, 123, 255, 0.5)',
+                        'rgba(0, 123, 255, 0.3)',
+                        'rgba(0, 123, 255, 0.7)',
+                        'rgba(0, 123, 255, 0.4)',
+                        'rgba(0, 123, 255, 0.6)',
+                        'rgba(0, 123, 255, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(0, 123, 255, 1)',
+                        'rgba(0, 123, 255, 1)',
+                        'rgba(0, 123, 255, 1)',
+                        'rgba(0, 123, 255, 1)',
+                        'rgba(0, 123, 255, 1)',
+                        'rgba(0, 123, 255, 1)'
+                    ],
                     borderWidth: 1
                 }]
             },
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { display: false },
                     title: {
                         display: true,
-                        text: 'Поломки по офисам',
+                        text: 'Типы поломок в выбранном офисе',
                         color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
                     }
                 }
             }
         });
+    }
 
-        function updatePieChart(newData) {
-            const labels = newData.map(item => item.type);
-            const values = newData.map(item => item.count);
-            breakdownTypeChartInstance.data.labels = labels;
-            breakdownTypeChartInstance.data.datasets[0].data = values;
-            breakdownTypeChartInstance.update();
+    document.getElementById('hideDevicesButton')?.addEventListener('click', function() {
+        document.getElementById('brokenDevicesSection').classList.add('hidden');
+        const url = new URL(window.location.href);
+        url.searchParams.delete('office_id');
+        window.history.replaceState({}, '', url);
+    });
+
+    const breakdownTypeData = {{ breakdown_type_data|safe }};
+    const breakdownLabels = breakdownTypeData.map(item => item.type);
+    const breakdownCounts = breakdownTypeData.map(item => item.count);
+
+    const heatmapData = {{ heatmap_data|safe }};
+    const parsedData = {};
+    heatmapData.forEach(entry => {
+        const date = new Date(entry.date);
+        const timestamp = Math.floor(date.getTime() / 1000);
+        parsedData[timestamp] = entry.count;
+    });
+
+    const heatmapChart = new Chart(document.getElementById('heatmap'), {
+        type: 'line',
+        data: {
+            labels: Object.keys(parsedData).map(timestamp => new Date(timestamp * 1000).toLocaleDateString()),
+            datasets: [{
+                label: 'Поломки по дням',
+                data: Object.values(parsedData),
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Поломки по дням',
+                    color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
+                }
+            }
         }
     });
+
+    const chartData = {{ chart_data|safe }};
+    const labels = chartData.map(e => "Офис " + e.office_number);
+    const data = chartData.map(e => e.broken_count);
+
+    new Chart(document.getElementById("barChart"), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Сломанные устройства',
+                data: data,
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Поломки по офисам',
+                    color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
+                }
+            }
+        }
+    });
+
+    function updatePieChart(newData) {
+        const labels = newData.map(item => item.type);
+        const values = newData.map(item => item.count);
+        breakdownTypeChartInstance.data.labels = labels;
+        breakdownTypeChartInstance.data.datasets[0].data = values;
+        breakdownTypeChartInstance.update();
+    }
+});
 </script>
 </body>
 </html>

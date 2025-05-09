@@ -4,16 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление ролей">
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Дизайн">
+      <change afterPath="$PROJECT_DIR$/DjangoProject3/static/account/css/styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/templates/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/lkuser.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/lkuser.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/add_schedule.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/device_stats.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/device_stats.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/schedule_list.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/static/css/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/static/js/deviceManager.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +43,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/NikitaLugovoy/Diploms.git&quot;,
-    &quot;accountId&quot;: &quot;839f2213-16fc-4b26-86b6-784a5d788aac&quot;
+    &quot;accountId&quot;: &quot;946da460-b03e-4f03-b6ef-258370d08fb0&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -67,7 +70,7 @@
     &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/hp/PycharmProjects/diplomAPI/DjangoProject3/account&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/pythonProject/Diploms/DjangoProject3/body&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -79,13 +82,15 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\pythonProject\Diploms\DjangoProject3\body" />
       <recent name="C:\Users\hp\PycharmProjects\diplomAPI\DjangoProject3\account" />
       <recent name="C:\Users\hp\PycharmProjects\diplomAPI\DjangoProject3\body\templates\body" />
       <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\body\templates\body" />
       <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3" />
-      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\account" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\pythonProject\Diploms\DjangoProject3\static\body" />
+      <recent name="D:\pythonProject\Diploms\DjangoProject3\static\account" />
       <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\chat" />
       <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\account" />
       <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\chat\templates" />
@@ -232,8 +237,18 @@
       <workItem from="1745488362744" duration="3191000" />
       <workItem from="1745826635806" duration="660000" />
       <workItem from="1745828154543" duration="19272000" />
-      <workItem from="1745954383525" duration="5480000" />
-      <workItem from="1746557149831" duration="4550000" />
+      <workItem from="1745954383525" duration="5737000" />
+      <workItem from="1746019788031" duration="2792000" />
+      <workItem from="1746124094403" duration="656000" />
+      <workItem from="1746298806613" duration="230000" />
+      <workItem from="1746371354498" duration="3283000" />
+      <workItem from="1746391547785" duration="375000" />
+      <workItem from="1746611126568" duration="8033000" />
+      <workItem from="1746722035873" duration="311000" />
+      <workItem from="1746729414799" duration="346000" />
+      <workItem from="1746729775931" duration="3269000" />
+      <workItem from="1746733121292" duration="292000" />
+      <workItem from="1746807784854" duration="355000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -443,13 +458,13 @@
       <option name="project" value="LOCAL" />
       <updated>1745851654041</updated>
     </task>
-    <task id="LOCAL-00027" summary="Добавление ролей">
+    <task id="LOCAL-00027" summary="Дизайн">
       <option name="closed" value="true" />
-      <created>1746559815890</created>
+      <created>1745960170064</created>
       <option name="number" value="00027" />
       <option name="presentableId" value="LOCAL-00027" />
       <option name="project" value="LOCAL" />
-      <updated>1746559815891</updated>
+      <updated>1745960170064</updated>
     </task>
     <option name="localTasksCounter" value="28" />
     <servers />
@@ -478,7 +493,6 @@
     <MESSAGE value="Добавление динамики для статистики" />
     <MESSAGE value="Схема кабинета" />
     <MESSAGE value="Дизайн" />
-    <MESSAGE value="Добавление ролей" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавление ролей" />
+    <option name="LAST_COMMIT_MESSAGE" value="Дизайн" />
   </component>
 </project>
