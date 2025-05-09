@@ -209,66 +209,66 @@
     </style>
 </head>
 <body>
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="spinner"></div>
-    </div>
+<!-- Preloader -->
+<div id="preloader">
+    <div class="spinner"></div>
+</div>
 
-    <!-- Theme Toggle Button -->
-    <button class="theme-toggle" onclick="toggleTheme()">🌙 Тема</button>
+<!-- Theme Toggle Button -->
+<button class="theme-toggle" onclick="toggleTheme()">🌙 Тема</button>
 
-    <div class="form-container">
-        <h1>Вход</h1>
-    
-        <form method="post">
-            {% csrf_token %}
-            {% for field in login_form %}
-                <p>
-                    <label for="{{ field.id_for_label }}">
-                        {% if field.name == 'username' %}
-                            Имя пользователя
-                        {% elif field.name == 'password' %}
-                            Пароль
-                        {% else %}
-                            {{ field.label }}
-                        {% endif %}
-                    </label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <ul class="errorlist">
-                            {% for error in field.errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
+<div class="form-container">
+    <h1>Вход</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {% for field in login_form %}
+            <p>
+                <label for="{{ field.id_for_label }}">
+                    {% if field.name == 'username' %}
+                        Имя пользователя
+                    {% elif field.name == 'password' %}
+                        Пароль
+                    {% else %}
+                        {{ field.label }}
                     {% endif %}
-                    {% if field.help_text %}
-                        <small class="form-text text-muted">{{ field.help_text }}</small>
-                    {% endif %}
-                </p>
-            {% endfor %}
-            <button type="submit"><i class="fas fa-sign-in-alt"></i> Войти</button>
-        </form>
-        <p class="register-link">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
-    </div>
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            </p>
+        {% endfor %}
+        <button type="submit"><i class="fas fa-sign-in-alt"></i> Войти</button>
+    </form>
+    <p class="register-link">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+</div>
 
-    <script>
-        // Hide preloader after page load
-        window.addEventListener('load', () => {
-            document.getElementById('preloader').style.display = 'none';
-        });
+<script>
+    // Hide preloader after page load
+    window.addEventListener('load', () => {
+        document.getElementById('preloader').style.display = 'none';
+    });
 
-        // Toggle theme
-        function toggleTheme() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    // Toggle theme
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Load theme from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
         }
-
-        // Load theme from localStorage
-        window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-mode');
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
