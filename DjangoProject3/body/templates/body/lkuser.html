@@ -37,27 +37,6 @@
             color: var(--text-dark);
         }
 
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            background-color: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background-color: #0056b3;
-        }
-
         #preloader {
             background: var(--bg-light);
             position: fixed;
@@ -92,7 +71,7 @@
         .container {
             text-align: center;
             max-width: 1200px;
-            padding: 40px 20px;
+            padding: 80px 20px 40px; /* Увеличен padding-top для учета навбара */
             width: 100%;
             box-sizing: border-box;
         }
@@ -117,7 +96,7 @@
 
         .notification-container {
             position: fixed;
-            top: 20px;
+            top: 70px; /* Учитываем высоту навбара */
             left: 20px;
             display: flex;
             align-items: center;
@@ -127,6 +106,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             font-size: 16px;
             font-weight: 600;
+            z-index: 900; /* Ниже навбара */
         }
 
         body.dark-mode .notification-container {
@@ -150,7 +130,7 @@
             padding: 20px;
             max-height: 600px;
             overflow-y: auto;
-            overflow-x: auto; /* Enable horizontal scrolling */
+            overflow-x: auto;
             width: 100%;
             box-sizing: border-box;
         }
@@ -162,7 +142,7 @@
 
         table {
             width: 100%;
-            min-width: 800px; /* Minimum width to ensure readability */
+            min-width: 800px;
             border-collapse: collapse;
         }
 
@@ -170,7 +150,7 @@
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #dee2e6;
-            white-space: nowrap; /* Prevent text wrapping */
+            white-space: nowrap;
             font-size: 14px;
         }
 
@@ -186,9 +166,9 @@
         }
 
         td {
-            max-width: 150px; /* Limit column width */
+            max-width: 150px;
             overflow: hidden;
-            text-overflow: ellipsis; /* Truncate long text */
+            text-overflow: ellipsis;
         }
 
         .link-container {
@@ -235,6 +215,130 @@
             transform: translateY(-3px);
         }
 
+        .profile-info {
+            list-style: none;
+            padding: 0;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .profile-info li {
+            margin: 10px 0;
+        }
+
+        .profile-info img {
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        /* Стили для навбара */
+        .navbar {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px #dee2e6, -8px -8px 16px #ffffff;
+            transition: all 0.4s ease;
+            margin: 10px auto;
+            max-width: 1200px;
+            padding: 0.5rem 1rem;
+            z-index: 1000;
+        }
+
+        body.dark-mode .navbar {
+            background: #343a40;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .navbar-brand {
+            color: var(--text-dark);
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        body.dark-mode .navbar-nav .nav-link {
+            color: var(--text-dark);
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: var(--accent);
+        }
+
+        body.dark-mode .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+.navbar-nav .nav-link.active {
+    background-color: var(--accent);
+    color: #ffffff !important;
+}
+
+        .navbar-nav .nav-link i {
+            margin-right: 0.5rem;
+        }
+
+        .theme-toggle {
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .theme-toggle {
+            background-color: #0056b3;
+        }
+
+        .navbar-toggler {
+            border-color: var(--accent);
+        }
+
+        body.dark-mode .navbar-toggler {
+            border-color: #495057;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 123, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        body.dark-mode .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -247,13 +351,36 @@
             color: #adb5bd;
         }
 
+        @media (max-width: 992px) {
+            .navbar-nav {
+                justify-content: flex-start;
+                padding: 1rem;
+            }
+
+            .navbar-nav .nav-link {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .theme-toggle {
+                margin: 0.5rem 1rem;
+            }
+        }
+
         @media (max-width: 768px) {
             h2 {
                 font-size: 28px;
             }
 
             .container {
-                padding: 20px 10px;
+                padding: 70px 10px 20px;
+            }
+
+            .notification-container {
+                top: 60px; /* Учитываем высоту навбара */
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 14px;
             }
 
             .table-container {
@@ -266,27 +393,28 @@
             }
 
             td {
-                max-width: 100px; /* Smaller columns on mobile */
+                max-width: 100px;
             }
 
             .delete-btn {
                 padding: 6px 12px;
                 font-size: 12px;
             }
+
+            .link-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .link-container a, .link-container button {
+                padding: 12px 30px;
+                font-size: 14px;
+            }
         }
 
         @media (max-width: 576px) {
             .notification-container {
-                top: 10px;
-                left: 10px;
-                padding: 8px 15px;
-                font-size: 14px;
-            }
-
-            .theme-toggle {
-                top: 10px;
-                right: 10px;
-                padding: 8px 15px;
+                padding: 6px 12px;
                 font-size: 12px;
             }
         }
@@ -298,79 +426,107 @@
     <div class="spinner"></div>
 </div>
 
-<!-- Theme Toggle Button -->
-<button class="theme-toggle" onclick="toggleTheme()">🌙 Тема</button>
-
-<!-- Notification -->
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Главная</a>
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-tools me-2"></i>Сервис
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <!-- Навигация для администратора -->
                 {% if role == "admin" %}
-
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'body_list' %}">Отправить заявку</a>
+                        <a class="nav-link" href="{% url 'body_list' %}">
+                            <i class="fas fa-tools me-1"></i> Отправить заявку
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'fastapplication_list' %}">Быстро Оформить заявку</a>
+                        <a class="nav-link" href="{% url 'fastapplication_list' %}">
+                            <i class="fas fa-bolt me-1"></i> Быстрая заявка
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'device_breakdown_stats' %}">Статистика</a>
+                        <a class="nav-link" href="{% url 'device_breakdown_stats' %}">
+                            <i class="fas fa-chart-bar me-1"></i> Статистика
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/admin/">Админ-панель</a>
+                        <a class="nav-link" href="/admin/">
+                            <i class="fas fa-cogs me-1"></i> Админ-панель
+                        </a>
                     </li>
-
-                <!-- Навигация для преподавателя -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'lkuser' %}">
+                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                        </a>
+                    </li>
                 {% elif role == "teacher" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'body_list' %}">Отправить заявку</a>
+                        <a class="nav-link" href="{% url 'body_list' %}">
+                            <i class="fas fa-tools me-1"></i> Отправить заявку
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'fastapplication_list' %}">Быстро Оформить заявку</a>
+                        <a class="nav-link" href="{% url 'fastapplication_list' %}">
+                            <i class="fas fa-bolt me-1"></i> Быстрая заявка
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'ya_page' %}">YandexGPT</a>
+                        <a class="nav-link" href="{% url 'ya_page' %}">
+                            <i class="fas fa-robot me-1"></i> YandexGPT
+                        </a>
                     </li>
-
-                <!-- Навигация для мастера -->
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'lkuser' %}">
+                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                        </a>
+                    </li>
                 {% elif role == "master" %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'body_list' %}">Отправить заявку</a>
+                        <a class="nav-link" href="{% url 'body_list' %}">
+                            <i class="fas fa-tools me-1"></i> Отправить заявку
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'application_list' %}">Заявки</a>
+                        <a class="nav-link" href="{% url 'application_list' %}">
+                            <i class="fas fa-file-alt me-1"></i> Заявки
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'lkuser' %}">
+                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                        </a>
                     </li>
                 {% endif %}
-
-                <!-- Колокольчик для уведомлений -->
                 <li class="nav-item">
-                    <div class="notification-container">
-                        <span class="bell">🔔</span>
-                        <span class="count">{{ notifications_count }}</span>
-                    </div>
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon me-1"></i> Тема
+                    </button>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 
+<!-- Notification -->
+<div class="notification-container">
+    <i class="fas fa-bell bell"></i>
+    <span class="count">{{ notifications_count }}</span>
+</div>
+
 <div class="container">
-    <h2>Личный кабинет </h2>
+    <h2>Личный кабинет</h2>
 
     <h3>Информация о пользователе</h3>
     <ul class="profile-info">
         {% if avatar_url %}
-        <img src="{{ avatar_url }}" alt="Аватар пользователя" width="150">
-    {% else %}
-        <p>Аватар не загружен</p>
-    {% endif %}
+            <img src="{{ avatar_url }}" alt="Аватар пользователя" width="150">
+        {% else %}
+            <p>Аватар не загружен</p>
+        {% endif %}
         <li><strong>Имя:</strong> {{ user.first_name }}</li>
         <li><strong>Фамилия:</strong> {{ user.last_name }}</li>
         <li><strong>Отображаемое имя (username):</strong> {{ user.username }}</li>
@@ -425,6 +581,9 @@
 </div>
 
 <footer>© 2025 Ваш Сервис. Все права защищены.</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     // Hide preloader after page load

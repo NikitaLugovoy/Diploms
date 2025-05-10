@@ -11,443 +11,549 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
     <style>
-    :root {
-        --bg-light: #f8f9fa;
-        --bg-dark: #212529;
-        --text-light: #343a40;
-        --text-dark: #e9ecef;
-        --accent: #007bff;
-        --broken-bg-dark: #7b2d2d; /* Brighter red for broken devices in dark mode */
-    }
+        :root {
+            --bg-light: #f8f9fa;
+            --bg-dark: #212529;
+            --text-light: #343a40;
+            --text-dark: #e9ecef;
+            --accent: #007bff;
+            --broken-bg-dark: #7b2d2d;
+        }
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* Изменено для поддержки navbar и footer */
+            transition: all 0.4s ease;
+        }
 
-    body {
-        font-family: 'Poppins', sans-serif;
-        background-color: var(--bg-light);
-        color: var(--text-light);
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.4s ease;
-        overflow-x: hidden;
-    }
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+        }
 
-    body.dark-mode {
-        background-color: var(--bg-dark);
-        color: var(--text-dark);
-    }
+        #preloader {
+            background: var(--bg-light);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    .theme-toggle {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        cursor: pointer;
-        background-color: var(--accent);
-        color: #fff;
-        border: none;
-        border-radius: 50px;
-        padding: 10px 20px;
-        font-size: 14px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        z-index: 1000;
-        transition: all 0.3s ease;
-    }
+        body.dark-mode #preloader {
+            background: var(--bg-dark);
+        }
 
-    .theme-toggle:hover {
-        background-color: #0056b3;
-    }
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #dee2e6;
+            border-top: 8px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
 
-    #preloader {
-        background: var(--bg-light);
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-    body.dark-mode #preloader {
-        background: var(--bg-dark);
-    }
+        /* Стили для навбара */
+        .navbar {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px #dee2e6, -8px -8px 16px #ffffff;
+            transition: all 0.4s ease;
+            margin: 10px auto;
+            max-width: 1200px;
+            padding: 0.5rem 1rem;
+            z-index: 1000;
+        }
 
-    .spinner {
-        width: 80px;
-        height: 80px;
-        border: 8px solid #dee2e6;
-        border-top: 8px solid var(--accent);
-        border-radius: 50%;
-        animation: spin 1.2s linear infinite;
-    }
+        body.dark-mode .navbar {
+            background: #343a40;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-light);
+        }
 
-    .form-container {
-        background-color: #ffffff;
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: 8px 8px 16px #dee2e6, -8px -8px 16px #ffffff;
-        max-width: 90%;
-        width: 100%;
-        text-align: center;
-        max-height: 90vh;
-        overflow-y: auto;
-        transition: all 0.4s ease;
-    }
+        body.dark-mode .navbar-brand {
+            color: var(--text-dark);
+        }
 
-    body.dark-mode .form-container {
-        background-color: #343a40;
-        box-shadow: none;
-    }
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
 
-    h1 {
-        font-size: 36px;
-        font-weight: 700;
-        color: var(--accent);
-        margin-bottom: 20px;
-    }
+        .navbar-nav .nav-link {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
 
-    h3 {
-        font-size: 24px;
-        font-weight: 600;
-        color: var(--accent);
-        margin-bottom: 15px;
-    }
+        body.dark-mode .navbar-nav .nav-link {
+            color: var(--text-dark);
+        }
 
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: var(--accent);
+        }
 
-    form label {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--text-light);
-        margin-bottom: 5px;
-        display: block;
-        text-align: left;
-    }
+        body.dark-mode .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
-    body.dark-mode form label {
-        color: var(--text-dark);
-    }
+        .navbar-nav .nav-link.active {
+            background-color: var(--accent);
+            color: #ffffff !important;
+        }
 
-    input, select, textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        font-size: 16px;
-        font-family: 'Poppins', sans-serif;
-        transition: all 0.3s ease;
-    }
+        .navbar-nav .nav-link i {
+            margin-right: 0.5rem;
+        }
 
-    body.dark-mode input,
-    body.dark-mode select,
-    body.dark-mode textarea {
-        background-color: #495057;
-        border-color: #6c757d;
-        color: var(--text-dark);
-    }
+        .theme-toggle {
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
 
-    input:focus, select:focus, textarea:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-    }
+        .theme-toggle:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
 
-    button, .btn {
-        background-color: var(--accent);
-        color: #ffffff;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 50px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-        transition: all 0.3s ease;
-    }
+        body.dark-mode .theme-toggle {
+            background-color: #0056b3;
+        }
 
-    button:hover, .btn:hover {
-        background-color: #0056b3;
-        transform: translateY(-3px);
-    }
+        .navbar-toggler {
+            border-color: var(--accent);
+        }
 
-    .btn-secondary {
-        background-color: #6c757d;
-    }
+        body.dark-mode .navbar-toggler {
+            border-color: #495057;
+        }
 
-    .btn-secondary:hover {
-        background-color: #5a6268;
-    }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 123, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
 
-    .content-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        justify-content: space-between;
-    }
-
-    .body-list, .floors-list, .offices-list, .devices-list {
-        flex: 1 1 calc(33.33% - 20px);
-        box-sizing: border-box;
-    }
-
-    .devices-list {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        position: relative;
-        padding: 20px;
-        min-height: 300px;
-        width: 100%;
-        display: none;
-    }
-
-    .devices-grid {
-        display: grid;
-        gap: 10px;
-        justify-content: center;
-        align-content: center;
-        margin: auto;
-        max-width: 100%;
-        padding: 15px;
-        background-color: #f1f3f5; /* Subtle background to resemble a floor plan */
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        position: relative;
-    }
-
-    body.dark-mode .devices-grid {
-        background-color: #2c3034;
-        border-color: #6c757d;
-    }
-
-    .device-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        background-color: #ffffff;
-        padding: 12px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border: 1px solid #dee2e6;
-        min-width: 100px;
-        min-height: 100px;
-        margin: 5px;
-        position: relative;
-        cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .device-item:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    body.dark-mode .device-item {
-        background-color: #495057;
-        border-color: #6c757d;
-        color: var(--text-dark);
-    }
-
-    .device-item.broken {
-        border: 3px solid #dc3545;
-        background-color: #fff0f0;
-        position: relative;
-    }
-
-    .device-item.broken::after {
-        content: '\f071'; /* Font Awesome warning icon */
-        font-family: 'Font Awesome 6 Free';
-        font-weight: 900;
-        position: absolute;
-        top: -12px;
-        right: -12px;
-        font-size: 18px;
-        color: #dc3545;
-        background-color: #ffffff;
-        border-radius: 50%;
-        padding: 4px;
-    }
-
-    body.dark-mode .device-item.broken {
-        background-color: var(--broken-bg-dark);
-        border-color: #ff4d4d;
-    }
-
-    body.dark-mode .device-item.broken::after {
-        background-color: #343a40;
-        color: #ff4d4d;
-    }
-
-    .device-item.selected {
-        border: 3px solid var(--accent);
-        box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
-        background-color: #e9f2ff;
-    }
-
-    body.dark-mode .device-item.selected {
-        background-color: #5a6268;
-        border-color: #80bdff;
-    }
-
-    .device-image {
-        width: 40px; /* Larger image for better visibility */
-        height: 40px;
-        object-fit: contain;
-        margin-bottom: 8px;
-    }
-
-    .device-label {
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--text-light);
-        line-height: 1.2;
-        max-width: 100%;
-        word-wrap: break-word;
-    }
-
-    body.dark-mode .device-label {
-        color: var(--text-dark);
-    }
-
-    .status-message {
-        color: #dc3545;
-        font-weight: bold;
-        font-size: 14px;
-        margin-left: 10px;
-    }
-
-    .form-check-input {
-        display: none;
-    }
-
-    .form-check {
-        padding: 10px;
-        border-radius: 8px;
-        transition: all 0.2s ease-in-out;
-        cursor: pointer;
-    }
-
-    .form-check.selected {
-        border: 2px solid var(--accent);
-        background-color: #e9f2ff;
-        box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-    }
-
-    body.dark-mode .form-check.selected {
-        background-color: #5a6268;
-        border-color: #80bdff;
-    }
-
-    .broken-device {
-        border: 3px solid #dc3545;
-        background-color: #fff0f0;
-        position: relative;
-    }
-
-    body.dark-mode .broken-device {
-        background-color: var(--broken-bg-dark);
-        border-color: #ff4d4d;
-    }
-
-    .broken-device::after {
-        content: '\f071'; /* Font Awesome warning icon */
-        font-family: 'Font Awesome 6 Free';
-        font-weight: 900;
-        position: absolute;
-        top: -12px;
-        right: -12px;
-        font-size: 18px;
-        color: #dc3545;
-        background-color: #ffffff;
-        border-radius: 50%;
-        padding: 4px;
-    }
-
-    body.dark-mode .broken-device::after {
-        background-color: #343a40;
-        color: #ff4d4d;
-    }
-
-    .modal-content {
-        background-color: #ffffff;
-        border-radius: 20px;
-        transition: all 0.4s ease;
-    }
-
-    body.dark-mode .modal-content {
-        background-color: #343a40;
-    }
-
-    .modal-title {
-        color: var(--accent);
-        font-weight: 700;
-    }
-
-    .modal-body, .modal-footer {
-        padding: 20px;
-    }
-
-    .btn-back {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-    }
-
-    @media (max-width: 576px) {
-        h1 {
-            font-size: 28px;
+        body.dark-mode .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
 
         .form-container {
-            padding: 20px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px #dee2e6, -8px -8px 16px #ffffff;
+            max-width: 90%;
+            width: 100%;
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+            transition: all 0.4s ease;
+            margin-top: 80px; /* Учет высоты navbar */
+            margin-bottom: 20px; /* Для footer */
+        }
+
+        body.dark-mode .form-container {
+            background-color: #343a40;
+            box-shadow: none;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            display: block;
+            text-align: left;
+        }
+
+        body.dark-mode form label {
+            color: var(--text-dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: var(--text-dark);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        button, .btn {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover, .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
         }
 
         .content-container {
-            flex-direction: column;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
         }
 
         .body-list, .floors-list, .offices-list, .devices-list {
-            flex: 1 1 100%;
+            flex: 1 1 calc(33.33% - 20px);
+            box-sizing: border-box;
+        }
+
+        .devices-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+            padding: 20px;
+            min-height: 300px;
+            width: 100%;
+            display: none;
         }
 
         .devices-grid {
-            gap: 8px;
-            padding: 10px;
+            display: grid;
+            gap: 10px;
+            justify-content: center;
+            align-content: center;
+            margin: auto;
+            max-width: 100%;
+            padding: 15px;
+            background-color: #f1f3f5;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        body.dark-mode .devices-grid {
+            background-color: #2c3034;
+            border-color: #6c757d;
         }
 
         .device-item {
-            min-width: 80px;
-            min-height: 80px;
-            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dee2e6;
+            min-width: 100px;
+            min-height: 100px;
+            margin: 5px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .device-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        body.dark-mode .device-item {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: var(--text-dark);
+        }
+
+        .device-item.broken {
+            border: 3px solid #dc3545;
+            background-color: #fff0f0;
+            position: relative;
+        }
+
+        .device-item.broken::after {
+            content: '\f071';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            font-size: 18px;
+            color: #dc3545;
+            background-color: #ffffff;
+            border-radius: 50%;
+            padding: 4px;
+        }
+
+        body.dark-mode .device-item.broken {
+            background-color: var(--broken-bg-dark);
+            border-color: #ff4d4d;
+        }
+
+        body.dark-mode .device-item.broken::after {
+            background-color: #343a40;
+            color: #ff4d4d;
+        }
+
+        .device-item.selected {
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
+            background-color: #e9f2ff;
+        }
+
+        body.dark-mode .device-item.selected {
+            background-color: #5a6268;
+            border-color: #80bdff;
         }
 
         .device-image {
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            margin-bottom: 8px;
         }
 
         .device-label {
-            font-size: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-light);
+            line-height: 1.2;
+            max-width: 100%;
+            word-wrap: break-word;
         }
-    }
-</style>
+
+        body.dark-mode .device-label {
+            color: var(--text-dark);
+        }
+
+        .status-message {
+            color: #dc3545;
+            font-weight: bold;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .form-check-input {
+            display: none;
+        }
+
+        .form-check {
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .form-check.selected {
+            border: 2px solid var(--accent);
+            background-color: #e9f2ff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        body.dark-mode .form-check.selected {
+            background-color: #5a6268;
+            border-color: #80bdff;
+        }
+
+        .broken-device {
+            border: 3px solid #dc3545;
+            background-color: #fff0f0;
+            position: relative;
+        }
+
+        body.dark-mode .broken-device {
+            background-color: var(--broken-bg-dark);
+            border-color: #ff4d4d;
+        }
+
+        .broken-device::after {
+            content: '\f071';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            font-size: 18px;
+            color: #dc3545;
+            background-color: #ffffff;
+            border-radius: 50%;
+            padding: 4px;
+        }
+
+        body.dark-mode .broken-device::after {
+            background-color: #343a40;
+            color: #ff4d4d;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 20px;
+            transition: all 0.4s ease;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #343a40;
+        }
+
+        .modal-title {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .modal-body, .modal-footer {
+            padding: 20px;
+        }
+
+        .btn-back {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: auto;
+        }
+
+        body.dark-mode footer {
+            color: #adb5bd;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .form-container {
+                padding: 20px;
+                margin-top: 70px; /* Учет высоты navbar на мобильных */
+            }
+
+            .content-container {
+                flex-direction: column;
+            }
+
+            .body-list, .floors-list, .offices-list, .devices-list {
+                flex: 1 1 100%;
+            }
+
+            .devices-grid {
+                gap: 8px;
+                padding: 10px;
+            }
+
+            .device-item {
+                min-width: 80px;
+                min-height: 80px;
+                padding: 8px;
+            }
+
+            .device-image {
+                width: 30px;
+                height: 30px;
+            }
+
+            .device-label {
+                font-size: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Preloader -->
@@ -455,16 +561,95 @@
         <div class="spinner"></div>
     </div>
 
-    <!-- Theme Toggle Button -->
-    <button class="theme-toggle" onclick="toggleTheme()">🌙 Тема</button>
-
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-tools me-2"></i>Сервис
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    {% if role == "admin" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'body_list' %}">
+                                <i class="fas fa-tools me-1"></i> Отправить заявку
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'fastapplication_list' %}">
+                                <i class="fas fa-bolt me-1"></i> Быстрая заявка
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'device_breakdown_stats' %}">
+                                <i class="fas fa-chart-bar me-1"></i> Статистика
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/">
+                                <i class="fas fa-cogs me-1"></i> Админ-панель
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'lkuser' %}">
+                                <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                            </a>
+                        </li>
+                    {% elif role == "teacher" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'body_list' %}">
+                                <i class="fas fa-tools me-1"></i> Отправить заявку
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'fastapplication_list' %}">
+                                <i class="fas fa-bolt me-1"></i> Быстрая заявка
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'ya_page' %}">
+                                <i class="fas fa-robot me-1"></i> YandexGPT
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'lkuser' %}">
+                                <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                            </a>
+                        </li>
+                    {% elif role == "master" %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'body_list' %}">
+                                <i class="fas fa-tools me-1"></i> Отправить заявку
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'application_list' %}">
+                                <i class="fas fa-file-alt me-1"></i> Заявки
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'lkuser' %}">
+                                <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <button class="theme-toggle" onclick="toggleTheme()">
+                            <i class="fas fa-moon me-1"></i> Тема
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+ <div class="main-content">
     <div class="form-container">
         <h1 class="text-center">Выбор поломанного устройства</h1>
 
         <form method="POST" id="selectionForm">
-            <div class="text-center">
-                <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
-            </div>
             {% csrf_token %}
             <div class="content-container">
                 <div class="body-list">
@@ -472,12 +657,13 @@
                     {% for body in bodies %}
                         <div class="form-check">
                             <input
-                                    class="form-check-input"
-                                    type="radio"
-                                    name="selected_bodies"
-                                    value="{{ body.id }}"
-                                    id="body_{{ body.id }}"
-                                    {% if body.id|stringformat:"s" in selected_bodies %}checked{% endif %}>
+                                class="form-check-input"
+                                type="radio"
+                                name="selected_bodies"
+                                value="{{ body.id }}"
+                                id="body_{{ body.id }}"
+                                {% if body.id|stringformat:"s" in selected_bodies %}checked{% endif %}
+                            >
                             <label class="form-check-label" for="body_{{ body.id }}">
                                 <strong>{{ body.number }}</strong> — {{ body.address }}
                             </label>
@@ -490,12 +676,13 @@
                     {% for floor in floors %}
                         <div class="form-check">
                             <input
-                                    class="form-check-input"
-                                    type="radio"
-                                    name="selected_floors"
-                                    value="{{ floor.id }}"
-                                    id="floor_{{ floor.id }}"
-                                    {% if floor.id|stringformat:"s" in selected_floors %}checked{% endif %}>
+                                class="form-check-input"
+                                type="radio"
+                                name="selected_floors"
+                                value="{{ floor.id }}"
+                                id="floor_{{ floor.id }}"
+                                {% if floor.id|stringformat:"s" in selected_floors %}checked{% endif %}
+                            >
                             <label class="form-check-label" for="floor_{{ floor.id }}">
                                 Этаж №{{ floor.number }}
                             </label>
@@ -550,6 +737,8 @@
             </div>
         </form>
     </div>
+ </div>
+    <footer>© 2025 Ваш Сервис. Все права защищены.</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -571,7 +760,6 @@
             }
         });
 
-        // Original JavaScript for device selection page
         function getCSRFToken() {
             var token = null;
             document.cookie.split(';').forEach(function (cookie) {
@@ -595,11 +783,11 @@
                     officeElement.classList.add('form-check');
                     const isChecked = previouslySelectedOffices.has(office.id.toString());
                     officeElement.innerHTML = `
-                            <input class="form-check-input" type="radio" name="selected_offices" value="${office.id}" id="office_${office.id}" ${isChecked ? 'checked' : ''}>
-                            <label class="form-check-label" for="office_${office.id}">
-                                Офис ${office.number} — Этаж ID: ${office.floor_id}, Корпус ID: ${office.body_id}
-                            </label>
-                        `;
+                        <input class="form-check-input" type="radio" name="selected_offices" value="${office.id}" id="office_${office.id}" ${isChecked ? 'checked' : ''}>
+                        <label class="form-check-label" for="office_${office.id}">
+                            Офис ${office.number} — Этаж ID: ${office.floor_id}, Корпус ID: ${office.body_id}
+                        </label>
+                    `;
                     officesListContent.appendChild(officeElement);
                 });
             }
@@ -647,8 +835,8 @@
                         deviceItem.style.gridColumn = `${position.x + 1}`;
 
                         let deviceImage = `
-                                <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
-                            `;
+                            <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
+                        `;
                         if (Number(device.condition_id) === 4) {
                             deviceItem.classList.add('broken');
                         }
@@ -658,9 +846,9 @@
                         imageContainer.innerHTML = deviceImage;
 
                         deviceItem.innerHTML += `
-        <input type="radio" name="selected_package_devices" value="${device.id}" id="device_${device.id}" style="display: none;">
-        <div class="device-label">Серийный номер: ${device.number}</div>
-    `;
+                            <input type="radio" name="selected_package_devices" value="${device.id}" id="device_${device.id}" style="display: none;">
+                            <div class="device-label">Серийный номер: ${device.number}</div>
+                        `;
 
                         deviceItem.appendChild(imageContainer);
                         grid.appendChild(deviceItem);
@@ -672,14 +860,14 @@
 
                             const modalFilteredDevicesListContent = document.getElementById('modal-filtered-devices-list-content');
                             modalFilteredDevicesListContent.innerHTML = `
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" checked>
-                <label class="form-check-label" for="modal_filtered_device_${device.id}">
-                    Серийный номер: ${device.number}, ID: ${device.id}, Кондиция: ${device.condition_id}
-                    ${device.condition_id === 4 ? '<span class="status-message">СЛОМАНО !!!</span>' : ''}
-                </label>
-            </div>
-        `;
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" checked>
+                                    <label class="form-check-label" for="modal_filtered_device_${device.id}">
+                                        Серийный номер: ${device.number}, ID: ${device.id}, Кондиция: ${device.condition_id}
+                                        ${device.condition_id === 4 ? '<span class="status-message">СЛОМАНО !!!</span>' : ''}
+                                    </label>
+                                </div>
+                            `;
 
                             document.getElementById('modalMessage').value = '';
 
@@ -717,11 +905,11 @@
                     const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
 
                     deviceItem.innerHTML = `
-                    <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" ${isChecked ? 'checked' : ''}>
-                    <label class="form-check-label" for="modal_filtered_device_${device.id}">
-                        Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id}
-                    </label>
-                `;
+                        <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" ${isChecked ? 'checked' : ''}>
+                        <label class="form-check-label" for="modal_filtered_device_${device.id}">
+                            Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id}
+                        </label>
+                    `;
                     modalFilteredDevicesListContent.appendChild(deviceItem);
 
                     const checkbox = deviceItem.querySelector('input[type="checkbox"]');
@@ -801,9 +989,8 @@
                 });
         }
 
-const officesListContent = document.getElementById('offices-list-content');
+        const officesListContent = document.getElementById('offices-list-content');
         const observer = new MutationObserver(() => {
-            // Reapply 'selected' class to the checked office
             const checkedOffice = document.querySelector('input[name="selected_offices"]:checked');
             if (checkedOffice) {
                 checkedOffice.closest('.form-check').classList.add('selected');
@@ -815,27 +1002,24 @@ const officesListContent = document.getElementById('offices-list-content');
             subtree: true
         });
 
-    // Update selected state on radio input change
-    document.addEventListener('change', function (event) {
-        if (event.target.classList.contains('form-check-input')) {
-            // Remove 'selected' class from all form-checks in the same group
-            const groupName = event.target.name;
-            document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
-                input.closest('.form-check').classList.remove('selected');
-            });
-            // Add 'selected' class to the checked input's form-check
-            if (event.target.checked) {
-                event.target.closest('.form-check').classList.add('selected');
+        document.addEventListener('change', function (event) {
+            if (event.target.classList.contains('form-check-input')) {
+                const groupName = event.target.name;
+                document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
+                    input.closest('.form-check').classList.remove('selected');
+                });
+                if (event.target.checked) {
+                    event.target.closest('.form-check').classList.add('selected');
+                }
             }
-        }
 
-        if (event.target.name === 'selected_filtered_devices') {
-            const selectedDeviceId = event.target.value;
-            const isChecked = event.target.checked;
-            console.log(isChecked ? `Выбран ID устройства: ${selectedDeviceId}` : `Снята галочка с устройства ID: ${selectedDeviceId}`);
-        }
-        fetchOfficesAndDevices();
-    });
+            if (event.target.name === 'selected_filtered_devices') {
+                const selectedDeviceId = event.target.value;
+                const isChecked = event.target.checked;
+                console.log(isChecked ? `Выбран ID устройства: ${selectedDeviceId}` : `Снята галочка с устройства ID: ${selectedDeviceId}`);
+            }
+            fetchOfficesAndDevices();
+        });
 
         document.getElementById('modalSendMessage').addEventListener('click', function () {
             const message = document.getElementById('modalMessage').value.trim();

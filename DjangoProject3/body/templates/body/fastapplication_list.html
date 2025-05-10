@@ -4,84 +4,305 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Информация о пользователе</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
     <style>
+        :root {
+            --bg-light: #f8f9fa;
+            --bg-dark: #212529;
+            --text-light: #343a40;
+            --text-dark: #e9ecef;
+            --accent: #007bff;
+            --broken-bg-dark: #7b2d2d;
+        }
+
         body {
-            background-color: #f0f8ff;
-            color: #333;
-        }
-
-        h1, h2, h3 {
-            color: #8FBC8F;
-        }
-
-        .container {
-            margin: 40px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .device-item {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-light);
+            margin: 0;
+            min-height: 100vh;
+            transition: all 0.4s ease;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ccc;
-            max-width: 120px;
-            margin: 5px;
-            height: auto;
-            position: relative;
-            cursor: pointer;
+            flex-direction: column; /* Изменено для поддержки navbar и footer */
         }
 
-
-        .device-image-container {
-            position: relative;
-            display: inline-block;
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
         }
 
-        .warning-icon {
-            position: absolute;
+        #preloader {
+            background: var(--bg-light);
+            position: fixed;
             top: 0;
             left: 0;
-            width: 20px;
-            height: 40px;
-            z-index: 10;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body.dark-mode #preloader {
+            background: var(--bg-dark);
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #dee2e6;
+            border-top: 8px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Стили для навбара */
+        .navbar {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px #dee2e6, -8px -8px 16px #ffffff;
+            transition: all 0.4s ease;
+            margin: 10px auto;
+            max-width: 1200px;
+            padding: 0.5rem 1rem;
+            z-index: 1000;
+        }
+
+        body.dark-mode .navbar {
+            background: #343a40;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .navbar-brand {
+            color: var(--text-dark);
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        body.dark-mode .navbar-nav .nav-link {
+            color: var(--text-dark);
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: var(--accent);
+        }
+
+        body.dark-mode .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-nav .nav-link.active {
+            background-color: var(--accent);
+            color: #ffffff !important;
+        }
+
+        .navbar-nav .nav-link i {
+            margin-right: 0.5rem;
+        }
+
+        .theme-toggle {
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .theme-toggle {
+            background-color: #0056b3;
+        }
+
+        .navbar-toggler {
+            border-color: var(--accent);
+        }
+
+        body.dark-mode .navbar-toggler {
+            border-color: #495057;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 123, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        body.dark-mode .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px #dee2e6, -8px -8px 16px #ffffff;
+            max-width: 90%;
+            width: 100%;
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+            transition: all 0.4s ease;
+            margin-top: 80px; /* Учет высоты navbar */
+            margin-bottom: 20px; /* Для footer */
+        }
+
+        body.dark-mode .form-container {
+            background-color: #343a40;
+            box-shadow: none;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            display: block;
+            text-align: left;
+        }
+
+        body.dark-mode form label {
+            color: var(--text-dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: var(--text-dark);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        button, .btn {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover, .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+            align-items: stretch;
+            margin: 0 auto;
+        }
+
+        .body-list, .devices-list {
+            width: 100%;
+            flex: none;
+            box-sizing: border-box;
         }
 
         .devices-list {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: none;
             flex-direction: column;
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
             padding: 20px;
             min-height: 300px;
-            width: 100%;
-            display: none;
         }
 
-        .devices-list::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: -1;
+        .devices-list.active {
+            display: flex;
         }
 
         .devices-grid {
@@ -91,139 +312,420 @@
             align-content: center;
             margin: auto;
             max-width: 100%;
+            padding: 15px;
+            background-color: #f1f3f5;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        body.dark-mode .devices-grid {
+            background-color: #2c3034;
+            border-color: #6c757d;
+        }
+
+        .device-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-color: #ffffff;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dee2e6;
+            min-width: 100px;
+            min-height: 100px;
+            margin: 5px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .device-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        body.dark-mode .device-item {
+            background-color: #495057;
+            border-color: #6c757d;
+            color: var(--text-dark);
         }
 
         .device-item.broken {
-            border: 2px solid red;
+            border: 3px solid #dc3545;
+            background-color: #fff0f0;
+            position: relative;
+        }
+
+        .device-item.broken::after {
+            content: '\f071';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            font-size: 18px;
+            color: #dc3545;
+            background-color: #ffffff;
+            border-radius: 50%;
+            padding: 4px;
+        }
+
+        body.dark-mode .device-item.broken {
+            background-color: var(--broken-bg-dark);
+            border-color: #ff4d4d;
+        }
+
+        body.dark-mode .device-item.broken::after {
+            background-color: #343a40;
+            color: #ff4d4d;
+        }
+
+        .device-item.selected {
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 12px rgba(0, 123, 255, 0.5);
+            background-color: #e9f2ff;
+        }
+
+        body.dark-mode .device-item.selected {
+            background-color: #5a6268;
+            border-color: #80bdff;
+        }
+
+        .device-image {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .device-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-light);
+            line-height: 1.2;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
+
+        body.dark-mode .device-label {
+            color: var(--text-dark);
         }
 
         .status-message {
-            color: red;
+            color: #dc3545;
             font-weight: bold;
             font-size: 14px;
             margin-left: 10px;
         }
 
-        .device-image {
-            width: 30px;
-            height: 30px;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
-
-        .warning-icon-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .filtered-devices-list {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .device-label {
-            margin-top: 10px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .device-item.selected {
-            border: 2px solid #0d6efd;
-            box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
-            border-radius: 8px;
-        }
-
-        .broken-device {
-            border: 2px solid #dc3545;
-            border-radius: 8px;
-            padding: 8px;
-            background-color: #fff0f0;
-        }
-
-        #deviceModal .form-check-input {
+        .form-check-input {
             display: none;
         }
 
-        .form-check.selected {
-            border: 2px solid #0d6efd;
-            border-radius: 8px;
-            background-color: #e9f2ff;
+        .form-check {
             padding: 10px;
+            border-radius: 8px;
             transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+
+        .form-check.selected {
+            border: 2px solid var(--accent);
+            background-color: #e9f2ff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        body.dark-mode .form-check.selected {
+            background-color: #5a6268;
+            border-color: #80bdff;
+        }
+
+        .broken-device {
+            border: 3px solid #dc3545;
+            background-color: #fff0f0;
+            position: relative;
+        }
+
+        body.dark-mode .broken-device {
+            background-color: var(--broken-bg-dark);
+            border-color: #ff4d4d;
+        }
+
+        .broken-device::after {
+            content: '\f071';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            font-size: 18px;
+            color: #dc3545;
+            background-color: #ffffff;
+            border-radius: 50%;
+            padding: 4px;
+        }
+
+        body.dark-mode .broken-device::after {
+            background-color: #343a40;
+            color: #ff4d4d;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 20px;
+            transition: all 0.4s ease;
+        }
+
+        body.dark-mode .modal-content {
+            background-color: #343a40;
+        }
+
+        .modal-title {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .modal-body, .modal-footer {
+            padding: 20px;
+        }
+
+        .btn-back {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: auto;
+        }
+
+        body.dark-mode footer {
+            color: #adb5bd;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .form-container {
+                padding: 20px;
+                margin-top: 70px; /* Учет высоты navbar на мобильных */
+            }
+
+            .content-container {
+                flex-direction: column;
+            }
+
+            .body-list, .devices-list {
+                width: 100%;
+            }
+
+            .devices-grid {
+                gap: 8px;
+                padding: 10px;
+            }
+
+            .device-item {
+                min-width: 80px;
+                min-height: 80px;
+                padding: 8px;
+            }
+
+            .device-image {
+                width: 30px;
+                height: 30px;
+            }
+
+            .device-label {
+                font-size: 10px;
+            }
         }
     </style>
 </head>
-<body class="container">
+<body>
+<!-- Preloader -->
+<div id="preloader">
+    <div class="spinner"></div>
+</div>
 
-<h1 class="my-4 text-center">Выбор поломанного устройства</h1>
-
-<form method="POST" id="selectionForm">
-    <div class="text-center">
-        <a href="{% url 'success' %}" class="btn btn-secondary btn-back">Назад</a>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-tools me-2"></i>Сервис
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if role == "admin" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'body_list' %}">
+                            <i class="fas fa-tools me-1"></i> Отправить заявку
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'fastapplication_list' %}">
+                            <i class="fas fa-bolt me-1"></i> Быстрая заявка
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'device_breakdown_stats' %}">
+                            <i class="fas fa-chart-bar me-1"></i> Статистика
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/">
+                            <i class="fas fa-cogs me-1"></i> Админ-панель
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lkuser' %}">
+                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                        </a>
+                    </li>
+                {% elif role == "teacher" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'body_list' %}">
+                            <i class="fas fa-tools me-1"></i> Отправить заявку
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'fastapplication_list' %}">
+                            <i class="fas fa-bolt me-1"></i> Быстрая заявка
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ya_page' %}">
+                            <i class="fas fa-robot me-1"></i> YandexGPT
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lkuser' %}">
+                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                        </a>
+                    </li>
+                {% elif role == "master" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'body_list' %}">
+                            <i class="fas fa-tools me-1"></i> Отправить заявку
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'application_list' %}">
+                            <i class="fas fa-file-alt me-1"></i> Заявки
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lkuser' %}">
+                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon me-1"></i> Тема
+                    </button>
+                </li>
+            </ul>
+        </div>
     </div>
-    {% csrf_token %}
+</nav>
 
-    <div class="content-container">
-        <div class="body-list">
-            <h3>Ваши активные расписания</h3>
-            {% for schedule in schedules %}
-                <div class="schedule-item" data-name="{{ schedule.name }}" data-office="{{ schedule.office.id }}">
-                    <strong>{{ schedule.subjectName }}</strong> — Офис <span
-                        class="office-number">{{ schedule.classroom }}</span>
-                </div>
-            {% endfor %}
+<div class="form-container">
+    <h1 class="text-center">Выбор поломанного устройства</h1>
+
+    <form method="POST" id="selectionForm">
+
+        {% csrf_token %}
+
+        <div class="content-container">
+            <div class="body-list">
+                <h3>Ваши активные расписания</h3>
+                {% for schedule in schedules %}
+                    <div class="schedule-item" data-name="{{ schedule.name }}" data-office="{{ schedule.office.id }}">
+                        <strong>{{ schedule.subjectName }}</strong> — Офис <span
+                            class="office-number">{{ schedule.classroom }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="devices-list">
+                <h3>Схема кабинета</h3>
+                <div id="devices-list" class="devices-grid"></div>
+            </div>
         </div>
 
-        <div class="devices-list">
-            <h3>Схема кабинета</h3>
-            <div id="devices-list" class="devices-grid"></div>
-        </div>
-    </div>
-
-    </div>
-
-<div class="modal fade" id="deviceModal" tabindex="-1" aria-labelledby="deviceModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deviceModalLabel">Информация об устройстве</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="filtered-devices-list text-center">
-                        <h3>Устройства</h3>
-                        <div id="modal-filtered-devices-list-content"></div>
-                        <div id="modal-messageForm">
-                            <div class="form-group">
-                                <label for="modalBreakdownType">Выберите тип поломки:</label>
-                                <select class="form-control" id="modalBreakdownType">
-                                    <option value="">-- Выберите тип --</option>
-                                </select>
+        <!-- Modal -->
+        <div class="modal fade" id="deviceModal" tabindex="-1" aria-labelledby="deviceModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deviceModalLabel">Информация об устройстве</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="filtered-devices-list text-center">
+                            <h3>Устройства</h3>
+                            <div id="modal-filtered-devices-list-content"></div>
+                            <div id="modal-messageForm">
+                                <div class="form-group">
+                                    <label for="modalBreakdownType">Выберите тип поломки:</label>
+                                    <select class="form-control" id="modalBreakdownType">
+                                        <option value="">-- Выберите тип --</option>
+                                    </select>
+                                </div>
+                                <h4>Напишите сообщение:</h4>
+                                <textarea class="form-control" rows="4" id="modalMessage"
+                                          placeholder="Введите ваше сообщение"></textarea>
+                                <button type="button" class="btn btn-primary mt-3" id="modalSendMessage">
+                                    Отправить сообщение
+                                </button>
                             </div>
-                            <h4>Напишите сообщение:</h4>
-                            <textarea class="form-control" rows="4" id="modalMessage"
-                                      placeholder="Введите ваше сообщение"></textarea>
-                            <button type="button" class="btn btn-primary btn-secondary mt-3" id="modalSendMessage">
-                                Отправить сообщение
-                            </button>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
+
+<footer>© 2025 Ваш Сервис. Все права защищены.</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Hide preloader after page load
+    window.addEventListener('load', () => {
+        document.getElementById('preloader').style.display = 'none';
+    });
+
+    // Toggle theme
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Load theme from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    });
+
     function getCSRFToken() {
         var token = null;
         document.cookie.split(';').forEach(function (cookie) {
@@ -233,6 +735,7 @@
         });
         return token;
     }
+
     function updateBreakdownTypeSelect(breakdownTypes) {
         const modalBreakdownTypeSelect = document.getElementById("modalBreakdownType");
         const previouslySelectedValue = modalBreakdownTypeSelect.value;
@@ -274,8 +777,8 @@
                     deviceItem.style.gridColumn = `${position.x + 1}`;
 
                     let deviceImage = `
-                            <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
-                        `;
+                        <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
+                    `;
                     if (Number(device.condition_id) === 4) {
                         deviceItem.classList.add('broken');
                     }
@@ -285,51 +788,34 @@
                     imageContainer.innerHTML = deviceImage;
 
                     deviceItem.innerHTML += `
-    <input type="radio" name="selected_package_devices" value="${device.id}" id="device_${device.id}" style="display: none;">
-    <div class="device-label">Серийный номер: ${device.number}</div>
-`;
+                        <input type="radio" name="selected_package_devices" value="${device.id}" id="device_${device.id}" style="display: none;">
+                        <div class="device-label">Серийный номер: ${device.number}</div>
+                    `;
 
                     deviceItem.appendChild(imageContainer);
                     grid.appendChild(deviceItem);
 
-                    // Обработчик клика для открытия модального окна
                     deviceItem.addEventListener('click', function () {
-    const radio = deviceItem.querySelector(`input[type="radio"]`);
-    radio.checked = true;
-    radio.dispatchEvent(new Event('change', { bubbles: true }));
+                        const radio = deviceItem.querySelector(`input[type="radio"]`);
+                        radio.checked = true;
+                        radio.dispatchEvent(new Event('change', {bubbles: true}));
 
-    // Открытие модального окна с фильтрацией устройств
-    const modalFilteredDevicesListContent = document.getElementById('modal-filtered-devices-list-content');
-    modalFilteredDevicesListContent.innerHTML = '';
+                        const modalFilteredDevicesListContent = document.getElementById('modal-filtered-devices-list-content');
+                        modalFilteredDevicesListContent.innerHTML = `
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" checked>
+                                <label class="form-check-label" for="modal_filtered_device_${device.id}">
+                                    Серийный номер: ${device.number}, ID: ${device.id}, Кондиция: ${device.condition_id}
+                                    ${device.condition_id === 4 ? '<span class="status-message">СЛОМАНО !!!</span>' : ''}
+                                </label>
+                            </div>
+                        `;
 
-    // Фильтрация устройств, связанных с package_device_id
-    const relatedDevices = devices.filter(d => d.package_id === device.id); // Предполагается, что у device есть package_id
+                        document.getElementById('modalMessage').value = '';
 
-    if (relatedDevices.length > 0) {
-        relatedDevices.forEach(relatedDevice => {
-            const deviceItem = document.createElement('div');
-            deviceItem.classList.add('form-check');
-            if (relatedDevice.condition_id === 4) {
-                deviceItem.classList.add('broken-device');
-            }
-            deviceItem.innerHTML = `
-                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${relatedDevice.id}" id="modal_filtered_device_${relatedDevice.id}" checked>
-                <label class="form-check-label" for="modal_filtered_device_${relatedDevice.id}">
-                    Серийный номер: ${relatedDevice.serial_number}, ID: ${relatedDevice.id}, Кондиция: ${relatedDevice.condition_id}
-                    ${relatedDevice.condition_id === 4 ? '<span class="status-message">СЛОМАНО !!!</span>' : ''}
-                </label>
-            `;
-            modalFilteredDevicesListContent.appendChild(deviceItem);
-        });
-    } else {
-        modalFilteredDevicesListContent.innerHTML = '<p>Нет устройств, связанных с этим ПК.</p>';
-    }
-
-    document.getElementById('modalMessage').value = '';
-
-    const modal = new bootstrap.Modal(document.getElementById('deviceModal'));
-    modal.show();
-});
+                        const modal = new bootstrap.Modal(document.getElementById('deviceModal'));
+                        modal.show();
+                    });
                 }
             }
         });
@@ -345,104 +831,100 @@
     }
 
     function updateDevicesList(devices, selectedDevices, packageDeviceId) {
-    const modalFilteredDevicesListContent = document.getElementById("modal-filtered-devices-list-content");
-    const previouslySelectedDeviceIds = Array.from(
-        document.querySelectorAll('input[name="selected_filtered_devices"]:checked')
-    ).map(radio => radio.value);
-    modalFilteredDevicesListContent.innerHTML = "";
+        const modalFilteredDevicesListContent = document.getElementById("modal-filtered-devices-list-content");
+        const previouslySelectedDeviceIds = Array.from(
+            document.querySelectorAll('input[name="selected_filtered_devices"]:checked')
+        ).map(radio => radio.value);
+        modalFilteredDevicesListContent.innerHTML = "";
 
-    // Фильтруем устройства по packageDeviceId
-    const filteredDevices = packageDeviceId
-        ? devices.filter(device => device.package_id === packageDeviceId)
-        : devices;
+        const filteredDevices = packageDeviceId
+            ? devices.filter(device => device.package_id === packageDeviceId)
+            : devices;
 
-    if (filteredDevices && filteredDevices.length > 0) {
-        filteredDevices.forEach(device => {
-            const deviceItem = document.createElement('div');
-            deviceItem.classList.add('form-check');
-            if (device.condition_id === 4) {
-                deviceItem.classList.add('broken-device');
-            }
-            const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
-
-            deviceItem.innerHTML = `
-                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" ${isChecked ? 'checked' : ''}>
-                <label class="form-check-label" for="modal_filtered_device_${device.id}">
-                    Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id}
-                    ${device.condition_id === 4 ? '<span class="status-message">СЛОМАНО !!!</span>' : ''}
-                </label>
-            `;
-            modalFilteredDevicesListContent.appendChild(deviceItem);
-
-            const checkbox = deviceItem.querySelector('input[type="checkbox"]');
-            if (isChecked) {
-                deviceItem.classList.add('selected');
-            }
-            if (device.condition_id === 4) {
-                checkbox.disabled = true;
-            }
-
-            checkbox.addEventListener('change', function () {
-                if (checkbox.checked) {
-                    deviceItem.classList.add('selected');
-                } else {
-                    deviceItem.classList.remove('selected');
+        if (filteredDevices && filteredDevices.length > 0) {
+            filteredDevices.forEach(device => {
+                const deviceItem = document.createElement('div');
+                deviceItem.classList.add('form-check');
+                if (device.condition_id === 4) {
+                    deviceItem.classList.add('broken-device');
                 }
-            });
+                const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
 
-            deviceItem.addEventListener('click', function () {
-                if (!checkbox.disabled) {
-                    checkbox.checked = !checkbox.checked;
+                deviceItem.innerHTML = `
+                    <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" ${isChecked ? 'checked' : ''}>
+                    <label class="form-check-label" for="modal_filtered_device_${device.id}">
+                        Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id}
+                    </label>
+                `;
+                modalFilteredDevicesListContent.appendChild(deviceItem);
+
+                const checkbox = deviceItem.querySelector('input[type="checkbox"]');
+                if (isChecked) {
+                    deviceItem.classList.add('selected');
+                }
+                if (device.condition_id === 4) {
+                    checkbox.disabled = true;
+                }
+
+                checkbox.addEventListener('change', function () {
                     if (checkbox.checked) {
                         deviceItem.classList.add('selected');
                     } else {
                         deviceItem.classList.remove('selected');
                     }
-                }
+                });
+
+                deviceItem.addEventListener('click', function () {
+                    if (!checkbox.disabled) {
+                        checkbox.checked = !checkbox.checked;
+                        if (checkbox.checked) {
+                            deviceItem.classList.add('selected');
+                        } else {
+                            deviceItem.classList.remove('selected');
+                        }
+                    }
+                });
             });
-        });
-    } else {
-        modalFilteredDevicesListContent.innerHTML = '<p>Нет устройств, связанных с этим ПК.</p>';
-    }
-}
-
-
-
-function fetchDevices() {
-    var selectedSchedules = document.querySelectorAll('input[name="selected_schedules"]:checked');
-    var selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
-    var selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
-
-    var formData = new FormData();
-    selectedSchedules.forEach(checkbox => formData.append('selected_offices', checkbox.value));
-    selectedDevices.forEach(radio => formData.append('selected_package_devices', radio.value));
-    selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
-
-    if (selectedSchedules.length > 0) {
-        document.querySelector('.devices-list').style.display = 'block';
-    } else {
-        document.querySelector('.devices-list').style.display = 'none';
+        } else {
+            modalFilteredDevicesListContent.innerHTML = '<p>Нет устройств, связанных с этим ПК.</p>';
+        }
     }
 
-    fetch("{% url 'fastapplication_list' %}", {
-        method: "POST",
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Ответ от сервера:', data);
-        updatePackageDevicesList(data.package_devices, selectedDevices, data.layouts[0] || null);
-        updateDevicesList(data.devices, selectedFilteredDevices);
-        updateBreakdownTypeSelect(data.breakdown_types);
-    })
-    .catch(error => {
-        console.error('Ошибка при выполнении запроса:', error);
-    });
-}
+    function fetchDevices() {
+        var selectedSchedules = document.querySelectorAll('input[name="selected_schedules"]:checked');
+        var selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
+        var selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+
+        var formData = new FormData();
+        selectedSchedules.forEach(checkbox => formData.append('selected_offices', checkbox.value));
+        selectedDevices.forEach(radio => formData.append('selected_package_devices', radio.value));
+        selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
+
+        if (selectedSchedules.length > 0) {
+            document.querySelector('.devices-list').style.display = 'block';
+        } else {
+            document.querySelector('.devices-list').style.display = 'none';
+        }
+
+        fetch("{% url 'fastapplication_list' %}", {
+            method: "POST",
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Ответ от сервера:', data);
+                updatePackageDevicesList(data.package_devices, selectedDevices, data.layouts[0] || null);
+                updateDevicesList(data.devices, selectedFilteredDevices);
+                updateBreakdownTypeSelect(data.breakdown_types);
+            })
+            .catch(error => {
+                console.error('Ошибка при выполнении запроса:', error);
+            });
+    }
 
     document.addEventListener("change", function (event) {
         if (event.target.name === 'selected_filtered_devices') {
@@ -517,25 +999,12 @@ function fetchDevices() {
             hiddenInput.style.display = 'none';
 
             document.getElementById('selectionForm').appendChild(hiddenInput);
-
-            // сразу отправить fetch
             fetchDevices();
         } else {
             console.log('Нет доступных расписаний.');
             alert('Нет доступных расписаний для выбора.');
         }
     });
-
-{#document.getElementById('deviceModal').addEventListener('hidden.bs.modal', function () {#}
-{#    console.log('Модальное окно закрыто, сбрасываем выбор ПК');#}
-{#    const selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');#}
-{#    selectedDevices.forEach(radio => {#}
-{#        radio.checked = false;#}
-{#    });#}
-{#    console.log('Выбранные ПК после сброса:', document.querySelectorAll('input[name="selected_package_devices"]:checked').length);#}
-{#    fetchDevices();#}
-
 </script>
-
 </body>
 </html>

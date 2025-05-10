@@ -39,27 +39,6 @@
             color: var(--text-dark);
         }
 
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            background-color: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            transition: all 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background-color: #0056b3;
-        }
-
         #preloader {
             background: var(--bg-light);
             position: fixed;
@@ -87,18 +66,14 @@
         }
 
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .container {
             text-align: center;
             max-width: 1200px;
-            padding: 40px 20px;
+            padding: 100px 20px 40px; /* Увеличен padding-top для учета навбара */
         }
 
         h2, h4 {
@@ -106,15 +81,10 @@
             margin-bottom: 20px;
         }
 
-        h2 {
-            font-size: 36px;
-        }
+        h2 { font-size: 36px; }
+        h4 { font-size: 24px; }
 
-        h4 {
-            font-size: 24px;
-        }
-
-        /* Updated .card-item styles */
+        /* Стили для карточек */
         .card-item {
             background: #ffffff;
             border-radius: 20px;
@@ -165,7 +135,7 @@
         .card-item .table td {
             font-size: 1rem;
             color: var(--text-light);
-            background: transparent; /* Ensure cells inherit card background */
+            background: transparent;
         }
 
         body.dark-mode .card-item .table td {
@@ -173,7 +143,6 @@
             background: transparent;
         }
 
-        /* Ensure table rows inherit card background */
         .card-item .table tr {
             background: transparent;
         }
@@ -182,9 +151,8 @@
             background: transparent;
         }
 
-        /* Override Bootstrap's hover and bordered styles */
         .card-item .table-hover tbody tr:hover {
-            background: rgba(0, 123, 255, 0.1); /* Subtle hover effect */
+            background: rgba(0, 123, 255, 0.1);
         }
 
         body.dark-mode .card-item .table-hover tbody tr:hover {
@@ -255,22 +223,11 @@
                 margin-bottom: 1rem;
             }
 
-            .card-item h4 {
-                font-size: 1.25rem;
-            }
-
+            .card-item h4 { font-size: 1.25rem; }
             .card-item .table th,
-            .card-item .table td {
-                font-size: 0.875rem;
-            }
-
-            .card-item .list-group-item {
-                font-size: 0.875rem;
-            }
-
-            .card-item canvas {
-                max-height: 350px;
-            }
+            .card-item .table td { font-size: 0.875rem; }
+            .card-item .list-group-item { font-size: 0.875rem; }
+            .card-item canvas { max-height: 350px; }
         }
 
         @media (max-width: 768px) {
@@ -279,30 +236,15 @@
                 border-radius: 15px;
             }
 
-            .card-item h4 {
-                font-size: 1.125rem;
-            }
-
-            .card-item .table {
-                font-size: 0.75rem;
-            }
-
+            .card-item h4 { font-size: 1.125rem; }
+            .card-item .table { font-size: 0.75rem; }
             .card-item .table th,
-            .card-item .table td {
-                padding: 0.5rem;
-            }
-
-            .card-item .list-group-item {
-                font-size: 0.75rem;
-            }
-
-            .card-item canvas {
-                max-height: 300px;
-            }
-
+            .card-item .table td { padding: 0.5rem; }
+            .card-item .list-group-item { font-size: 0.75rem; }
+            .card-item canvas { max-height: 300px; }
             .card-item .btn-show-devices,
             .card-item .btn-hide-devices {
-                padding:0.5rem 1rem;
+                padding: 0.5rem 1rem;
                 font-size: 0.75rem;
             }
         }
@@ -319,12 +261,10 @@
                 -webkit-overflow-scrolling: touch;
             }
 
-            .card-item canvas {
-                max-height: 250px;
-            }
+            .card-item canvas { max-height: 250px; }
         }
 
-        /* Existing styles for other elements */
+        /* Стили для таблиц и других элементов */
         .table {
             border-radius: 10px;
             overflow: hidden;
@@ -335,9 +275,7 @@
             font-size: 16px;
         }
 
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
 
         hr {
             border-color: #dee2e6;
@@ -361,40 +299,160 @@
         }
 
         @media (max-width: 768px) {
-            h2 {
-                font-size: 28px;
+            h2 { font-size: 28px; }
+            h4 { font-size: 20px; }
+            .table { font-size: 14px; }
+            canvas { max-height: 300px; }
+        }
+
+        /* Стили для пагинации */
+        .pagination .btn-outline-primary {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .pagination .btn-outline-primary:hover {
+            background-color: var(--accent);
+            color: #ffffff;
+        }
+
+        body.dark-mode .pagination .btn-outline-primary {
+            border-color: #0056b3;
+            color: #e9ecef;
+        }
+
+        body.dark-mode .pagination .btn-outline-primary:hover {
+            background-color: #0056b3;
+            color: #ffffff;
+        }
+
+        /* Стили для навбара */
+        .navbar {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.1), -8px -8px 16px rgba(255, 255, 255, 0.5);
+            transition: all 0.4s ease;
+            margin: 10px auto;
+            max-width: 1200px;
+            padding: 0.5rem 1rem;
+            z-index: 1000;
+        }
+
+        body.dark-mode .navbar {
+            background: #343a40;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .navbar-brand {
+            color: var(--text-dark);
+        }
+
+        .navbar-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        body.dark-mode .navbar-nav .nav-link {
+            color: var(--text-dark);
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: var(--accent);
+        }
+
+        body.dark-mode .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-nav .nav-link i {
+            margin-right: 0.5rem;
+        }
+
+        .theme-toggle {
+            background-color: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode .theme-toggle {
+            background-color: #0056b3;
+        }
+
+        .navbar-toggler {
+            border-color: var(--accent);
+        }
+
+        body.dark-mode .navbar-toggler {
+            border-color: #495057;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 123, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        body.dark-mode .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        @media (max-width: 992px) {
+            .navbar-nav {
+                justify-content: flex-start;
+                padding: 1rem;
             }
 
-            h4 {
-                font-size: 20px;
+            .navbar-nav .nav-link {
+                padding: 0.75rem;
+                font-size: 0.9rem;
             }
 
-            .table {
-                font-size: 14px;
-            }
-
-            canvas {
-                max-height: 300px;
+            .theme-toggle {
+                margin: 0.5rem 1rem;
             }
         }
-        .pagination .btn-outline-primary {
-    border-color: var(--accent);
-    color: var(--accent);
-}
 
-.pagination .btn-outline-primary:hover {
+        @media (max-width: 768px) {
+            .container {
+                padding-top: 80px;
+            }
+        }
+        .navbar-nav .nav-link.active {
     background-color: var(--accent);
-    color: #ffffff;
-}
-
-body.dark-mode .pagination .btn-outline-primary {
-    border-color: #0056b3;
-    color: #e9ecef;
-}
-
-body.dark-mode .pagination .btn-outline-primary:hover {
-    background-color: #0056b3;
-    color: #ffffff;
+    color: #ffffff !important;
 }
     </style>
 </head>
@@ -404,8 +462,90 @@ body.dark-mode .pagination .btn-outline-primary:hover {
     <div class="spinner"></div>
 </div>
 
-<!-- Theme Toggle Button -->
-<button class="theme-toggle" onclick="toggleTheme()">🌙 Тема</button>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-tools me-2"></i>Сервис
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% if role == "admin" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'body_list' %}">
+                            <i class="fas fa-tools me-1"></i> Отправить заявку
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'fastapplication_list' %}">
+                            <i class="fas fa-bolt me-1"></i> Быстрая заявка
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'device_breakdown_stats' %}">
+                            <i class="fas fa-chart-bar me-1"></i> Статистика
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/">
+                            <i class="fas fa-cogs me-1"></i> Админ-панель
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lkuser' %}">
+                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                        </a>
+                    </li>
+                {% elif role == "teacher" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'body_list' %}">
+                            <i class="fas fa-tools me-1"></i> Отправить заявку
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'fastapplication_list' %}">
+                            <i class="fas fa-bolt me-1"></i> Быстрая заявка
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ya_page' %}">
+                            <i class="fas fa-robot me-1"></i> YandexGPT
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lkuser' %}">
+                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                        </a>
+                    </li>
+                {% elif role == "master" %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'body_list' %}">
+                            <i class="fas fa-tools me-1"></i> Отправить заявку
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'application_list' %}">
+                            <i class="fas fa-file-alt me-1"></i> Заявки
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lkuser' %}">
+                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <i class="fas fa-moon me-1"></i> Тема
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
 <div class="container">
     <h2><i class="fas fa-chart-bar"></i> Статистика поломанных устройств по офисам</h2>
@@ -460,6 +600,9 @@ body.dark-mode .pagination .btn-outline-primary:hover {
 </div>
 
 <footer>© 2025 Ваш Сервис. Все права защищены.</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 // Hide preloader after page load

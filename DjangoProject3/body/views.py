@@ -86,6 +86,12 @@ pytesseract.pytesseract.tesseract_cmd = settings.TESSERACT_PATH
 @swagger_auto_schema(method='get', responses={200: ApplicationSerializer(many=True)})
 @api_view(["GET"])
 def application_list(request):
+    # Определяем роль пользователя
+    user = request.user
+    # Получение роли из первой группы, как в user_dashboard
+    groups = user.groups.all()
+    role = groups[0].name.lower() if groups.exists() else 'Без роли'
+
     status_id = request.GET.get("status_id")  # Получаем статус из параметров запроса
     applications = Application.objects.select_related("office", "device", "status", "breakdown_type")
 
@@ -104,7 +110,8 @@ def application_list(request):
     statuses = Status.objects.all()  # Получаем все статусы для селекта
     return render(request, "body/application_list.html", {
         "applications": serializer.data,
-        "statuses": statuses
+        "statuses": statuses,
+        "role": role,  # Добавляем роль в контекст
     })
 
 
@@ -332,6 +339,10 @@ def send_message_to_telegram(request):
 )
 @api_view(["GET", "POST"])
 def body_list(request):
+    user = request.user
+    # Получение роли из первой группы, как в user_dashboard
+    groups = user.groups.all()
+    role = groups[0].name.lower() if groups.exists() else 'Без роли'
     if request.method == "POST":
         selected_bodies = list(map(int, request.POST.getlist("selected_bodies", [])))
         selected_floors = list(map(int, request.POST.getlist("selected_floors", [])))
@@ -402,6 +413,7 @@ def body_list(request):
         "offices": offices,
         "package_devices": [],
         "devices": [],
+        "role": role,
     })
 
 
@@ -432,6 +444,10 @@ def body_list(request):
 @api_view(["GET", "POST"])
 @login_required
 def fastapplication_list(request):
+    user = request.user
+    # Получение роли из первой группы, как в user_dashboard
+    groups = user.groups.all()
+    role = groups[0].name.lower() if groups.exists() else 'Без роли'
     full_name = f"{request.user.last_name} {request.user.first_name}"
     print("Текущее имя пользователя:", full_name)
 
@@ -533,7 +549,8 @@ def fastapplication_list(request):
         "devices": [],
         "breakdown_types": [],
         "layouts": [],
-        "offices": offices
+        "offices": offices,
+        "role": role
     })
 
 
@@ -571,33 +588,33 @@ def get_iam_token(oauth_token):
         500: "Ошибка сервера"
     },
 )
-@api_view(["GET", "POST"])  # Теперь поддерживает GET-запросы
+@api_view(["GET", "POST"])
+@login_required  # Требуем аутентификацию
 def yagpt_page(request):
     if request.method == "GET":
-        return render(request, "./body/ya_index.html")  # Возвращаем HTML-страницу
+        user = request.user
+        # Получение роли из первой группы, как в user_dashboard
+        groups = user.groups.all()
+        role = groups[0].name.lower() if groups.exists() else 'Без роли'
+
+        context = {'role': role}
+        return render(request, "body/ya_index.html", context)
 
     elif request.method == "POST":
         user_text = None
-
-        # Распознавание текста с изображения
         if 'image_file' in request.FILES:
             image_file = request.FILES['image_file']
             image = Image.open(image_file)
             user_text = "Как решить " + pytesseract.image_to_string(image, lang='rus+eng').strip()
-
             if not user_text:
                 return JsonResponse({'error': 'Не удалось распознать текст'}, status=400)
-
         elif 'user_text' in request.POST:
             user_text = request.POST['user_text'].strip()
         else:
             return JsonResponse({'error': 'Текст не передан'}, status=400)
 
         try:
-            # Получаем IAM-токен
-            IAM_TOKEN = get_iam_token(OAUTH_TOKEN)
-
-            # Запрос в Yandex GPT с IAM-токеном
+            IAM_TOKEN = get_iam_token(OAUTH_TOKEN)  # Предполагается, что функция определена
             response = requests.post(
                 "https://llm.api.cloud.yandex.net/foundationModels/v1/completion",
                 headers={
@@ -605,7 +622,7 @@ def yagpt_page(request):
                     "Content-Type": "application/json"
                 },
                 json={
-                    "modelUri": f"gpt://{FOLDER_ID}/yandexgpt/latest",
+                    "modelUri": f"gpt://{FOLDER_ID}/yandexgpt/latest",  # Предполагается, что FOLDER_ID определен
                     "completionOptions": {"stream": False, "temperature": 0.7},
                     "messages": [
                         {"role": "system",
@@ -614,18 +631,14 @@ def yagpt_page(request):
                     ]
                 }
             )
-
-            # Проверка ответа
             if response.status_code == 200:
                 generated_text = response.json()["result"]["alternatives"][0]["message"]["text"]
                 truncated_text = generated_text[:20]
                 return JsonResponse({'generated_text': truncated_text}, json_dumps_params={"ensure_ascii": False})
             else:
                 return JsonResponse({'error': response.text}, status=response.status_code)
-
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
-
 
 @login_required
 @swagger_auto_schema(
@@ -781,6 +794,12 @@ from django.http import JsonResponse
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def device_breakdown_stats(request):
+    # Определяем роль пользователя
+    user = request.user
+    # Получение роли из первой группы, как в user_dashboard
+    groups = user.groups.all()
+    role = groups[0].name.lower() if groups.exists() else 'Без роли'
+
     # Получаем общую статистику
     office_stats = (
         Application.objects
@@ -848,4 +867,5 @@ def device_breakdown_stats(request):
         "chart_data": json.dumps(stats_data),
         "heatmap_data": json.dumps(heatmap_data),
         "breakdown_type_data": json.dumps([]),
+        "role": role,  # Добавляем роль в контекст
     })
