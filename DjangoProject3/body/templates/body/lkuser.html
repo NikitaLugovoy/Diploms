@@ -94,34 +94,6 @@
             color: #adb5bd;
         }
 
-        .notification-container {
-            position: fixed;
-            top: 70px; /* Учитываем высоту навбара */
-            left: 20px;
-            display: flex;
-            align-items: center;
-            background: #ffffff;
-            padding: 10px 20px;
-            border-radius: 50px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            font-size: 16px;
-            font-weight: 600;
-            z-index: 900; /* Ниже навбара */
-        }
-
-        body.dark-mode .notification-container {
-            background: #343a40;
-        }
-
-        .notification-container .bell {
-            margin-right: 10px;
-            font-size: 20px;
-        }
-
-        .notification-container .count {
-            color: var(--accent);
-        }
-
         .table-container {
             margin-top: 20px;
             background: #ffffff;
@@ -290,13 +262,47 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-.navbar-nav .nav-link.active {
-    background-color: var(--accent);
-    color: #ffffff !important;
-}
+        .navbar-nav .nav-link.active {
+            background-color: var(--accent);
+            color: #ffffff !important;
+        }
 
         .navbar-nav .nav-link i {
             margin-right: 0.5rem;
+        }
+
+        .notification-link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .notification-link .notification-count {
+            background-color: var(--accent);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 0.5rem;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        body.dark-mode .notification-link .notification-count {
+            background-color: #0056b3;
+        }
+
+        .notification-link:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: var(--accent);
+        }
+
+        body.dark-mode .notification-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .theme-toggle {
@@ -362,6 +368,16 @@
                 font-size: 0.9rem;
             }
 
+            .notification-link {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .notification-link .notification-count {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+                min-width: 18px;
+            }
+
             .theme-toggle {
                 margin: 0.5rem 1rem;
             }
@@ -376,13 +392,6 @@
                 padding: 70px 10px 20px;
             }
 
-            .notification-container {
-                top: 60px; /* Учитываем высоту навбара */
-                left: 10px;
-                padding: 8px 15px;
-                font-size: 14px;
-            }
-
             .table-container {
                 padding: 10px;
             }
@@ -393,7 +402,7 @@
             }
 
             td {
-                max-width: 100px;
+                BEAUTIFULmax-width: 100px;
             }
 
             .delete-btn {
@@ -410,13 +419,16 @@
                 padding: 12px 30px;
                 font-size: 14px;
             }
+
+            .notification-link .notification-count {
+                font-size: 0.65rem;
+                padding: 1px 5px;
+                min-width: 16px;
+            }
         }
 
         @media (max-width: 576px) {
-            .notification-container {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
+            /* Удалены стили для старого notification-container */
         }
     </style>
 </head>
@@ -501,6 +513,14 @@
                         </a>
                     </li>
                 {% endif %}
+                <!-- Уведомления -->
+                <li class="nav-item">
+                    <a class="nav-link notification-link" href="#">
+                        <i class="fas fa-bell me-1"></i>
+                        <span class="notification-count">{{ notifications_count }}</span>
+                    </a>
+                </li>
+                <!-- Переключение темы -->
                 <li class="nav-item">
                     <button class="theme-toggle" onclick="toggleTheme()">
                         <i class="fas fa-moon me-1"></i> Тема
@@ -510,12 +530,6 @@
         </div>
     </div>
 </nav>
-
-<!-- Notification -->
-<div class="notification-container">
-    <i class="fas fa-bell bell"></i>
-    <span class="count">{{ notifications_count }}</span>
-</div>
 
 <div class="container">
     <h2>Личный кабинет</h2>
@@ -654,7 +668,7 @@
     }
 
     function updateNotificationCount() {
-        let countElement = document.querySelector(".count");
+        let countElement = document.querySelector(".notification-count");
         let currentCount = parseInt(countElement.textContent);
         if (currentCount > 0) {
             countElement.textContent = currentCount - 1;

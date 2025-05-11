@@ -477,6 +477,58 @@
     background-color: var(--accent);
     color: #ffffff !important;
 }
+.notification-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.notification-link .notification-count {
+    background-color: var(--accent);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 0.5rem;
+    min-width: 20px;
+    text-align: center;
+}
+
+body.dark-mode .notification-link .notification-count {
+    background-color: #0056b3;
+}
+
+.notification-link:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    color: var(--accent);
+}
+
+body.dark-mode .notification-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+@media (max-width: 992px) {
+    .notification-link {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .notification-link .notification-count {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        min-width: 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    .notification-link .notification-count {
+        font-size: 0.65rem;
+        padding: 1px 5px;
+        min-width: 16px;
+    }
+}
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -561,6 +613,14 @@
                         </a>
                     </li>
                 {% endif %}
+                <!-- Уведомления -->
+                <li class="nav-item">
+                    <a class="nav-link notification-link" href="#">
+                        <i class="fas fa-bell me-1"></i>
+                        <span class="notification-count">{{ notifications_count }}</span>
+                    </a>
+                </li>
+                <!-- Переключение темы -->
                 <li class="nav-item">
                     <button class="theme-toggle" onclick="toggleTheme()">
                         <i class="fas fa-moon me-1"></i> Тема
@@ -572,7 +632,7 @@
 </nav>
 
 <!-- Back Button -->
-<a href="{% url 'success' %}" class="btn-back"><i class="fas fa-arrow-left"></i> Назад</a>
+
 
 <div class="container">
     <h1>Все Заявки</h1>
@@ -907,6 +967,28 @@ $(document).ready(function () {
         }
     }
 });
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            let cookies = document.cookie.split(";");
+            for (let i = 0; i < cookies.length; i++) {
+                let cookie = cookies[i].trim();
+                if (cookie.startsWith(name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function updateNotificationCount() {
+        let countElement = document.querySelector(".notification-count");
+        let currentCount = parseInt(countElement.textContent);
+        if (currentCount > 0) {
+            countElement.textContent = currentCount - 1;
+        }
+    }
 </script>
 </body>
 </html>

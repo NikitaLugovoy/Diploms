@@ -94,6 +94,7 @@ def application_list(request):
 
     status_id = request.GET.get("status_id")  # Получаем статус из параметров запроса
     applications = Application.objects.select_related("office", "device", "status", "breakdown_type")
+    notifications_count = Application.objects.filter(user=user, status_id=1).count()
 
     if status_id:
         applications = applications.filter(status_id=status_id)  # Фильтр по статусу
@@ -111,7 +112,8 @@ def application_list(request):
     return render(request, "body/application_list.html", {
         "applications": serializer.data,
         "statuses": statuses,
-        "role": role,  # Добавляем роль в контекст
+        "role": role,
+        "notifications_count": notifications_count,# Добавляем роль в контекст
     })
 
 
@@ -343,6 +345,7 @@ def body_list(request):
     # Получение роли из первой группы, как в user_dashboard
     groups = user.groups.all()
     role = groups[0].name.lower() if groups.exists() else 'Без роли'
+    notifications_count = Application.objects.filter(user=user, status_id=1).count()
     if request.method == "POST":
         selected_bodies = list(map(int, request.POST.getlist("selected_bodies", [])))
         selected_floors = list(map(int, request.POST.getlist("selected_floors", [])))
@@ -414,6 +417,7 @@ def body_list(request):
         "package_devices": [],
         "devices": [],
         "role": role,
+        "notifications_count": notifications_count,
     })
 
 
@@ -448,6 +452,7 @@ def fastapplication_list(request):
     # Получение роли из первой группы, как в user_dashboard
     groups = user.groups.all()
     role = groups[0].name.lower() if groups.exists() else 'Без роли'
+    notifications_count = Application.objects.filter(user=user, status_id=1).count()
     full_name = f"{request.user.last_name} {request.user.first_name}"
     print("Текущее имя пользователя:", full_name)
 
@@ -550,7 +555,8 @@ def fastapplication_list(request):
         "breakdown_types": [],
         "layouts": [],
         "offices": offices,
-        "role": role
+        "role": role,
+        "notifications_count": notifications_count,
     })
 
 
@@ -596,8 +602,9 @@ def yagpt_page(request):
         # Получение роли из первой группы, как в user_dashboard
         groups = user.groups.all()
         role = groups[0].name.lower() if groups.exists() else 'Без роли'
+        notifications_count = Application.objects.filter(user=user, status_id=1).count()
 
-        context = {'role': role}
+        context = {'role': role, 'notifications_count': notifications_count}
         return render(request, "body/ya_index.html", context)
 
     elif request.method == "POST":
@@ -799,6 +806,7 @@ def device_breakdown_stats(request):
     # Получение роли из первой группы, как в user_dashboard
     groups = user.groups.all()
     role = groups[0].name.lower() if groups.exists() else 'Без роли'
+    notifications_count = Application.objects.filter(user=user, status_id=1).count()
 
     # Получаем общую статистику
     office_stats = (
@@ -868,4 +876,5 @@ def device_breakdown_stats(request):
         "heatmap_data": json.dumps(heatmap_data),
         "breakdown_type_data": json.dumps([]),
         "role": role,  # Добавляем роль в контекст
+        "notifications_count": notifications_count,
     })
