@@ -20,16 +20,18 @@
             --broken-bg-dark: #7b2d2d;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-light);
-            margin: 0;
-            min-height: 100vh;
-            transition: all 0.4s ease;
-            display: flex;
-            flex-direction: column; /* Изменено для поддержки navbar и footer */
-        }
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--text-light);
+    margin: 0;
+    min-height: 100vh;
+    transition: all 0.4s ease;
+    display: flex;
+    justify-content: center; /* Центрирование по горизонтали */
+    align-items: center; /* Центрирование по вертикали */
+    flex-direction: column; /* Поддержка navbar и footer */
+}
 
         body.dark-mode {
             background-color: var(--bg-dark);

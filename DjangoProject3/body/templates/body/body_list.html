@@ -690,10 +690,14 @@ body.dark-mode .notification-link:hover {
                 {% endif %}
                 <!-- Уведомления -->
                 <li class="nav-item">
-                    <a class="nav-link notification-link" href="#">
-                        <i class="fas fa-bell me-1"></i>
-                        <span class="notification-count">{{ notifications_count }}</span>
-                    </a>
+    <a class="nav-link notification-link" href="#">
+        <i class="fas fa-bell me-1"></i>
+        {% if notifications_count > 0 %}
+            <span class="notification-count">{{ notifications_count }}</span>
+        {% else %}
+            <span class="notification-count" style="display: none;">0</span>
+        {% endif %}
+    </a>
                 </li>
                 <!-- Переключение темы -->
                 <li class="nav-item">

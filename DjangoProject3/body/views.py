@@ -1,5 +1,6 @@
 import logging
 import json
+from collections import defaultdict
 
 import pytz
 import requests
@@ -88,32 +89,50 @@ pytesseract.pytesseract.tesseract_cmd = settings.TESSERACT_PATH
 def application_list(request):
     # Определяем роль пользователя
     user = request.user
-    # Получение роли из первой группы, как в user_dashboard
     groups = user.groups.all()
-    role = groups[0].name.lower() if groups.exists() else 'Без роли'
+    role = groups[0].name.lower() if groups.exists() else 'без роли'
 
-    status_id = request.GET.get("status_id")  # Получаем статус из параметров запроса
-    applications = Application.objects.select_related("office", "device", "status", "breakdown_type")
-    notifications_count = Application.objects.filter(user=user, status_id=1).count()
+    # Получаем status_id из GET-параметров
+    status_id = request.GET.get("status_id")
 
-    if status_id:
-        applications = applications.filter(status_id=status_id)  # Фильтр по статусу
+    # Определяем, какие заявки отображать и считаем уведомления
+    if role == "master":
+        # Для мастера: все заявки с учетом статуса
+        applications = Application.objects.select_related("office", "device", "status", "breakdown_type")
+        if status_id:
+            applications = applications.filter(status_id=status_id)
+        else:
+            applications = applications.filter(status_id=1)  # По умолчанию только "сломанные"
+        notifications_count = Application.objects.filter(status_id=1).count()  # Все сломанные заявки
+    else:
+        # Для остальных ролей: только заявки текущего пользователя
+        applications = Application.objects.select_related("office", "device", "status", "breakdown_type").filter(user=user)
+        if status_id:
+            applications = applications.filter(status_id=status_id)
+        else:
+            applications = applications.filter(status_id=1)  # По умолчанию только "сломанные"
+        notifications_count = Application.objects.filter(user=user, status_id=1).count()  # Заявки пользователя с status_id=1
 
-    applications = applications.order_by("-data")  # Сортировка по дате
+    # Сортировка по дате
+    applications = applications.order_by("-data")
 
+    # Сериализация данных
     serializer = ApplicationSerializer(applications, many=True)
 
+    # Отладочная информация
     print("🔹 Полученные данные:", serializer.data)
 
+    # Если запрос AJAX, возвращаем JSON
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         return Response(serializer.data)
 
+    # Рендеринг шаблона
     statuses = Status.objects.all()  # Получаем все статусы для селекта
     return render(request, "body/application_list.html", {
         "applications": serializer.data,
         "statuses": statuses,
         "role": role,
-        "notifications_count": notifications_count,# Добавляем роль в контекст
+        "notifications_count": notifications_count,
     })
 
 
@@ -344,8 +363,14 @@ def body_list(request):
     user = request.user
     # Получение роли из первой группы, как в user_dashboard
     groups = user.groups.all()
-    role = groups[0].name.lower() if groups.exists() else 'Без роли'
-    notifications_count = Application.objects.filter(user=user, status_id=1).count()
+    role = groups[0].name.lower() if groups.exists() else 'без роли'
+
+    # Подсчет уведомлений в зависимости от роли
+    if role == "master":
+        notifications_count = Application.objects.filter(status_id=1).count()  # Все заявки с status_id=1
+    else:
+        notifications_count = Application.objects.filter(user=user, status_id=1).count()  # Заявки пользователя с status_id=1
+
     if request.method == "POST":
         selected_bodies = list(map(int, request.POST.getlist("selected_bodies", [])))
         selected_floors = list(map(int, request.POST.getlist("selected_floors", [])))
@@ -727,11 +752,37 @@ from account.models import UserProfile
 @login_required
 def user_dashboard(request):
     user = request.user
-    applications = Application.objects.filter(user=user).order_by("-data")
-    notifications_count = Application.objects.filter(user=user, status_id=1).count()
-    application_serializer = ApplicationSerializer(applications, many=True)
     groups = user.groups.all()
     role = groups[0].name if groups.exists() else 'Без роли'
+
+    # Определяем, какие заявки отображать и считаем уведомления
+    if role == "master":
+        # Для мастера: все заявки в системе
+        applications = Application.objects.filter(status_id=1).order_by("-data")
+        notifications_count = applications.count()  # Уведомления: общее количество всех заявок
+        # Сериализация всех заявок
+        application_serializer = ApplicationSerializer(applications, many=True)
+        application_data = application_serializer.data
+        # Группировка заявок по office_number для мастера
+        grouped_applications = defaultdict(list)
+        for app in application_data:
+            grouped_applications[app['office_number']].append(app)
+        # Преобразуем в список для шаблона
+        grouped_applications_list = [
+            {'office_number': office, 'applications': apps}
+            for office, apps in grouped_applications.items()
+        ]
+        # Сортируем по номеру кабинета
+        grouped_applications_list = sorted(grouped_applications_list, key=lambda x: x['office_number'])
+    else:
+        # Для остальных ролей: только заявки текущего пользователя
+        applications = Application.objects.filter(user=user, status_id=1)
+        notifications_count = applications.count()  # Уведомления: только заявки пользователя
+        # Сериализация всех заявок
+        application_serializer = ApplicationSerializer(applications, many=True)
+        # Передаем данные без группировки
+        grouped_applications_list = []  # Пустой список для не-мастеров
+        application_data = application_serializer.data
 
     # Получаем аватар пользователя
     try:
@@ -740,15 +791,19 @@ def user_dashboard(request):
     except UserProfile.DoesNotExist:
         avatar_url = None
 
+    # Отладочная информация
+    print(f"Role: {role}, Notifications count: {notifications_count}")
+
     return render(
         request,
         "body/lkuser.html",
         {
             "user": user,
-            "applications": application_serializer.data,
+            "grouped_applications": grouped_applications_list,
+            "applications": application_data,
             "notifications_count": notifications_count,
             "role": role,
-            "avatar_url": avatar_url,  # ← добавляем в контекст
+            "avatar_url": avatar_url,
         }
     )
 
