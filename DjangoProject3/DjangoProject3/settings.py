@@ -44,8 +44,8 @@ TESSERACT_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 # settings.py
 import os
 
-BOT_TOKEN = os.getenv('BOT_TOKEN', '8197023195:AAGYwXOa7IbcbxMEVYyZaaXkb3KpHle4HzU')
-CHAT_ID = os.getenv('CHAT_ID', '822471294')
+BOT_TOKEN = os.getenv('BOT_TOKEN', '6168836890:AAFH53Tm97rva7_31ZK52CxuWxNF6f5zKtg')
+CHAT_ID = os.getenv('CHAT_ID', '5006892820')
 
 
 LOGIN_URL = '/login/'

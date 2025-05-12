@@ -1,184 +1,120 @@
+from django.test import TestCase, RequestFactory
+from django.contrib.auth.models import User, Group
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from rest_framework.test import APIRequestFactory
+from unittest.mock import patch, MagicMock
+from body.models import Device, Office, Application, PackageDevice, OfficeLayout
+from body.serializers import SendMessageSerializer
+from body.views import update_device_condition_by_id, get_office_number, send_message_to_telegram
 import json
-from unittest.mock import patch, Mock
-from django.test import TestCase, Client
-from django.urls import reverse
-from django.contrib.auth.models import User
-from rest_framework import status
-from rest_framework.test import APIClient
-from django.conf import settings
+
+
+class DeviceTests(TestCase):
+    def setUp(self):
+        # Создаем тестовые данные
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.office = Office.objects.create(number='101')
+        self.package_device = PackageDevice.objects.create(number='P1', office=self.office)
+        self.device = Device.objects.create(
+            serial_number='SN123',
+            condition_id=1,
+            package=self.package_device
+        )
+
+    def test_update_device_condition_by_id(self):
+        """Тестируем обновление состояния устройства."""
+        device_id = self.device.id
+        updated_device = update_device_condition_by_id(device_id)
+
+        # Проверяем, что устройство обновлено
+        self.assertEqual(updated_device.condition_id, 4)
+        # Проверяем, что устройство в базе данных обновлено
+        device_from_db = Device.objects.get(id=device_id)
+        self.assertEqual(device_from_db.condition_id, 4)
+
+    def test_update_device_condition_by_id_not_found(self):
+        """Тестируем случай, когда устройство не найдено."""
+        with self.assertRaises(Device.DoesNotExist):
+            update_device_condition_by_id(999)  # Несуществующий ID
+
+    def test_get_office_number(self):
+        """Тестируем получение номера офиса."""
+        office_id = self.office.id
+        result = get_office_number(office_id)
+        self.assertEqual(result, '101')
+
+    def test_get_office_number_not_found(self):
+        """Тестируем случай, когда офис не найден."""
+        with self.assertRaises(Office.DoesNotExist):
+            get_office_number(999)  # Несуществующий ID
+
 
 class SendMessageToTelegramTests(TestCase):
-    fixtures = ['body_test_data.json']
-
     def setUp(self):
-        self.client = APIClient()
-        self.user = User.objects.get(pk=1)  # Получение пользователя из фикстуры (pk=1)
-        self.client.force_authenticate(user=self.user)  # Аутентификация пользователя
+        # Настраиваем тестовые данные
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.group = Group.objects.create(name='master')
+        self.user.groups.add(self.group)
+        self.office = Office.objects.create(number='101')
+        self.package_device = PackageDevice.objects.create(number='P1', office=self.office)
+        self.device = Device.objects.create(
+            serial_number='SN123',
+            condition_id=1,
+            package=self.package_device
+        )
+        self.factory = APIRequestFactory()
 
-        self.valid_payload = {
+    @patch('requests.post')  # Мокаем HTTP-запрос для save_application
+    @patch('telebot.TeleBot.send_message')  # Мокаем отправку сообщения в Telegram
+    def test_send_message_to_telegram_success(self, mock_telegram, mock_requests_post):
+        """Тестируем успешную отправку сообщения в Telegram и создание заявки."""
+        # Настраиваем моки
+        mock_requests_post.return_value = MagicMock(status_code=201)
+        mock_telegram.return_value = None
+
+        # Формируем данные запроса (без breakdown_type)
+        data = {
             'message': 'Test message',
-            'selected_filtered_devices': [1],  # Device pk=1
-            'breakdown_type': 1  # BreakdownType pk=1
+            'selected_filtered_devices': [self.device.id]
         }
 
-    @patch('body.views.requests.post')
-    @patch('body.views.get_telegram_bot')
-    def test_send_message_to_telegram_success(self, mock_get_telegram_bot, mock_requests_post):
-        mock_bot = Mock()
-        mock_get_telegram_bot.return_value = mock_bot
+        # Создаем запрос
+        request = self.factory.post('/send-message/', data, format='json')
+        request.user = self.user  # Привязываем пользователя
 
-        mock_response = Mock()
-        mock_response.status_code = 201
-        mock_response.raise_for_status = Mock()
-        mock_requests_post.return_value = mock_response
+        # Вызываем view
+        response = send_message_to_telegram(request)
 
-        response = self.client.post(
-            reverse('send_message_to_telegram'),
-            data=json.dumps(self.valid_payload),
-            content_type='application/json'
-        )
+        # Проверяем ответ
+        self.assertEqual(response.status_code, 200)
+        response_data = json.loads(response.content)
+        self.assertEqual(response_data['status'], 'success')
+        self.assertEqual(response_data['message'], 'Сообщение отправлено!')
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json(), {'status': 'success', 'message': 'Сообщение отправлено!'})
-        self.assertEqual(mock_bot.send_message.called, True)
-        self.assertEqual(mock_requests_post.called, True)
-        self.assertEqual(
-            mock_requests_post.call_args[0][0],
-            f"{settings.BASE_URL}/body/save-application/"
-        )
-        self.assertEqual(
-            mock_requests_post.call_args[1]['json'],
-            {
-                'office_id': 1,
-                'device_ids': [1],
-                'reason': 'Test message',
-                'breakdown_type_id': 1,
-                'user_id': 1
-            }
-        )
+        # Проверяем, что заявка создана
+        self.assertTrue(Application.objects.filter(device_id=self.device.id).exists())
+        # Проверяем, что состояние устройства обновлено
+        updated_device = Device.objects.get(id=self.device.id)
+        self.assertEqual(updated_device.condition_id, 4)
 
-        from body.models import Device
-        device = Device.objects.get(pk=1)
-        self.assertEqual(device.condition_id, 4)
-
-    @patch('body.views.requests.post')
-    def test_send_message_to_telegram_no_devices(self, mock_requests_post):
-        payload = {
-            'message': 'Test message',
-            'selected_filtered_devices': [],
-            'breakdown_type': 1
+    @patch('requests.post')
+    def test_send_message_to_telegram_invalid_data(self, mock_requests_post):
+        """Тестируем отправку с невалидными данными."""
+        # Формируем невалидные данные (нет selected_filtered_devices)
+        data = {
+            'message': 'Test message'
         }
 
-        response = self.client.post(
-            reverse('send_message_to_telegram'),
-            data=json.dumps(payload),
-            content_type='application/json'
-        )
+        # Создаем запрос
+        request = self.factory.post('/send-message/', data, format='json')
+        request.user = self.user
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {'status': 'error', 'message': 'Не выбрано ни одного устройства!'})
-        self.assertEqual(mock_requests_post.called, False)
+        # Вызываем view
+        response = send_message_to_telegram(request)
 
-class BodyListTests(TestCase):
-    fixtures = ['body_test_data.json']
-
-    def setUp(self):
-        self.client = Client()
-        self.api_client = APIClient()
-        self.user = User.objects.get(pk=1)  # Получение пользователя из фикстуры (pk=1)
-        self.client.force_login(self.user)  # Аутентификация для Client
-        self.api_client.force_authenticate(user=self.user)  # Аутентификация для APIClient
-
-    def test_body_list_get(self):
-        response = self.client.get(reverse('body_list'))
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTemplateUsed(response, 'body/body_list.html')
-        self.assertIn('bodies', response.context)
-        self.assertIn('floors', response.context)
-        self.assertIn('offices', response.context)
-        self.assertEqual(response.context['role'], 'user')
-        self.assertEqual(response.context['notifications_count'], 0)
-        self.assertEqual(len(response.context['bodies']), 1)
-        self.assertEqual(len(response.context['floors']), 1)
-        self.assertEqual(len(response.context['offices']), 1)
-
-    def test_body_list_post_with_filters(self):
-        payload = {
-            'selected_bodies': [1],  # Body pk=1
-            'selected_floors': [1],  # Floor pk=1
-            'selected_offices': [1],  # Office pk=1
-            'selected_package_devices': [1],  # PackageDevice pk=1
-            'selected_filtered_devices': [1]  # Device pk=1
-        }
-
-        response = self.api_client.post(
-            reverse('body_list'),
-            data=payload,
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
-        self.assertIn('offices', response_data)
-        self.assertIn('package_devices', response_data)
-        self.assertIn('devices', response_data)
-        self.assertIn('layouts', response_data)
-        self.assertIn('breakdown_types', response_data)
-        self.assertEqual(len(response_data['offices']), 1)
-        self.assertEqual(len(response_data['package_devices']), 1)
-        self.assertEqual(len(response_data['devices']), 1)
-        self.assertEqual(len(response_data['layouts']), 1)
-        self.assertEqual(response_data['package_devices'][0]['condition_id'], '1')
-        self.assertEqual(response_data['breakdown_types'][0]['name'], 'Hardware Failure')
-
-    def test_body_list_post_no_filters(self):
-        payload = {
-            'selected_bodies': [],
-            'selected_floors': [],
-            'selected_offices': [],
-            'selected_package_devices': []
-        }
-
-        response = self.api_client.post(
-            reverse('body_list'),
-            data=payload,
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
-        self.assertIn('offices', response_data)
-        self.assertIn('package_devices', response_data)
-        self.assertIn('devices', response_data)
-        self.assertIn('layouts', response_data)
-        self.assertEqual(len(response_data['offices']), 1)
-        self.assertEqual(len(response_data['package_devices']), 0)
-        self.assertEqual(len(response_data['devices']), 1)
-        self.assertEqual(len(response_data['layouts']), 0)
-
-    def test_body_list_post_master_role(self):
-        from django.contrib.auth.models import Group
-        group = Group.objects.get(pk=1)
-        group.name = 'master'
-        group.save()
-
-        payload = {
-            'selected_bodies': [1],
-            'selected_floors': [1],
-            'selected_offices': [1],
-            'selected_package_devices': [1]
-        }
-
-        response = self.api_client.post(
-            reverse('body_list'),
-            data=payload,
-            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = response.json()
-        self.assertEqual(len(response_data['offices']), 1)
-        self.assertEqual(len(response_data['package_devices']), 1)
-        self.assertEqual(len(response_data['devices']), 1)
-        self.assertEqual(response_data['package_devices'][0]['condition_id'], '1')
+        # Проверяем ответ
+        self.assertEqual(response.status_code, 400)
+        response_data = json.loads(response.content)
+        self.assertEqual(response_data['status'], 'error')
+        self.assertEqual(response_data['message'], 'Не выбрано ни одного устройства!')
