@@ -1,5 +1,5 @@
 
-<img src="https://github.com/user-attachments/assets/6ef6142e-9a10-4fa7-a78a-7811edf6e500" width=100% height=50%>
+<img src="https://github.com/user-attachments/assets/6ef6142e-9a10-4fa7-a78a-7811edf6e500" width=75% height=50%>
 
 Система мониторинга технических устройств ВУЗа
 
