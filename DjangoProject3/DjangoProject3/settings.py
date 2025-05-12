@@ -114,9 +114,9 @@ WSGI_APPLICATION = 'DjangoProject3.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_DATABASE', default='diplom_test'),
+        'NAME': config('DB_DATABASE', default='diplom'),
         'USER': config('DB_USERNAME', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default='n1i2k3i4t5a6'),
+        'PASSWORD': config('DB_PASSWORD', default='Nikita'),
         'HOST': config('DB_HOST', default='127.0.0.1'),
         'PORT': config('DB_PORT', default='5432'),
         # Дополнительные параметры можно указать через OPTIONS
@@ -162,7 +162,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
