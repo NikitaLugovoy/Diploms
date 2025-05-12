@@ -1,4 +1,5 @@
-![46950](https://github.com/user-attachments/assets/6ef6142e-9a10-4fa7-a78a-7811edf6e500)
+
+<img src="[https://user-images.githubusercontent.com/16319829/81180309-2b51f000-8fee-11ea-8a78-ddfe8c3412a7.png](https://github.com/user-attachments/assets/6ef6142e-9a10-4fa7-a78a-7811edf6e500)" width=50% height=50%>
 Система мониторинга технических устройств ВУЗа
 
 	Подача заявок о неисправностях мгновенная и поздняя;
