@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Уведомление">
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="111">
+      <change afterPath="$PROJECT_DIR$/DjangoProject3/body/fixtures/body_test_data.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/tests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -255,7 +251,8 @@
       <workItem from="1746950855603" duration="1496000" />
       <workItem from="1746965564272" duration="6370000" />
       <workItem from="1747039793353" duration="7299000" />
-      <workItem from="1747051573050" duration="3457000" />
+      <workItem from="1747051573050" duration="4043000" />
+      <workItem from="1747063937811" duration="2140000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -513,7 +510,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747051310779</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="111">
+      <option name="closed" value="true" />
+      <created>1747055145576</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1747055145576</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -540,8 +545,8 @@
     <MESSAGE value="Схема кабинета" />
     <MESSAGE value="Пагинация" />
     <MESSAGE value="Дизайн" />
-    <MESSAGE value="111" />
     <MESSAGE value="Уведомление" />
-    <option name="LAST_COMMIT_MESSAGE" value="Уведомление" />
+    <MESSAGE value="111" />
+    <option name="LAST_COMMIT_MESSAGE" value="111" />
   </component>
 </project>
