@@ -31,14 +31,13 @@ urlpatterns = [
 
     path('close_application/<int:application_id>/', views.close_application, name='close_application'),  # Новый путь
 
-    path("add-schedule/", views.add_schedule, name="add_schedule"),
 
     path("logout/", logout_view, name="logout"),
     path("password_change/", CustomPasswordChangeView.as_view(), name="password_change"),
 
     path("device_stats/", views.device_breakdown_stats, name="device_breakdown_stats"),
 
-    path("schedule/list/", views.schedule_list, name="schedule_list"),  # <-- Добавляем маршрут
+
 
     re_path(r'^swagger-ui/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 

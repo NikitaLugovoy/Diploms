@@ -7,11 +7,11 @@
     <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Уведомление">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/lkuser.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/lkuser.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/ya_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/ya_index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -254,7 +254,8 @@
       <workItem from="1746897319893" duration="66000" />
       <workItem from="1746950855603" duration="1496000" />
       <workItem from="1746965564272" duration="6370000" />
-      <workItem from="1747039793353" duration="6960000" />
+      <workItem from="1747039793353" duration="7299000" />
+      <workItem from="1747051573050" duration="3457000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -504,7 +505,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746971460666</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Уведомление">
+      <option name="closed" value="true" />
+      <created>1747051310779</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1747051310779</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

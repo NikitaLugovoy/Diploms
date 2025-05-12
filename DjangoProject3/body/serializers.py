@@ -35,10 +35,10 @@ class PackageDeviceSerializer(serializers.ModelSerializer):
 class DeviceSerializer(serializers.ModelSerializer):
     package_id = serializers.IntegerField(source="package.id", read_only=True)
     condition_id = serializers.IntegerField(source="condition.id", read_only=True)
-
+    type_name = serializers.CharField(source="type.name", read_only=True)
     class Meta:
         model = Device
-        fields = ["id", "serial_number", "package_id", "condition_id"]
+        fields = ["id", "serial_number", "package_id", "condition_id", "type_name"]
 
 
 class StatusSerializer(serializers.ModelSerializer):

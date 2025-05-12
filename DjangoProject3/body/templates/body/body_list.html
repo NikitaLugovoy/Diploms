@@ -917,27 +917,26 @@ body.dark-mode .notification-link:hover {
                         deviceItem.appendChild(imageContainer);
                         grid.appendChild(deviceItem);
 
-                        deviceItem.addEventListener('click', function () {
-                            const radio = deviceItem.querySelector(`input[type="radio"]`);
-                            radio.checked = true;
-                            radio.dispatchEvent(new Event('change', {bubbles: true}));
+                deviceItem.addEventListener('click', function () {
+                    const radio = deviceItem.querySelector(`input[type="radio"]`);
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change', {bubbles: true}));
 
-                            const modalFilteredDevicesListContent = document.getElementById('modal-filtered-devices-list-content');
-                            modalFilteredDevicesListContent.innerHTML = `
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" checked>
-                                    <label class="form-check-label" for="modal_filtered_device_${device.id}">
-                                        Серийный номер: ${device.number}, ID: ${device.id}, Кондиция: ${device.condition_id}
-                                        ${device.condition_id === 4 ? '<span class="status-message">СЛОМАНО !!!</span>' : ''}
-                                    </label>
-                                </div>
-                            `;
+                    const modalFilteredDevicesListContent = document.getElementById('modal-filtered-devices-list-content');
+                    modalFilteredDevicesListContent.innerHTML = `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" checked>
+                            <label class="form-check-label" for="modal_filtered_device_${device.id}">
+                                Тип устройства: ${device.type_name || 'Не указан'}, Серийный номер: ${device.serial_number}
+                            </label>
+                        </div>
+                    `;
 
-                            document.getElementById('modalMessage').value = '';
+                    document.getElementById('modalMessage').value = '';
 
-                            const modal = new bootstrap.Modal(document.getElementById('deviceModal'));
-                            modal.show();
-                        });
+                    const modal = new bootstrap.Modal(document.getElementById('deviceModal'));
+                    modal.show();
+                });
                     }
                 }
             });
@@ -953,59 +952,59 @@ body.dark-mode .notification-link:hover {
         }
 
         function updateDevicesList(devices, selectedDevices) {
-            const modalFilteredDevicesListContent = document.getElementById("modal-filtered-devices-list-content");
-            const previouslySelectedDeviceIds = Array.from(
-                document.querySelectorAll('input[name="selected_filtered_devices"]:checked')
-            ).map(radio => radio.value);
-            modalFilteredDevicesListContent.innerHTML = "";
+    const modalFilteredDevicesListContent = document.getElementById("modal-filtered-devices-list-content");
+    const previouslySelectedDeviceIds = Array.from(
+        document.querySelectorAll('input[name="selected_filtered_devices"]:checked')
+    ).map(radio => radio.value);
+    modalFilteredDevicesListContent.innerHTML = "";
 
-            if (devices && devices.length > 0) {
-                devices.forEach(device => {
-                    const deviceItem = document.createElement('div');
-                    deviceItem.classList.add('form-check');
-                    if (device.condition_id === 4) {
-                        deviceItem.classList.add('broken-device');
-                    }
-                    const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
-
-                    deviceItem.innerHTML = `
-                        <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" ${isChecked ? 'checked' : ''}>
-                        <label class="form-check-label" for="modal_filtered_device_${device.id}">
-                            Серийный номер: ${device.serial_number}, ID: ${device.id}, Кондиция: ${device.condition_id}
-                        </label>
-                    `;
-                    modalFilteredDevicesListContent.appendChild(deviceItem);
-
-                    const checkbox = deviceItem.querySelector('input[type="checkbox"]');
-
-                    if (isChecked) {
-                        deviceItem.classList.add('selected');
-                    }
-                    if (device.condition_id === 4) {
-                        checkbox.disabled = true;
-                    }
-
-                    checkbox.addEventListener('change', function () {
-                        if (checkbox.checked) {
-                            deviceItem.classList.add('selected');
-                        } else {
-                            deviceItem.classList.remove('selected');
-                        }
-                    });
-
-                    deviceItem.addEventListener('click', function () {
-                        if (!checkbox.disabled) {
-                            checkbox.checked = !checkbox.checked;
-                            if (checkbox.checked) {
-                                deviceItem.classList.add('selected');
-                            } else {
-                                deviceItem.classList.remove('selected');
-                            }
-                        }
-                    });
-                });
+    if (devices && devices.length > 0) {
+        devices.forEach(device => {
+            const deviceItem = document.createElement('div');
+            deviceItem.classList.add('form-check');
+            if (device.condition_id === 4) {
+                deviceItem.classList.add('broken-device');
             }
-        }
+            const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
+
+            deviceItem.innerHTML = `
+                <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" ${isChecked ? 'checked' : ''}>
+                <label class="form-check-label" for="modal_filtered_device_${device.id}">
+                    Тип устройства: ${device.type_name || 'Не указан'}, Серийный номер: ${device.serial_number}
+                </label>
+            `;
+            modalFilteredDevicesListContent.appendChild(deviceItem);
+
+            const checkbox = deviceItem.querySelector('input[type="checkbox"]');
+
+            if (isChecked) {
+                deviceItem.classList.add('selected');
+            }
+            if (device.condition_id === 4) {
+                checkbox.disabled = true;
+            }
+
+            checkbox.addEventListener('change', function () {
+                if (checkbox.checked) {
+                    deviceItem.classList.add('selected');
+                } else {
+                    deviceItem.classList.remove('selected');
+                }
+            });
+
+            deviceItem.addEventListener('click', function () {
+                if (!checkbox.disabled) {
+                    checkbox.checked = !checkbox.checked;
+                    if (checkbox.checked) {
+                        deviceItem.classList.add('selected');
+                    } else {
+                        deviceItem.classList.remove('selected');
+                    }
+                }
+            });
+        });
+    }
+}
 
         function fetchOfficesAndDevices() {
             var selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
