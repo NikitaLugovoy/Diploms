@@ -636,6 +636,11 @@ body.dark-mode .notification-link:hover {
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ya_page' %}">
+                            <i class="fas fa-robot me-1"></i> YandexGPT
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'device_breakdown_stats' %}">
                             <i class="fas fa-chart-bar me-1"></i> Статистика
                         </a>
@@ -1122,6 +1127,7 @@ body.dark-mode .notification-link:hover {
                 .then(data => {
                     if (data.status === 'success') {
                         alert("Сообщение успешно отправлено!");
+                        resetCheckboxes()
                         document.getElementById('modalMessage').value = '';
                         document.getElementById('modalBreakdownType').value = '';
                         selectedFilteredDevices.forEach(radio => radio.checked = false);
@@ -1136,14 +1142,39 @@ body.dark-mode .notification-link:hover {
         });
 
         function resetCheckboxes() {
-            document.querySelectorAll('input[name="selected_bodies"]').forEach(radio => radio.checked = false);
-            document.querySelectorAll('input[name="selected_floors"]').forEach(radio => radio.checked = false);
-            document.querySelectorAll('input[name="selected_offices"]').forEach(radio => radio.checked = false);
-            document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => radio.checked = false);
-            document.querySelectorAll('input[name="selected_filtered_devices"]').forEach(checkbox => checkbox.checked = false);
-            document.getElementById("offices-list").style.display = "none";
-            document.querySelector(".devices-list").style.display = "none";
-        }
+    // Сбрасываем все радиокнопки и чекбоксы
+    document.querySelectorAll('input[name="selected_bodies"]').forEach(radio => {
+        radio.checked = false;
+        radio.closest('.form-check').classList.remove('selected');
+    });
+    document.querySelectorAll('input[name="selected_floors"]').forEach(radio => {
+        radio.checked = false;
+        radio.closest('.form-check').classList.remove('selected');
+    });
+    document.querySelectorAll('input[name="selected_offices"]').forEach(radio => {
+        radio.checked = false;
+        radio.closest('.form-check').classList.remove('selected');
+    });
+    document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => {
+        radio.checked = false;
+        radio.closest('.device-item')?.classList.remove('selected');
+    });
+    document.querySelectorAll('input[name="selected_filtered_devices"]').forEach(checkbox => {
+        checkbox.checked = false;
+        checkbox.closest('.form-check')?.classList.remove('selected');
+    });
+
+    // Скрываем списки офисов и устройств
+    document.getElementById("offices-list").style.display = "none";
+    document.querySelector(".devices-list").style.display = "none";
+
+    // Очищаем содержимое списков офисов и устройств
+    document.getElementById("offices-list-content").innerHTML = "";
+    document.getElementById("devices-list").innerHTML = "";
+
+    // Обновляем интерфейс
+    fetchOfficesAndDevices();
+}
             function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== "") {

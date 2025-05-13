@@ -647,7 +647,7 @@ def yagpt_page(request):
             )
             if response.status_code == 200:
                 generated_text = response.json()["result"]["alternatives"][0]["message"]["text"]
-                truncated_text = generated_text[:20]
+                truncated_text = generated_text[:850]
                 return JsonResponse({'generated_text': truncated_text}, json_dumps_params={"ensure_ascii": False})
             else:
                 return JsonResponse({'error': response.text}, status=response.status_code)
@@ -717,7 +717,11 @@ def user_dashboard(request):
 @login_required
 def delete_application(request, application_id):
     if request.method == "POST":
+
         application = get_object_or_404(Application, id=application_id, user=request.user)
+        device = get_object_or_404(Device, id=application.device_id)
+        device.condition_id = 1  # например, 1 — это "Свободен" или "Работает"
+        device.save()
         application.delete()
         return JsonResponse({"message": "Заявка удалена"}, status=200)
 
@@ -734,7 +738,7 @@ def logout_view(request):
 
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = "body/password_change.html"
-    success_url = reverse_lazy("user_dashboard")
+    success_url = reverse_lazy("lkuser")
 
 
 @swagger_auto_schema(
