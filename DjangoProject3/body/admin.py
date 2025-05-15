@@ -16,17 +16,22 @@ class FloorAdmin(admin.ModelAdmin):
     list_display = ('number',)
     search_fields = ('number',)
 
+class DeviceInline(admin.TabularInline):
+    model = Device
+    extra = 4  # 4 устройства можно будет создать сразу
+    fields = ('type', 'serial_number', 'condition')
+
 # В файле admin.py
 @admin.register(Office)
 class OfficeAdmin(admin.ModelAdmin):
     list_display = ('number', 'floor', 'body')  # Заменили floors_id на floor
     search_fields = ('number', 'floor__number', 'body__number')  # Используем связанные поля для поиска
 
-
 @admin.register(PackageDevice)
 class PackageDeviceAdmin(admin.ModelAdmin):
     list_display = ('office_id', 'number')
     search_fields = ('office_id', 'number')
+    inlines = [DeviceInline]  # ← подключаем инлайн устройств
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
