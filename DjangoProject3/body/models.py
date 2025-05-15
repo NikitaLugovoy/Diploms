@@ -15,12 +15,13 @@ class Body(models.Model):
 
 class Floor(models.Model):
     number = models.IntegerField()
+    bodies = models.ManyToManyField(Body, related_name='floors')  # Отношение "многие ко многим"
 
     class Meta:
         db_table = 'floors'
 
     def __str__(self):
-        return f"Этаж {self.number} ({self.number})"
+        return f"Этаж {self.number}"
 
 
 class Office(models.Model):

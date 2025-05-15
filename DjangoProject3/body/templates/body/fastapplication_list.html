@@ -722,7 +722,7 @@ body.dark-mode .notification-link:hover {
                 <h3>Ваши активные расписания</h3>
                 {% for schedule in schedules %}
                     <div class="schedule-item" data-name="{{ schedule.name }}" data-office="{{ schedule.office.id }}">
-                        <strong>{{ schedule.subjectName }}</strong> — Офис <span
+                        <strong>{{ schedule.subjectName }}</strong> — Кабинет <span
                             class="office-number">{{ schedule.classroom }}</span>
                     </div>
                 {% endfor %}

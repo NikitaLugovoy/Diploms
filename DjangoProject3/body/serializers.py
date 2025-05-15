@@ -12,19 +12,23 @@ class BodySerializer(serializers.ModelSerializer):
 
 
 class FloorSerializer(serializers.ModelSerializer):
+    body_ids = serializers.PrimaryKeyRelatedField(
+        source='bodies', many=True, read_only=True
+    )
+
     class Meta:
         model = Floor
-        fields = ["id", "number"]
+        fields = ["id", "number", "body_ids"]
 
 
 class OfficeSerializer(serializers.ModelSerializer):
     floor_id = serializers.IntegerField(source="floor.id", read_only=True)
     body_id = serializers.IntegerField(source="body.id", read_only=True)
+    floor_number = serializers.IntegerField(source="floor.number", read_only=True)
 
     class Meta:
         model = Office
-        fields = ["id", "number", "floor_id", "body_id"]
-
+        fields = ["id", "number", "floor_id", "body_id", "floor_number"]
 
 class PackageDeviceSerializer(serializers.ModelSerializer):
     class Meta:

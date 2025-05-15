@@ -18,7 +18,7 @@ from django.conf import settings
 
 from account.models import UserProfile
 from .models import OfficeLayout
-from .serializers import OfficeLayoutSerializer
+from .serializers import OfficeLayoutSerializer, BodySerializer, FloorSerializer
 
 from django.contrib.auth.decorators import login_required
 
@@ -343,28 +343,26 @@ def send_message_to_telegram(request):
 @api_view(["GET", "POST"])
 def body_list(request):
     user = request.user
-    # Получение роли из первой группы, как в user_dashboard
     groups = user.groups.all()
     role = groups[0].name.lower() if groups.exists() else 'без роли'
 
-    # Подсчет уведомлений в зависимости от роли
+    # Подсчет уведомлений
     if role == "master":
-        notifications_count = Application.objects.filter(status_id=1).count()  # Все заявки с status_id=1
+        notifications_count = Application.objects.filter(status_id=1).count()
     else:
-        notifications_count = Application.objects.filter(user=user,
-                                                         status_id=1).count()  # Заявки пользователя с status_id=1
+        notifications_count = Application.objects.filter(user=user, status_id=1).count()
 
     if request.method == "POST":
         selected_bodies = list(map(int, request.POST.getlist("selected_bodies", [])))
         selected_floors = list(map(int, request.POST.getlist("selected_floors", [])))
-        selected_filtered_devices = list(map(int, request.POST.getlist("selected_filtered_devices", [])))
         selected_offices = list(map(int, request.POST.getlist("selected_offices", [])))
         selected_package_devices = list(map(int, request.POST.getlist("selected_package_devices", [])))
+        selected_filtered_devices = list(map(int, request.POST.getlist("selected_filtered_devices", [])))
 
-        print("Selected Bodies:", selected_bodies)
-        print("Selected Floors:", selected_floors)
-        print("Selected Offices:", selected_offices)
-        print("Selected Filtered Devices:", selected_filtered_devices)
+        # Фильтрация этажей по выбранным корпусам
+        floors = Floor.objects.all()
+        if selected_bodies:
+            floors = floors.filter(bodies__id__in=selected_bodies).distinct()
 
         # Фильтрация офисов
         offices = Office.objects.all()
@@ -377,23 +375,20 @@ def body_list(request):
         package_devices = PackageDevice.objects.filter(office_id__in=selected_offices) if selected_offices else []
 
         # Фильтрация устройств
-        devices = Device.objects.filter(
-            package_id__in=selected_package_devices) if selected_package_devices else Device.objects.all()
+        devices = Device.objects.filter(package_id__in=selected_package_devices) if selected_package_devices else Device.objects.all()
 
         # Получение схем для выбранных офисов
-        layouts = OfficeLayout.objects.filter(office_id__in=selected_offices).prefetch_related(
-            'device_positions') if selected_offices else []
+        layouts = OfficeLayout.objects.filter(office_id__in=selected_offices).prefetch_related('device_positions') if selected_offices else []
 
+        # Типы поломок
         breakdown_types = BreakdownType.objects.all()
         breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
 
-        print("Breakdown Types:", breakdown_types)
-
-        # Проставляем `condition_id` для пакетов устройств
+        # Проставляем condition_id для пакетов устройств
         package_devices_with_condition = []
         for package_device in package_devices:
             devices_in_package = Device.objects.filter(package_id=package_device.id)
-            condition = "1"  # По умолчанию
+            condition = "1"
             for device in devices_in_package:
                 if device.condition_id in [4, 6]:
                     condition = str(device.condition_id)
@@ -407,11 +402,13 @@ def body_list(request):
 
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return JsonResponse({
+                "bodies": BodySerializer(Body.objects.all(), many=True).data,
+                "floors": FloorSerializer(floors, many=True).data,
                 "offices": OfficeSerializer(offices, many=True).data,
-                "breakdown_types": breakdown_types_data,
                 "package_devices": package_devices_with_condition,
                 "devices": DeviceSerializer(devices, many=True).data,
-                "layouts": OfficeLayoutSerializer(layouts, many=True).data
+                "layouts": OfficeLayoutSerializer(layouts, many=True).data,
+                "breakdown_types": breakdown_types_data,
             })
 
     # GET-запрос
@@ -427,7 +424,6 @@ def body_list(request):
         "role": role,
         "notifications_count": notifications_count,
     })
-
 
 @swagger_auto_schema(
     method="get",
