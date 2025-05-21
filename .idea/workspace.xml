@@ -7,7 +7,7 @@
     <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Подготовка под деплой">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -297,7 +297,7 @@
       <workItem from="1747727207142" duration="241000" />
       <workItem from="1747767266756" duration="2550000" />
       <workItem from="1747770876398" duration="3475000" />
-      <workItem from="1747851974931" duration="6800000" />
+      <workItem from="1747851974931" duration="7565000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -619,7 +619,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747860075978</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Подготовка под деплой">
+      <option name="closed" value="true" />
+      <created>1747861110003</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1747861110005</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Подготовка под деплой">
+      <option name="closed" value="true" />
+      <created>1747861274695</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1747861274695</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
