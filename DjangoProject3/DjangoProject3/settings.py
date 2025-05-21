@@ -117,7 +117,7 @@ DATABASES = {
         'NAME': config('DB_DATABASE', default='diplom_test'),
         'USER': config('DB_USERNAME', default='postgres'),
         'PASSWORD': config('DB_PASSWORD', default='n1i2k3i4t5a6'),
-        'HOST': config('DB_HOST', default='127.0.0.1'),
+        'HOST': config('DB_HOST', default='db'),
         'PORT': config('DB_PORT', default='5432'),
         # Дополнительные параметры можно указать через OPTIONS
         'OPTIONS': {
@@ -163,6 +163,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
