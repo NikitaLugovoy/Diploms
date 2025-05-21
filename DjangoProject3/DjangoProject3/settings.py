@@ -26,12 +26,12 @@ SECRET_KEY = 'django-insecure-lwd6p7@_gj#2bf8m&#ntfe-z!ux*1*zvs4&jp6nzsj4i=&@6y&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['83.219.249.118', 'localhost', '127.0.0.1']
 
 TELEGRAM_BOT_TOKEN = '6176694125:AAFq80IuvhhLNvX_to6yqx_bzeMW3BvecQA'
 TELEGRAM_CHAT_ID = '5006892820'
 
-BASE_URL = "http://localhost:8000"  # Или другой ваш URL
+BASE_URL = "http://83.219.249.118:8000"  # Или другой ваш URL
 
 # Yandex OAuth и GPT настройки
 OAUTH_TOKEN = "y0__xDb65qfAhjB3RMgx9vHqRL-nTzxy4_H8SOVUt0AjSB2s_ZbtA"
