@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление верификации и фикс сообщений со входа">
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/.env" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -297,7 +296,9 @@
       <workItem from="1747767266756" duration="2550000" />
       <workItem from="1747770876398" duration="3475000" />
       <workItem from="1747851974931" duration="9575000" />
-      <workItem from="1748253201523" duration="3204000" />
+      <workItem from="1748253201523" duration="3278000" />
+      <workItem from="1748256940076" duration="671000" />
+      <workItem from="1748260126445" duration="2152000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -659,7 +660,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748256404628</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="Добавление верификации и фикс сообщений со входа">
+      <option name="closed" value="true" />
+      <created>1748256450249</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1748256450249</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
