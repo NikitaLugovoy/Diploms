@@ -119,7 +119,7 @@ DATABASES = {
         'NAME': config('DB_DATABASE', default='diplom_test'),
         'USER': config('DB_USERNAME', default='postgres'),
         'PASSWORD': config('DB_PASSWORD', default='n1i2k3i4t5a6'),
-        'HOST': config('DB_HOST', default='127.0.0.1'),
+        'HOST': config('DB_HOST', default='bd'),
         'PORT': config('DB_PORT', default='5432'),
         # Дополнительные параметры можно указать через OPTIONS
         'OPTIONS': {
