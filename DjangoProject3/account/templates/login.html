@@ -206,6 +206,25 @@
                 padding: 20px;
             }
         }
+        ul.messages {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 1em;
+}
+ul.messages li {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+ul.messages li.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+ul.messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
     </style>
 </head>
 <body>
@@ -219,6 +238,14 @@
 
 <div class="form-container">
     <h1>Вход</h1>
+
+{% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
 
     <form method="post">
         {% csrf_token %}

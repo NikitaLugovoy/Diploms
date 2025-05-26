@@ -10,6 +10,35 @@ from .forms import CustomUserCreationForm
 from .serializers import UserSerializer
 from django.contrib.auth.models import Group
 
+from django.core.signing import TimestampSigner
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.conf import settings
+
+signer = TimestampSigner()
+
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
+
+def send_activation_email(user, request):
+    token = signer.sign(user.pk)
+    activation_url = request.build_absolute_uri(
+        reverse('activate', kwargs={'token': token})
+    )
+
+    subject = 'Подтвердите вашу регистрацию'
+    context = {
+        'user': user,
+        'activation_url': activation_url,
+    }
+
+    html_message = render_to_string('email/activation_email.html', context)
+    plain_message = render_to_string('email/activation_email.txt', context)
+
+    send_mail(subject, plain_message, settings.EMAIL_HOST_USER, [user.email], html_message=html_message)
+
+
 @swagger_auto_schema(method='post', request_body=UserSerializer, responses={201: 'Регистрация успешна', 400: 'Ошибка регистрации'})
 @api_view(['POST', 'GET'])
 @permission_classes([AllowAny])
@@ -19,18 +48,40 @@ def register_view(request):
     if request.method == 'POST':
         reg_form = CustomUserCreationForm(request.POST, request.FILES)
         if reg_form.is_valid():
-            user = reg_form.save()
+            user = reg_form.save()  # commit=True по умолчанию
+            user.is_active = False  # блокируем доступ до подтверждения
+            user.save()
 
             # Добавление в группу "teacher"
             teacher_group, created = Group.objects.get_or_create(name='teacher')
             user.groups.add(teacher_group)
 
-            messages.success(request, "Регистрация успешна! Теперь войдите.")
+            send_activation_email(user, request)
+
+            messages.success(request, "Регистрация успешна! Проверьте почту для активации аккаунта.")
             return redirect('login')
         else:
             messages.error(request, "Ошибка регистрации. Проверьте введенные данные.")
 
     return render(request, 'register.html', {'reg_form': reg_form})
+
+from django.core.signing import SignatureExpired, BadSignature
+from django.contrib.auth.models import User
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def activate_view(request, token):
+    try:
+        user_pk = signer.unsign(token, max_age=60*60*24)  # токен живёт 24 часа
+        user = User.objects.get(pk=user_pk)
+        user.is_active = True
+        user.save()
+        messages.success(request, "Аккаунт активирован! Теперь вы можете войти.")
+        return redirect('login')
+    except (SignatureExpired, BadSignature, User.DoesNotExist):
+        messages.error(request, "Ссылка недействительна или истекла.")
+        return redirect('register')
+
 
 @swagger_auto_schema(method='post', request_body=openapi.Schema(
     type=openapi.TYPE_OBJECT,
@@ -47,6 +98,9 @@ def login_view(request):
         login_form = AuthenticationForm(data=request.POST)
         if login_form.is_valid():
             user = login_form.get_user()
+            if not user.is_active:
+                messages.error(request, "Ваш аккаунт не активирован. Проверьте почту.")
+                return redirect('login')
             login(request, user)
             return redirect('success')
         else:
