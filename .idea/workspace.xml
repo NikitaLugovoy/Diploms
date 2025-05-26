@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление верификации и фикс сообщений со входа">
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Внесение изминений">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/.env" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -298,7 +300,7 @@
       <workItem from="1747851974931" duration="9575000" />
       <workItem from="1748253201523" duration="3278000" />
       <workItem from="1748256940076" duration="671000" />
-      <workItem from="1748260126445" duration="2152000" />
+      <workItem from="1748260126445" duration="2865000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -668,7 +670,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748256450249</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="Внесение изминений">
+      <option name="closed" value="true" />
+      <created>1748262336169</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1748262336169</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -704,7 +714,8 @@
     <MESSAGE value="Привязка Этажей к Кабинетам" />
     <MESSAGE value="Подготовка под деплой" />
     <MESSAGE value="Добавление верификации и фикс сообщений со входа" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавление верификации и фикс сообщений со входа" />
+    <MESSAGE value="Внесение изминений" />
+    <option name="LAST_COMMIT_MESSAGE" value="Внесение изминений" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
