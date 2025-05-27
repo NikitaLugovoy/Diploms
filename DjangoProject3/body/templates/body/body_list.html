@@ -19,13 +19,15 @@
             --accent: #007bff;
             --broken-bg-dark: #7b2d2d;
         }
-.main-content {
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-light);
@@ -69,8 +71,12 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Стили для навбара */
@@ -296,33 +302,34 @@
             box-sizing: border-box;
         }
 
-.devices-list {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
-    padding: 20px;
-    min-height: 300px;
-    width: 100%;
-    overflow-x: auto; /* Добавляем прокрутку для контейнера */
-}
-.devices-grid::-webkit-scrollbar {
-    height: 8px; /* Высота полосы прокрутки */
-}
+        .devices-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+            padding: 20px;
+            min-height: 300px;
+            width: 100%;
+            overflow-x: auto; /* Добавляем прокрутку для контейнера */
+        }
 
-.devices-grid::-webkit-scrollbar-thumb {
-    background-color: var(--accent);
-    border-radius: 4px;
-}
+        .devices-grid::-webkit-scrollbar {
+            height: 8px; /* Высота полосы прокрутки */
+        }
 
-.devices-grid::-webkit-scrollbar-track {
-    background: var(--bg-light);
-}
+        .devices-grid::-webkit-scrollbar-thumb {
+            background-color: var(--accent);
+            border-radius: 4px;
+        }
 
-body.dark-mode .devices-grid::-webkit-scrollbar-track {
-    background: var(--bg-dark);
-}
+        .devices-grid::-webkit-scrollbar-track {
+            background: var(--bg-light);
+        }
+
+        body.dark-mode .devices-grid::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
 
         .devices-grid {
             display: grid;
@@ -549,138 +556,142 @@ body.dark-mode .devices-grid::-webkit-scrollbar-track {
                 flex: 1 1 100%;
             }
 
-    .devices-list {
-        position: relative;
-        z-index: 10; /* Устанавливаем выше, чем у .form-container */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        padding: 10px;
-        min-height: 100px; /* Уменьшаем минимальную высоту */
-        width: 100%;
-        overflow-x: auto; /* Включаем прокрутку для контейнера */
-    }
+            .devices-list {
+                position: relative;
+                z-index: 10; /* Устанавливаем выше, чем у .form-container */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                padding: 10px;
+                min-height: 100px; /* Уменьшаем минимальную высоту */
+                width: 100%;
+                overflow-x: auto; /* Включаем прокрутку для контейнера */
+            }
 
-    .devices-grid {
-        display: flex; /* Используем flex вместо grid */
-        flex-direction: row; /* Устройства в одну линию */
-        gap: 8px;
-        padding: 10px;
-        width: auto; /* Ширина определяется содержимым */
-        min-width: fit-content; /* Минимальная ширина для содержимого */
-        overflow-x: auto; /* Горизонтальная прокрутка */
-        white-space: nowrap; /* Предотвращаем перенос элементов */
-        background-color: #f1f3f5;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+            .devices-grid {
+                display: flex; /* Используем flex вместо grid */
+                flex-direction: row; /* Устройства в одну линию */
+                gap: 8px;
+                padding: 10px;
+                width: auto; /* Ширина определяется содержимым */
+                min-width: fit-content; /* Минимальная ширина для содержимого */
+                overflow-x: auto; /* Горизонтальная прокрутка */
+                white-space: nowrap; /* Предотвращаем перенос элементов */
+                background-color: #f1f3f5;
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
 
-    body.dark-mode .devices-grid {
-        background-color: #2c3034;
-        border-color: #6c757d;
-    }
+            body.dark-mode .devices-grid {
+                background-color: #2c3034;
+                border-color: #6c757d;
+            }
 
-    .device-item {
-        min-width: 70px; /* Уменьшенная ширина элемента */
-        min-height: 70px;
-        padding: 8px;
-        flex: 0 0 auto; /* Элементы не растягиваются */
-    }
+            .device-item {
+                min-width: 70px; /* Уменьшенная ширина элемента */
+                min-height: 70px;
+                padding: 8px;
+                flex: 0 0 auto; /* Элементы не растягиваются */
+            }
 
-    .device-image {
-        width: 25px; /* Уменьшенный размер изображения */
-        height: 25px;
-    }
+            .device-image {
+                width: 25px; /* Уменьшенный размер изображения */
+                height: 25px;
+            }
 
-    .device-label {
-        font-size: 9px; /* Уменьшенный размер шрифта */
-    }
+            .device-label {
+                font-size: 9px; /* Уменьшенный размер шрифта */
+            }
 
-    .devices-grid::-webkit-scrollbar {
-        height: 8px; /* Высота полосы прокрутки */
-    }
+            .devices-grid::-webkit-scrollbar {
+                height: 8px; /* Высота полосы прокрутки */
+            }
 
-    .devices-grid::-webkit-scrollbar-thumb {
-        background-color: var(--accent);
-        border-radius: 4px;
-    }
+            .devices-grid::-webkit-scrollbar-thumb {
+                background-color: var(--accent);
+                border-radius: 4px;
+            }
 
-    .devices-grid::-webkit-scrollbar-track {
-        background: var(--bg-light);
-    }
+            .devices-grid::-webkit-scrollbar-track {
+                background: var(--bg-light);
+            }
 
-    body.dark-mode .devices-grid::-webkit-scrollbar-track {
-        background: var(--bg-dark);
-    }
-        .notification-link {
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
+            body.dark-mode .devices-grid::-webkit-scrollbar-track {
+                background: var(--bg-dark);
+            }
 
-.notification-link .notification-count {
-    background-color: var(--accent);
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-left: 0.5rem;
-    min-width: 20px;
-    text-align: center;
-}
+            .notification-link {
+                position: relative;
+                display: flex;
+                align-items: center;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
 
-body.dark-mode .notification-link .notification-count {
-    background-color: #0056b3;
-}
+            .notification-link .notification-count {
+                background-color: var(--accent);
+                color: #ffffff;
+                font-size: 0.75rem;
+                font-weight: 600;
+                padding: 2px 8px;
+                border-radius: 12px;
+                margin-left: 0.5rem;
+                min-width: 20px;
+                text-align: center;
+            }
 
-.notification-link:hover {
-    background-color: rgba(0, 123, 255, 0.1);
-    color: var(--accent);
-}
+            body.dark-mode .notification-link .notification-count {
+                background-color: #0056b3;
+            }
 
-body.dark-mode .notification-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-@media (max-width: 992px) {
-    .notification-link {
-        padding: 0.5rem 0.75rem;
-    }
+            .notification-link:hover {
+                background-color: rgba(0, 123, 255, 0.1);
+                color: var(--accent);
+            }
 
-    .notification-link .notification-count {
-        font-size: 0.7rem;
-        padding: 2px 6px;
-        min-width: 18px;
-    }
-}
+            body.dark-mode .notification-link:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
 
-@media (max-width: 768px) {
-    .notification-link .notification-count {
-        font-size: 0.65rem;
-        padding: 1px 5px;
-        min-width: 16px;
-    }
-}}
+            @media (max-width: 992px) {
+                .notification-link {
+                    padding: 0.5rem 0.75rem;
+                }
+
+                .notification-link .notification-count {
+                    font-size: 0.7rem;
+                    padding: 2px 6px;
+                    min-width: 18px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .notification-link .notification-count {
+                    font-size: 0.65rem;
+                    padding: 1px 5px;
+                    min-width: 16px;
+                }
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="spinner"></div>
-    </div>
+<!-- Preloader -->
+<div id="preloader">
+    <div class="spinner"></div>
+</div>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
             <i class="fas fa-tools me-2"></i>Сервис
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -756,14 +767,14 @@ body.dark-mode .notification-link:hover {
                 {% endif %}
                 <!-- Уведомления -->
                 <li class="nav-item">
-    <a class="nav-link notification-link" href="#">
-        <i class="fas fa-bell me-1"></i>
-        {% if notifications_count > 0 %}
-            <span class="notification-count">{{ notifications_count }}</span>
-        {% else %}
-            <span class="notification-count" style="display: none;">0</span>
-        {% endif %}
-    </a>
+                    <a class="nav-link notification-link" href="#">
+                        <i class="fas fa-bell me-1"></i>
+                        {% if notifications_count > 0 %}
+                            <span class="notification-count">{{ notifications_count }}</span>
+                        {% else %}
+                            <span class="notification-count" style="display: none;">0</span>
+                        {% endif %}
+                    </a>
                 </li>
                 <!-- Переключение темы -->
                 <li class="nav-item">
@@ -775,7 +786,7 @@ body.dark-mode .notification-link:hover {
         </div>
     </div>
 </nav>
- <div class="main-content">
+<div class="main-content">
     <div class="form-container">
         <h1 class="text-center">Выбор поломанного устройства</h1>
 
@@ -787,12 +798,12 @@ body.dark-mode .notification-link:hover {
                     {% for body in bodies %}
                         <div class="form-check">
                             <input
-                                class="form-check-input"
-                                type="radio"
-                                name="selected_bodies"
-                                value="{{ body.id }}"
-                                id="body_{{ body.id }}"
-                                {% if body.id|stringformat:"s" in selected_bodies %}checked{% endif %}
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="selected_bodies"
+                                    value="{{ body.id }}"
+                                    id="body_{{ body.id }}"
+                                    {% if body.id|stringformat:"s" in selected_bodies %}checked{% endif %}
                             >
                             <label class="form-check-label" for="body_{{ body.id }}">
                                 <strong>{{ body.number }}</strong> — {{ body.address }}
@@ -818,7 +829,8 @@ body.dark-mode .notification-link:hover {
             </div>
 
             <!-- Modal -->
-            <div class="modal fade" id="deviceModal" tabindex="-1" aria-labelledby="deviceModalLabel" aria-hidden="true">
+            <div class="modal fade" id="deviceModal" tabindex="-1" aria-labelledby="deviceModalLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -854,88 +866,191 @@ body.dark-mode .notification-link:hover {
         </form>
     </div>
 </div>
-    <footer>© 2025 Ваш Сервис. Все права защищены.</footer>
+<footer>© 2025 Ваш Сервис. Все права защищены.</footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Hide preloader after page load
-        window.addEventListener('load', () => {
-            document.getElementById('preloader').style.display = 'none';
-        });
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Hide preloader after page load
+    window.addEventListener('load', () => {
+        document.getElementById('preloader').style.display = 'none';
+    });
 
-// Toggle theme
-function toggleTheme() {
-    const isDark = document.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    // Обновляем текст кнопки
-    const themeButton = document.querySelector('.theme-toggle');
-    themeButton.textContent = isDark ? '☀️ Тема' : '🌙 Тема';
-}
-
-// Load theme from localStorage
-window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        // Устанавливаем значок солнца при загрузке тёмной темы
-        document.querySelector('.theme-toggle').textContent = '☀️ Тема';
-    } else {
-        // Устанавливаем значок луны для светлой темы
-        document.querySelector('.theme-toggle').textContent = '🌙 Тема';
+    // Toggle theme
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        // Обновляем текст кнопки
+        const themeButton = document.querySelector('.theme-toggle');
+        themeButton.textContent = isDark ? '☀️ Тема' : '🌙 Тема';
     }
-});
 
-        function getCSRFToken() {
-            var token = null;
-            document.cookie.split(';').forEach(function (cookie) {
-                if (cookie.trim().startsWith('csrftoken=')) {
-                    token = cookie.split('=')[1];
-                }
-            });
-            return token;
+    // Load theme from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            // Устанавливаем значок солнца при загрузке тёмной темы
+            document.querySelector('.theme-toggle').textContent = '☀️ Тема';
+        } else {
+            // Устанавливаем значок луны для светлой темы
+            document.querySelector('.theme-toggle').textContent = '🌙 Тема';
         }
+    });
 
-        function updateFloorsList(floors, selectedFloors) {
-    const floorsListContent = document.getElementById("floors-list-content");
-    const previouslySelectedFloors = new Set(
-        Array.from(document.querySelectorAll('input[name="selected_floors"]:checked'))
-            .map(radio => radio.value)
-    );
-    floorsListContent.innerHTML = "";
-    if (floors && floors.length > 0) {
-        floors.forEach(floor => {
-            const floorElement = document.createElement('div');
-            floorElement.classList.add('form-check');
-            const isChecked = previouslySelectedFloors.has(floor.id.toString());
-            floorElement.innerHTML = `
+    function getCSRFToken() {
+        var token = null;
+        document.cookie.split(';').forEach(function (cookie) {
+            if (cookie.trim().startsWith('csrftoken=')) {
+                token = cookie.split('=')[1];
+            }
+        });
+        return token;
+    }
+
+    function updateFloorsList(floors, selectedFloors) {
+        const floorsListContent = document.getElementById("floors-list-content");
+        const previouslySelectedFloors = new Set(
+            Array.from(document.querySelectorAll('input[name="selected_floors"]:checked'))
+                .map(radio => radio.value)
+        );
+        floorsListContent.innerHTML = "";
+        if (floors && floors.length > 0) {
+            floors.forEach(floor => {
+                const floorElement = document.createElement('div');
+                floorElement.classList.add('form-check');
+                const isChecked = previouslySelectedFloors.has(floor.id.toString());
+                floorElement.innerHTML = `
                 <input class="form-check-input" type="radio" name="selected_floors" value="${floor.id}" id="floor_${floor.id}" ${isChecked ? 'checked' : ''}>
                 <label class="form-check-label" for="floor_${floor.id}">
                     Этаж №${floor.number}
                 </label>
             `;
-            if (isChecked) {
-                floorElement.classList.add('selected');
-            }
-            floorsListContent.appendChild(floorElement);
-        });
-        document.getElementById("floors-list").style.display = 'block';
-    } else {
-        document.getElementById("floors-list").style.display = 'none';
+                if (isChecked) {
+                    floorElement.classList.add('selected');
+                }
+                floorsListContent.appendChild(floorElement);
+            });
+            document.getElementById("floors-list").style.display = 'block';
+        } else {
+            document.getElementById("floors-list").style.display = 'none';
+        }
     }
-}
 
-// Обработчик изменения выбора
-document.addEventListener('change', function (event) {
-    if (event.target.classList.contains('form-check-input')) {
-        const groupName = event.target.name;
-        document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
-            input.closest('.form-check').classList.remove('selected');
-        });
-        if (event.target.checked) {
-            event.target.closest('.form-check').classList.add('selected');
+    // Обработчик изменения выбора
+    document.addEventListener('change', function (event) {
+        if (event.target.classList.contains('form-check-input')) {
+            const groupName = event.target.name;
+            document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
+                input.closest('.form-check').classList.remove('selected');
+            });
+            if (event.target.checked) {
+                event.target.closest('.form-check').classList.add('selected');
+            }
+
+            // Сбрасываем последующие выборы при изменении корпуса или этажа
+            if (event.target.name === 'selected_bodies') {
+                document.querySelectorAll('input[name="selected_floors"]').forEach(radio => {
+                    radio.checked = false;
+                    radio.closest('.form-check')?.classList.remove('selected');
+                });
+                document.querySelectorAll('input[name="selected_offices"]').forEach(radio => {
+                    radio.checked = false;
+                    radio.closest('.form-check')?.classList.remove('selected');
+                });
+                document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => {
+                    radio.checked = false;
+                    radio.closest('.device-item')?.classList.remove('selected');
+                });
+                document.getElementById("floors-list-content").innerHTML = "";
+                document.getElementById("offices-list-content").innerHTML = "";
+                document.getElementById("devices-list").innerHTML = "";
+                document.getElementById("offices-list").style.display = 'none';
+                document.querySelector('.devices-list').style.display = 'none';
+            } else if (event.target.name === 'selected_floors') {
+                document.querySelectorAll('input[name="selected_offices"]').forEach(radio => {
+                    radio.checked = false;
+                    radio.closest('.form-check')?.classList.remove('selected');
+                });
+                document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => {
+                    radio.checked = false;
+                    radio.closest('.device-item')?.classList.remove('selected');
+                });
+                document.getElementById("offices-list-content").innerHTML = "";
+                document.getElementById("devices-list").innerHTML = "";
+                document.getElementById("offices-list").style.display = 'none';
+                document.querySelector('.devices-list').style.display = 'none';
+            }
         }
 
-        // Сбрасываем последующие выборы при изменении корпуса или этажа
+        if (event.target.name === 'selected_filtered_devices') {
+            const selectedDeviceId = event.target.value;
+            const isChecked = event.target.checked;
+            console.log(isChecked ? `Выбран ID устройства: ${selectedDeviceId}` : `Снята галочка с устройства ID: ${selectedDeviceId}`);
+        }
+
+        fetchOfficesAndDevices();
+    });
+
+    // Модифицированная функция fetchOfficesAndDevices
+    function fetchOfficesAndDevices() {
+        const selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
+        const selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
+        const selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
+        const selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
+        const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+
+        const formData = new FormData();
+        selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
+        selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
+        selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
+        selectedDevices.forEach(radio => formData.append('selected_package_devices', radio.value));
+        selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
+
+        // Управление видимостью блоков
+        if (selectedBodies.length > 0) {
+            document.getElementById("floors-list").style.display = 'block';
+        } else {
+            document.getElementById("floors-list").style.display = 'none';
+            document.getElementById("offices-list").style.display = 'none';
+            document.querySelector('.devices-list').style.display = 'none';
+        }
+
+        if (selectedBodies.length > 0 && selectedFloors.length > 0) {
+            document.getElementById("offices-list").style.display = 'block';
+        } else {
+            document.getElementById("offices-list").style.display = 'none';
+        }
+
+        if (selectedOffices.length > 0) {
+            document.querySelector('.devices-list').style.display = 'block';
+        } else {
+            document.querySelector('.devices-list').style.display = 'none';
+        }
+
+        fetch('/body/', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                updateFloorsList(data.floors, selectedFloors);
+                updateOfficesList(data.offices, selectedOffices);
+                updatePackageDevicesList(data.package_devices, selectedDevices, data.layouts[0] || null);
+                updateDevicesList(data.devices, selectedFilteredDevices);
+                updateBreakdownTypeSelect(data.breakdown_types);
+            })
+            .catch(error => {
+                console.error('Ошибка при выполнении запроса:', error);
+            });
+    }
+
+    // Сброс формы при изменении корпуса
+    document.addEventListener('change', function (event) {
         if (event.target.name === 'selected_bodies') {
+            // Сбрасываем выбранные этажи, офисы и устройства
             document.querySelectorAll('input[name="selected_floors"]').forEach(radio => {
                 radio.checked = false;
                 radio.closest('.form-check')?.classList.remove('selected');
@@ -953,468 +1068,382 @@ document.addEventListener('change', function (event) {
             document.getElementById("devices-list").innerHTML = "";
             document.getElementById("offices-list").style.display = 'none';
             document.querySelector('.devices-list').style.display = 'none';
-        } else if (event.target.name === 'selected_floors') {
-            document.querySelectorAll('input[name="selected_offices"]').forEach(radio => {
-                radio.checked = false;
-                radio.closest('.form-check')?.classList.remove('selected');
-            });
-            document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => {
-                radio.checked = false;
-                radio.closest('.device-item')?.classList.remove('selected');
-            });
-            document.getElementById("offices-list-content").innerHTML = "";
-            document.getElementById("devices-list").innerHTML = "";
-            document.getElementById("offices-list").style.display = 'none';
-            document.querySelector('.devices-list').style.display = 'none';
         }
-    }
 
-    if (event.target.name === 'selected_filtered_devices') {
-        const selectedDeviceId = event.target.value;
-        const isChecked = event.target.checked;
-        console.log(isChecked ? `Выбран ID устройства: ${selectedDeviceId}` : `Снята галочка с устройства ID: ${selectedDeviceId}`);
-    }
-
-    fetchOfficesAndDevices();
-});
-
-// Модифицированная функция fetchOfficesAndDevices
-function fetchOfficesAndDevices() {
-    const selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
-    const selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
-    const selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
-    const selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
-    const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
-
-    const formData = new FormData();
-    selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
-    selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
-    selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
-    selectedDevices.forEach(radio => formData.append('selected_package_devices', radio.value));
-    selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
-
-    // Управление видимостью блоков
-    if (selectedBodies.length > 0) {
-        document.getElementById("floors-list").style.display = 'block';
-    } else {
-        document.getElementById("floors-list").style.display = 'none';
-        document.getElementById("offices-list").style.display = 'none';
-        document.querySelector('.devices-list').style.display = 'none';
-    }
-
-    if (selectedBodies.length > 0 && selectedFloors.length > 0) {
-        document.getElementById("offices-list").style.display = 'block';
-    } else {
-        document.getElementById("offices-list").style.display = 'none';
-    }
-
-    if (selectedOffices.length > 0) {
-        document.querySelector('.devices-list').style.display = 'block';
-    } else {
-        document.querySelector('.devices-list').style.display = 'none';
-    }
-
-    fetch('/body/', {
-        method: 'POST',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            updateFloorsList(data.floors, selectedFloors);
-            updateOfficesList(data.offices, selectedOffices);
-            updatePackageDevicesList(data.package_devices, selectedDevices, data.layouts[0] || null);
-            updateDevicesList(data.devices, selectedFilteredDevices);
-            updateBreakdownTypeSelect(data.breakdown_types);
-        })
-        .catch(error => {
-            console.error('Ошибка при выполнении запроса:', error);
-        });
-}
-// Сброс формы при изменении корпуса
-document.addEventListener('change', function (event) {
-    if (event.target.name === 'selected_bodies') {
-        // Сбрасываем выбранные этажи, офисы и устройства
-        document.querySelectorAll('input[name="selected_floors"]').forEach(radio => {
-            radio.checked = false;
-            radio.closest('.form-check')?.classList.remove('selected');
-        });
-        document.querySelectorAll('input[name="selected_offices"]').forEach(radio => {
-            radio.checked = false;
-            radio.closest('.form-check')?.classList.remove('selected');
-        });
-        document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => {
-            radio.checked = false;
-            radio.closest('.device-item')?.classList.remove('selected');
-        });
-        document.getElementById("floors-list-content").innerHTML = "";
-        document.getElementById("offices-list-content").innerHTML = "";
-        document.getElementById("devices-list").innerHTML = "";
-        document.getElementById("offices-list").style.display = 'none';
-        document.querySelector('.devices-list').style.display = 'none';
-    }
-
-    if (event.target.classList.contains('form-check-input')) {
-        const groupName = event.target.name;
-        document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
-            input.closest('.form-check').classList.remove('selected');
-        });
-        if (event.target.checked) {
-            event.target.closest('.form-check').classList.add('selected');
+        if (event.target.classList.contains('form-check-input')) {
+            const groupName = event.target.name;
+            document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
+                input.closest('.form-check').classList.remove('selected');
+            });
+            if (event.target.checked) {
+                event.target.closest('.form-check').classList.add('selected');
+            }
         }
-    }
 
-    fetchOfficesAndDevices();
-});
-        function updateOfficesList(offices, selectedOffices) {
-            const officesListContent = document.getElementById("offices-list-content");
-            const previouslySelectedOffices = new Set(
-                Array.from(document.querySelectorAll('input[name="selected_offices"]:checked'))
-                    .map(radio => radio.value)
-            );
-            officesListContent.innerHTML = "";
-            if (offices && offices.length > 0) {
-                offices.forEach(office => {
-                    const officeElement = document.createElement('div');
-                    officeElement.classList.add('form-check');
-                    const isChecked = previouslySelectedOffices.has(office.id.toString());
-                    officeElement.innerHTML = `
+        fetchOfficesAndDevices();
+    });
+
+    function updateOfficesList(offices, selectedOffices) {
+        const officesListContent = document.getElementById("offices-list-content");
+        const previouslySelectedOffices = new Set(
+            Array.from(document.querySelectorAll('input[name="selected_offices"]:checked'))
+                .map(radio => radio.value)
+        );
+        officesListContent.innerHTML = "";
+        if (offices && offices.length > 0) {
+            offices.forEach(office => {
+                const officeElement = document.createElement('div');
+                officeElement.classList.add('form-check');
+                const isChecked = previouslySelectedOffices.has(office.id.toString());
+                officeElement.innerHTML = `
                         <input class="form-check-input" type="radio" name="selected_offices" value="${office.id}" id="office_${office.id}" ${isChecked ? 'checked' : ''}>
                         <label class="form-check-label" for="office_${office.id}">
                             Кабинет ${office.number}
                         </label>
                     `;
-                    officesListContent.appendChild(officeElement);
-                });
-            }
-            officesListContent.style.display = 'block';
+                officesListContent.appendChild(officeElement);
+            });
         }
-
-        function updateBreakdownTypeSelect(breakdownTypes) {
-            const modalBreakdownTypeSelect = document.getElementById("modalBreakdownType");
-            const previouslySelectedValue = modalBreakdownTypeSelect.value;
-            modalBreakdownTypeSelect.innerHTML = '<option value="">-- Выберите тип --</option>';
-            if (breakdownTypes && breakdownTypes.length > 0) {
-                breakdownTypes.forEach(type => {
-                    const option = document.createElement("option");
-                    option.value = type.id;
-                    option.textContent = type.name;
-                    if (option.value === previouslySelectedValue) {
-                        option.selected = true;
-                    }
-                    modalBreakdownTypeSelect.appendChild(option);
-                });
-            }
-        }
-
-        function updatePackageDevicesList(devices, selectedDevices, layout) {
-    const devicesList = document.getElementById("devices-list");
-    devicesList.innerHTML = "";
-
-    if (!layout || !layout.width || !layout.height || !layout.device_positions) {
-        devicesList.innerHTML = "<p>Схема кабинета не задана.</p>";
-        return;
+        officesListContent.style.display = 'block';
     }
 
-    const grid = document.createElement("div");
-    grid.classList.add("devices-grid");
-    grid.style.minWidth = `${layout.width * 80}px`; // Динамическая минимальная ширина сетки
+    function updateBreakdownTypeSelect(breakdownTypes) {
+        const modalBreakdownTypeSelect = document.getElementById("modalBreakdownType");
+        const previouslySelectedValue = modalBreakdownTypeSelect.value;
+        modalBreakdownTypeSelect.innerHTML = '<option value="">-- Выберите тип --</option>';
+        if (breakdownTypes && breakdownTypes.length > 0) {
+            breakdownTypes.forEach(type => {
+                const option = document.createElement("option");
+                option.value = type.id;
+                option.textContent = type.name;
+                if (option.value === previouslySelectedValue) {
+                    option.selected = true;
+                }
+                modalBreakdownTypeSelect.appendChild(option);
+            });
+        }
+    }
 
-    layout.device_positions.forEach(position => {
-        if (position.is_active && position.x >= 0 && position.y >= 0) { // Проверка корректности координат
-            const device = devices.find(d => d.id === position.package_device_id);
-            if (device) {
-                const deviceItem = document.createElement("div");
-                deviceItem.classList.add("device-item");
-                deviceItem.style.gridRow = `${position.y + 1}`;
-                deviceItem.style.gridColumn = `${position.x + 1}`;
+    function updatePackageDevicesList(devices, selectedDevices, layout) {
+        console.log("role:", window.userRole); // Проверка роли
+        console.log("devices:", devices); // Проверка устройств
+        console.log("layout:", layout); // Проверка схемы
 
-                let deviceImage = `
+        const devicesList = document.getElementById("devices-list");
+        devicesList.innerHTML = "";
+
+        if (!layout || !layout.width || !layout.height || !layout.device_positions) {
+            devicesList.innerHTML = "<p>Схема кабинета не задана.</p>";
+            console.log("Схема не задана или некорректна");
+            return;
+        }
+
+        const grid = document.createElement("div");
+        grid.classList.add("devices-grid");
+        grid.style.minWidth = `${layout.width * 80}px`;
+
+        layout.device_positions.forEach(position => {
+            console.log("position:", position); // Проверка позиции
+            if (position.is_active && position.x >= 0 && position.y >= 0) {
+                const device = devices.find(d => d.id === position.package_device_id);
+                console.log("found device:", device); // Проверка найденного устройства
+                if (device) {
+                    const deviceItem = document.createElement("div");
+                    deviceItem.classList.add("device-item");
+                    deviceItem.style.gridRow = `${position.y + 1}`;
+                    deviceItem.style.gridColumn = `${position.x + 1}`;
+
+                    let deviceImage = `
                     <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
                 `;
-                if (Number(device.condition_id) === 4) {
-                    deviceItem.classList.add('broken');
-                }
+                    if (Number(device.condition_id) === 4) {
+                        deviceItem.classList.add('broken');
+                    }
 
-                const imageContainer = document.createElement("div");
-                imageContainer.classList.add("device-image-container");
-                imageContainer.innerHTML = deviceImage;
+                    const imageContainer = document.createElement("div");
+                    imageContainer.classList.add("device-image-container");
+                    imageContainer.innerHTML = deviceImage;
 
-                deviceItem.innerHTML += `
+                    // Условное отображение серийного номера только для роли "master"
+                    const serialNumberDisplay = window.userRole === "master" ? `<div class="device-label">Серийный номер: ${device.number}</div>` : '';
+
+                    deviceItem.innerHTML += `
                     <input type="radio" name="selected_package_devices" value="${device.id}" id="device_${device.id}" style="display: none;">
-                    <div class="device-label">Серийный номер: ${device.number}</div>
+                    ${serialNumberDisplay}
                 `;
 
-                deviceItem.appendChild(imageContainer);
-                grid.appendChild(deviceItem);
+                    deviceItem.appendChild(imageContainer);
+                    grid.appendChild(deviceItem);
 
-                deviceItem.addEventListener('click', function () {
-                    const radio = deviceItem.querySelector(`input[type="radio"]`);
-                    radio.checked = true;
-                    radio.dispatchEvent(new Event('change', {bubbles: true}));
+                    deviceItem.addEventListener('click', function () {
+                        const radio = deviceItem.querySelector(`input[type="radio"]`);
+                        radio.checked = true;
+                        radio.dispatchEvent(new Event('change', {bubbles: true}));
 
-                    const modalFilteredDevicesListContent = document.getElementById('modal-filtered-devices-list-content');
-                    modalFilteredDevicesListContent.innerHTML = `
+                        const modalFilteredDevicesListContent = document.getElementById('modal-filtered-devices-list-content');
+                        const modalSerialNumber = window.userRole === "master" ? `, Серийный номер: ${device.serial_number}` : '';
+                        modalFilteredDevicesListContent.innerHTML = `
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" checked>
                             <label class="form-check-label" for="modal_filtered_device_${device.id}">
-                                Тип устройства: ${device.type_name || 'Не указан'}, Серийный номер: ${device.serial_number}
+                                Тип устройства: ${device.type_name || 'Не указан'}${modalSerialNumber}
                             </label>
                         </div>
                     `;
 
-                    document.getElementById('modalMessage').value = '';
+                        document.getElementById('modalMessage').value = '';
 
-                    const modal = new bootstrap.Modal(document.getElementById('deviceModal'));
-                    modal.show();
-                });
+                        const modal = new bootstrap.Modal(document.getElementById('deviceModal'));
+                        modal.show();
+                    });
+                }
             }
-        }
-    });
+        });
 
-    devicesList.appendChild(grid);
+        devicesList.appendChild(grid);
 
-    selectedDevices.forEach(checkbox => {
-        const selectedCheckbox = document.getElementById(`device_${checkbox.value}`);
-        if (selectedCheckbox) {
-            selectedCheckbox.checked = true;
-        }
-    });
-}
-
-        function updateDevicesList(devices, selectedDevices) {
-    const modalFilteredDevicesListContent = document.getElementById("modal-filtered-devices-list-content");
-    const previouslySelectedDeviceIds = Array.from(
-        document.querySelectorAll('input[name="selected_filtered_devices"]:checked')
-    ).map(radio => radio.value);
-    modalFilteredDevicesListContent.innerHTML = "";
-
-    if (devices && devices.length > 0) {
-        devices.forEach(device => {
-            const deviceItem = document.createElement('div');
-            deviceItem.classList.add('form-check');
-            if (device.condition_id === 4) {
-                deviceItem.classList.add('broken-device');
+        selectedDevices.forEach(checkbox => {
+            const selectedCheckbox = document.getElementById(`device_${checkbox.value}`);
+            if (selectedCheckbox) {
+                selectedCheckbox.checked = true;
             }
-            const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
+        });
+    }
 
-            deviceItem.innerHTML = `
+    function updateDevicesList(devices, selectedDevices) {
+        const modalFilteredDevicesListContent = document.getElementById("modal-filtered-devices-list-content");
+        const previouslySelectedDeviceIds = Array.from(
+            document.querySelectorAll('input[name="selected_filtered_devices"]:checked')
+        ).map(radio => radio.value);
+        modalFilteredDevicesListContent.innerHTML = "";
+
+        if (devices && devices.length > 0) {
+            devices.forEach(device => {
+                const deviceItem = document.createElement('div');
+                deviceItem.classList.add('form-check');
+                if (device.condition_id === 4) {
+                    deviceItem.classList.add('broken-device');
+                }
+                const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
+
+                // Условное отображение серийного номера только для роли "master"
+                const serialNumberDisplay = window.userRole === "master" ? `, Серийный номер: ${device.serial_number}` : '';
+
+                deviceItem.innerHTML = `
                 <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" ${isChecked ? 'checked' : ''}>
                 <label class="form-check-label" for="modal_filtered_device_${device.id}">
-                    Тип устройства: ${device.type_name || 'Не указан'}, Серийный номер: ${device.serial_number}
+                    Тип устройства: ${device.type_name || 'Не указан'}${serialNumberDisplay}
                 </label>
             `;
-            modalFilteredDevicesListContent.appendChild(deviceItem);
+                modalFilteredDevicesListContent.appendChild(deviceItem);
 
-            const checkbox = deviceItem.querySelector('input[type="checkbox"]');
+                const checkbox = deviceItem.querySelector('input[type="checkbox"]');
 
-            if (isChecked) {
-                deviceItem.classList.add('selected');
-            }
-            if (device.condition_id === 4) {
-                checkbox.disabled = true;
-            }
-
-            checkbox.addEventListener('change', function () {
-                if (checkbox.checked) {
+                if (isChecked) {
                     deviceItem.classList.add('selected');
-                } else {
-                    deviceItem.classList.remove('selected');
                 }
-            });
+                if (device.condition_id === 4) {
+                    checkbox.disabled = true;
+                }
 
-            deviceItem.addEventListener('click', function () {
-                if (!checkbox.disabled) {
-                    checkbox.checked = !checkbox.checked;
+                checkbox.addEventListener('change', function () {
                     if (checkbox.checked) {
                         deviceItem.classList.add('selected');
                     } else {
                         deviceItem.classList.remove('selected');
                     }
-                }
-            });
-        });
-    }
-}
-
-        function fetchOfficesAndDevices() {
-    const selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
-    const selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
-    const selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
-    const selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
-    const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
-
-    const formData = new FormData();
-    selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
-    selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
-    selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
-    selectedDevices.forEach(radio => formData.append('selected_package_devices', radio.value));
-    selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
-
-    // Управление видимостью блоков
-    if (selectedBodies.length > 0) {
-        document.getElementById("floors-list").style.display = 'block';
-    } else {
-        document.getElementById("floors-list").style.display = 'none';
-        document.getElementById("offices-list").style.display = 'none';
-        document.querySelector('.devices-list').style.display = 'none';
-    }
-
-    if (selectedBodies.length > 0 && selectedFloors.length > 0) {
-        document.getElementById("offices-list").style.display = 'block';
-    } else {
-        document.getElementById("offices-list").style.display = 'none';
-    }
-
-    if (selectedOffices.length > 0) {
-        document.querySelector('.devices-list').style.display = 'block';
-    } else {
-        document.querySelector('.devices-list').style.display = 'none';
-    }
-
-    fetch('/body/', {
-        method: 'POST',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            updateFloorsList(data.floors, selectedFloors);
-            updateOfficesList(data.offices, selectedOffices);
-            updatePackageDevicesList(data.package_devices, selectedDevices, data.layouts[0] || null);
-            updateDevicesList(data.devices, selectedFilteredDevices);
-            updateBreakdownTypeSelect(data.breakdown_types);
-        })
-        .catch(error => {
-            console.error('Ошибка при выполнении запроса:', error);
-        });
-}
-
-        const officesListContent = document.getElementById('offices-list-content');
-        const observer = new MutationObserver(() => {
-            const checkedOffice = document.querySelector('input[name="selected_offices"]:checked');
-            if (checkedOffice) {
-                checkedOffice.closest('.form-check').classList.add('selected');
-            }
-        });
-
-        observer.observe(officesListContent, {
-            childList: true,
-            subtree: true
-        });
-
-        document.addEventListener('change', function (event) {
-            if (event.target.classList.contains('form-check-input')) {
-                const groupName = event.target.name;
-                document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
-                    input.closest('.form-check').classList.remove('selected');
                 });
-                if (event.target.checked) {
-                    event.target.closest('.form-check').classList.add('selected');
-                }
-            }
 
-            if (event.target.name === 'selected_filtered_devices') {
-                const selectedDeviceId = event.target.value;
-                const isChecked = event.target.checked;
-                console.log(isChecked ? `Выбран ID устройства: ${selectedDeviceId}` : `Снята галочка с устройства ID: ${selectedDeviceId}`);
-            }
-            fetchOfficesAndDevices();
-        });
-
-        document.getElementById('modalSendMessage').addEventListener('click', function () {
-            const message = document.getElementById('modalMessage').value.trim();
-            const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
-            const breakdownType = document.getElementById('modalBreakdownType').value;
-
-            if (!message) {
-                alert("Пожалуйста, введите сообщение!");
-                return;
-            }
-
-            if (selectedFilteredDevices.length === 0) {
-                alert("Пожалуйста, выберите хотя бы одно устройство!");
-                return;
-            }
-
-            if (!breakdownType) {
-                alert("Пожалуйста, выберите тип поломки!");
-                return;
-            }
-
-            const data = {
-                message: message,
-                breakdown_type: parseInt(breakdownType),
-                selected_filtered_devices: Array.from(selectedFilteredDevices).map(cb => parseInt(cb.value))
-            };
-
-            fetch('send-message/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCSRFToken(),
-                },
-                body: JSON.stringify(data),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert("Сообщение успешно отправлено!");
-                        resetCheckboxes()
-                        document.getElementById('modalMessage').value = '';
-                        document.getElementById('modalBreakdownType').value = '';
-                        selectedFilteredDevices.forEach(radio => radio.checked = false);
-                        bootstrap.Modal.getInstance(document.getElementById('deviceModal')).hide();
-                    } else {
-                        alert('Ошибка: ' + data.message);
+                deviceItem.addEventListener('click', function () {
+                    if (!checkbox.disabled) {
+                        checkbox.checked = !checkbox.checked;
+                        if (checkbox.checked) {
+                            deviceItem.classList.add('selected');
+                        } else {
+                            deviceItem.classList.remove('selected');
+                        }
                     }
-                })
-                .catch(error => {
-                    console.error('Ошибка при отправке сообщения:', error);
                 });
+            });
+        }
+    }
+
+    function fetchOfficesAndDevices() {
+        const selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
+        const selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
+        const selectedOffices = document.querySelectorAll('input[name="selected_offices"]:checked');
+        const selectedDevices = document.querySelectorAll('input[name="selected_package_devices"]:checked');
+        const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+
+        const formData = new FormData();
+        selectedBodies.forEach(checkbox => formData.append('selected_bodies', checkbox.value));
+        selectedFloors.forEach(checkbox => formData.append('selected_floors', checkbox.value));
+        selectedOffices.forEach(checkbox => formData.append('selected_offices', checkbox.value));
+        selectedDevices.forEach(radio => formData.append('selected_package_devices', radio.value));
+        selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
+
+        // Управление видимостью блоков
+        if (selectedBodies.length > 0) {
+            document.getElementById("floors-list").style.display = 'block';
+        } else {
+            document.getElementById("floors-list").style.display = 'none';
+            document.getElementById("offices-list").style.display = 'none';
+            document.querySelector('.devices-list').style.display = 'none';
+        }
+
+        if (selectedBodies.length > 0 && selectedFloors.length > 0) {
+            document.getElementById("offices-list").style.display = 'block';
+        } else {
+            document.getElementById("offices-list").style.display = 'none';
+        }
+
+        if (selectedOffices.length > 0) {
+            document.querySelector('.devices-list').style.display = 'block';
+        } else {
+            document.querySelector('.devices-list').style.display = 'none';
+        }
+
+        fetch('/body/', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                updateFloorsList(data.floors, selectedFloors);
+                updateOfficesList(data.offices, selectedOffices);
+                updatePackageDevicesList(data.package_devices, selectedDevices, data.layouts[0] || null);
+                updateDevicesList(data.devices, selectedFilteredDevices);
+                updateBreakdownTypeSelect(data.breakdown_types);
+            })
+            .catch(error => {
+                console.error('Ошибка при выполнении запроса:', error);
+            });
+    }
+
+    const officesListContent = document.getElementById('offices-list-content');
+    const observer = new MutationObserver(() => {
+        const checkedOffice = document.querySelector('input[name="selected_offices"]:checked');
+        if (checkedOffice) {
+            checkedOffice.closest('.form-check').classList.add('selected');
+        }
+    });
+
+    observer.observe(officesListContent, {
+        childList: true,
+        subtree: true
+    });
+
+    document.addEventListener('change', function (event) {
+        if (event.target.classList.contains('form-check-input')) {
+            const groupName = event.target.name;
+            document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
+                input.closest('.form-check').classList.remove('selected');
+            });
+            if (event.target.checked) {
+                event.target.closest('.form-check').classList.add('selected');
+            }
+        }
+
+        if (event.target.name === 'selected_filtered_devices') {
+            const selectedDeviceId = event.target.value;
+            const isChecked = event.target.checked;
+            console.log(isChecked ? `Выбран ID устройства: ${selectedDeviceId}` : `Снята галочка с устройства ID: ${selectedDeviceId}`);
+        }
+        fetchOfficesAndDevices();
+    });
+
+    document.getElementById('modalSendMessage').addEventListener('click', function () {
+        const message = document.getElementById('modalMessage').value.trim();
+        const selectedFilteredDevices = document.querySelectorAll('input[name="selected_filtered_devices"]:checked');
+        const breakdownType = document.getElementById('modalBreakdownType').value;
+
+        if (!message) {
+            alert("Пожалуйста, введите сообщение!");
+            return;
+        }
+
+        if (selectedFilteredDevices.length === 0) {
+            alert("Пожалуйста, выберите хотя бы одно устройство!");
+            return;
+        }
+
+        if (!breakdownType) {
+            alert("Пожалуйста, выберите тип поломки!");
+            return;
+        }
+
+        const data = {
+            message: message,
+            breakdown_type: parseInt(breakdownType),
+            selected_filtered_devices: Array.from(selectedFilteredDevices).map(cb => parseInt(cb.value))
+        };
+
+        fetch('send-message/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert("Сообщение успешно отправлено!");
+                    resetCheckboxes()
+                    document.getElementById('modalMessage').value = '';
+                    document.getElementById('modalBreakdownType').value = '';
+                    selectedFilteredDevices.forEach(radio => radio.checked = false);
+                    bootstrap.Modal.getInstance(document.getElementById('deviceModal')).hide();
+                } else {
+                    alert('Ошибка: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке сообщения:', error);
+            });
+    });
+
+    function resetCheckboxes() {
+        // Сбрасываем все радиокнопки и чекбоксы
+        document.querySelectorAll('input[name="selected_bodies"]').forEach(radio => {
+            radio.checked = false;
+            radio.closest('.form-check').classList.remove('selected');
+        });
+        document.querySelectorAll('input[name="selected_floors"]').forEach(radio => {
+            radio.checked = false;
+            radio.closest('.form-check').classList.remove('selected');
+        });
+        document.querySelectorAll('input[name="selected_offices"]').forEach(radio => {
+            radio.checked = false;
+            radio.closest('.form-check').classList.remove('selected');
+        });
+        document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => {
+            radio.checked = false;
+            radio.closest('.device-item')?.classList.remove('selected');
+        });
+        document.querySelectorAll('input[name="selected_filtered_devices"]').forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.closest('.form-check')?.classList.remove('selected');
         });
 
-        function resetCheckboxes() {
-    // Сбрасываем все радиокнопки и чекбоксы
-    document.querySelectorAll('input[name="selected_bodies"]').forEach(radio => {
-        radio.checked = false;
-        radio.closest('.form-check').classList.remove('selected');
-    });
-    document.querySelectorAll('input[name="selected_floors"]').forEach(radio => {
-        radio.checked = false;
-        radio.closest('.form-check').classList.remove('selected');
-    });
-    document.querySelectorAll('input[name="selected_offices"]').forEach(radio => {
-        radio.checked = false;
-        radio.closest('.form-check').classList.remove('selected');
-    });
-    document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => {
-        radio.checked = false;
-        radio.closest('.device-item')?.classList.remove('selected');
-    });
-    document.querySelectorAll('input[name="selected_filtered_devices"]').forEach(checkbox => {
-        checkbox.checked = false;
-        checkbox.closest('.form-check')?.classList.remove('selected');
-    });
+        // Скрываем списки офисов и устройств
+        document.getElementById("offices-list").style.display = "none";
+        document.querySelector(".devices-list").style.display = "none";
 
-    // Скрываем списки офисов и устройств
-    document.getElementById("offices-list").style.display = "none";
-    document.querySelector(".devices-list").style.display = "none";
+        // Очищаем содержимое списков офисов и устройств
+        document.getElementById("offices-list-content").innerHTML = "";
+        document.getElementById("devices-list").innerHTML = "";
 
-    // Очищаем содержимое списков офисов и устройств
-    document.getElementById("offices-list-content").innerHTML = "";
-    document.getElementById("devices-list").innerHTML = "";
+        // Обновляем интерфейс
+        fetchOfficesAndDevices();
+    }
 
-    // Обновляем интерфейс
-    fetchOfficesAndDevices();
-}
-            function getCookie(name) {
+    function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== "") {
             let cookies = document.cookie.split(";");
@@ -1436,6 +1465,6 @@ document.addEventListener('change', function (event) {
             countElement.textContent = currentCount - 1;
         }
     }
-    </script>
+</script>
 </body>
 </html>
