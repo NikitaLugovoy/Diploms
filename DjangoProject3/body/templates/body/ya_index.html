@@ -171,7 +171,7 @@
             box-shadow: 8px 8px 16px #dee2e6, -8px -8px 16px #ffffff;
             transition: all 0.4s ease;
             margin: 10px auto;
-            max-width: 1200px;
+            max-width: 1250px;
             padding: 0.5rem 1rem;
             z-index: 1000;
         }
@@ -390,7 +390,7 @@ body.dark-mode .notification-link:hover {
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'ya_page' %}">
+                        <a class="nav-link active" href="{% url 'ya_page' %}">
                             <i class="fas fa-robot me-1"></i> YandexGPT
                         </a>
                     </li>
@@ -499,18 +499,26 @@ body.dark-mode .notification-link:hover {
         document.getElementById('preloader').style.display = 'none';
     });
 
-    // Toggle theme
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    }
+// Toggle theme
+function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    // Обновляем текст кнопки
+    const themeButton = document.querySelector('.theme-toggle');
+    themeButton.textContent = isDark ? '☀️ Тема' : '🌙 Тема';
+}
 
-    // Load theme from localStorage
-    window.addEventListener('DOMContentLoaded', () => {
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-    });
+// Load theme from localStorage
+window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        // Устанавливаем значок солнца при загрузке тёмной темы
+        document.querySelector('.theme-toggle').textContent = '☀️ Тема';
+    } else {
+        // Устанавливаем значок луны для светлой темы
+        document.querySelector('.theme-toggle').textContent = '🌙 Тема';
+    }
+});
 
     // AJAX request for form submission
     async function sendRequest(event) {
