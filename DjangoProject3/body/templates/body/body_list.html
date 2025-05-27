@@ -870,6 +870,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    window.userRole = "{{ role|escapejs }}";
     // Hide preloader after page load
     window.addEventListener('load', () => {
         document.getElementById('preloader').style.display = 'none';
@@ -1125,11 +1126,15 @@
     }
 
     function updatePackageDevicesList(devices, selectedDevices, layout) {
-        console.log("role:", window.userRole); // Проверка роли
+        console.log("userRole:", window.userRole); // Проверка роли
         console.log("devices:", devices); // Проверка устройств
         console.log("layout:", layout); // Проверка схемы
 
         const devicesList = document.getElementById("devices-list");
+        if (!devicesList) {
+            console.error("Элемент #devices-list не найден в DOM");
+            return;
+        }
         devicesList.innerHTML = "";
 
         if (!layout || !layout.width || !layout.height || !layout.device_positions) {
@@ -1157,15 +1162,23 @@
                     <img src="https://avatars.mds.yandex.net/i?id=de9bb9dab04e704fd1c23bce4ff5b4b1e408d419-5475958-images-thumbs&n=13" alt="Device Image" class="device-image">
                 `;
                     if (Number(device.condition_id) === 4) {
-                        deviceItem.classList.add('broken');
+                        deviceItem.classList.add("broken");
                     }
 
                     const imageContainer = document.createElement("div");
                     imageContainer.classList.add("device-image-container");
                     imageContainer.innerHTML = deviceImage;
 
-                    // Условное отображение серийного номера только для роли "master"
-                    const serialNumberDisplay = window.userRole === "master" ? `<div class="device-label">Серийный номер: ${device.number}</div>` : '';
+                    // Условное отображение серийного номера по ролям, аналогично шаблону
+                    let serialNumberDisplay = "";
+                    if (window.userRole === "master") {
+                        serialNumberDisplay = `<div class="device-label">Серийный номер: ${device.number}</div>`;
+                    } else if (window.userRole === "admin" || window.userRole === "teacher") {
+                        serialNumberDisplay = ""; // Серийный номер не отображается
+                    } else {
+                        console.warn("Неизвестная роль:", window.userRole);
+                        serialNumberDisplay = ""; // По умолчанию не показываем
+                    }
 
                     deviceItem.innerHTML += `
                     <input type="radio" name="selected_package_devices" value="${device.id}" id="device_${device.id}" style="display: none;">
@@ -1175,25 +1188,35 @@
                     deviceItem.appendChild(imageContainer);
                     grid.appendChild(deviceItem);
 
-                    deviceItem.addEventListener('click', function () {
+                    deviceItem.addEventListener("click", function () {
                         const radio = deviceItem.querySelector(`input[type="radio"]`);
                         radio.checked = true;
-                        radio.dispatchEvent(new Event('change', {bubbles: true}));
+                        radio.dispatchEvent(new Event("change", {bubbles: true}));
 
-                        const modalFilteredDevicesListContent = document.getElementById('modal-filtered-devices-list-content');
-                        const modalSerialNumber = window.userRole === "master" ? `, Серийный номер: ${device.serial_number}` : '';
+                        const modalFilteredDevicesListContent = document.getElementById("modal-filtered-devices-list-content");
+                        if (!modalFilteredDevicesListContent) {
+                            console.error("Элемент #modal-filtered-devices-list-content не найден");
+                            return;
+                        }
+
+                        // Условное отображение серийного номера в модальном окне
+                        let modalSerialNumber = "";
+                        if (window.userRole === "master") {
+                            modalSerialNumber = `, Серийный номер: ${device.serial_number}`;
+                        }
+
                         modalFilteredDevicesListContent.innerHTML = `
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" checked>
                             <label class="form-check-label" for="modal_filtered_device_${device.id}">
-                                Тип устройства: ${device.type_name || 'Не указан'}${modalSerialNumber}
+                                Тип устройства: ${device.type_name || "Не указан"}${modalSerialNumber}
                             </label>
                         </div>
                     `;
 
-                        document.getElementById('modalMessage').value = '';
+                        document.getElementById("modalMessage").value = "";
 
-                        const modal = new bootstrap.Modal(document.getElementById('deviceModal'));
+                        const modal = new bootstrap.Modal(document.getElementById("deviceModal"));
                         modal.show();
                     });
                 }
@@ -1227,7 +1250,15 @@
                 const isChecked = previouslySelectedDeviceIds.includes(device.id.toString());
 
                 // Условное отображение серийного номера только для роли "master"
-                const serialNumberDisplay = window.userRole === "master" ? `, Серийный номер: ${device.serial_number}` : '';
+                let serialNumberDisplay = "";
+                if (window.userRole === "master") {
+                    serialNumberDisplay = `, Серийный номер: ${device.serial_number}`;
+                } else if (window.userRole === "admin" || window.userRole === "teacher") {
+                    serialNumberDisplay = ""; // Серийный номер не отображается
+                } else {
+                    console.warn("Неизвестная роль:", window.userRole);
+                    serialNumberDisplay = ""; // По умолчанию не показываем
+                }
 
                 deviceItem.innerHTML = `
                 <input class="form-check-input" type="checkbox" name="selected_filtered_devices" value="${device.id}" id="modal_filtered_device_${device.id}" ${isChecked ? 'checked' : ''}>
