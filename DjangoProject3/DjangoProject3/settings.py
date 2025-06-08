@@ -111,7 +111,9 @@ WSGI_APPLICATION = 'DjangoProject3.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+from dotenv import load_dotenv
 
+load_dotenv()
 
 DATABASES = {
     'default': {

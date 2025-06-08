@@ -10,7 +10,7 @@ from .models import Status
 def create_default_devices(sender, instance, created, **kwargs):
     if created:
         device_type_ids = [6, 5, 2, 1]
-        default_condition_id = 2  # Можно также получить через Status.objects.get(name='...')
+        default_condition_id = 2
 
         for type_id in device_type_ids:
             try:

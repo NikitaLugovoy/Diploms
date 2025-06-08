@@ -32,6 +32,19 @@ services:
       - POSTGRES_PASSWORD=n1i2k3i4t5a6
     restart: unless-stopped
 
+  bot:
+    build: .
+    command: python manage.py runbot
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=${DEBUG:-False}
+      - SECRET_KEY=${SECRET_KEY}
+      - BOT_TOKEN=${BOT_TOKEN}
+    depends_on:
+      - db
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   static_volume:

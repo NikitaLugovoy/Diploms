@@ -18,20 +18,20 @@ class FloorAdmin(admin.ModelAdmin):
 
 class DeviceInline(admin.TabularInline):
     model = Device
-    extra = 4  # 4 устройства можно будет создать сразу
+    extra = 4
     fields = ('type', 'serial_number', 'condition')
 
 # В файле admin.py
 @admin.register(Office)
 class OfficeAdmin(admin.ModelAdmin):
-    list_display = ('number', 'floor', 'body')  # Заменили floors_id на floor
-    search_fields = ('number', 'floor__number', 'body__number')  # Используем связанные поля для поиска
+    list_display = ('number', 'floor', 'body')
+    search_fields = ('number', 'floor__number', 'body__number')
 
 @admin.register(PackageDevice)
 class PackageDeviceAdmin(admin.ModelAdmin):
     list_display = ('office_id', 'number')
     search_fields = ('office_id', 'number')
-    inlines = [DeviceInline]  # ← подключаем инлайн устройств
+    inlines = [DeviceInline]
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
@@ -68,8 +68,7 @@ class DevicePositionInline(admin.TabularInline):
     model = DevicePosition
     extra = 1
     fields = ('package_device', 'x', 'y', 'is_active')
-    # Если используется django-autocomplete-light, можно включить:
-    # autocomplete_fields = ['device']
+
 
 @admin.register(OfficeLayout)
 class OfficeLayoutAdmin(admin.ModelAdmin):

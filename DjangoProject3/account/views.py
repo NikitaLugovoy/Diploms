@@ -20,6 +20,8 @@ signer = TimestampSigner()
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
+from django.core.signing import SignatureExpired, BadSignature
+from django.contrib.auth.models import User
 
 def send_activation_email(user, request):
     token = signer.sign(user.pk)
@@ -65,8 +67,6 @@ def register_view(request):
 
     return render(request, 'register.html', {'reg_form': reg_form})
 
-from django.core.signing import SignatureExpired, BadSignature
-from django.contrib.auth.models import User
 
 @api_view(['GET'])
 @permission_classes([AllowAny])

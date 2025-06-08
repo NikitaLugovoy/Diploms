@@ -17,7 +17,6 @@ class CustomUserCreationForm(UserCreationForm):
         user = super().save(commit=commit)
         avatar = self.cleaned_data.get('avatar')
 
-        # Создаем или обновляем UserProfile
         if commit:
             profile, created = UserProfile.objects.get_or_create(user=user)
             if avatar:

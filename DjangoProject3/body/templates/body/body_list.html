@@ -745,7 +745,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'ya_page' %}">
+                        <a class="nav-link" href="{% url 'ya_page' %}">
                             <i class="fas fa-robot me-1"></i> YandexGPT
                         </a>
                     </li>
@@ -1464,6 +1464,9 @@
         // Очищаем содержимое списков офисов и устройств
         document.getElementById("offices-list-content").innerHTML = "";
         document.getElementById("devices-list").innerHTML = "";
+
+        document.getElementById("floors-list-content").innerHTML = "";
+        document.getElementById("floors-list").innerHTML = "";
 
         // Обновляем интерфейс
         fetchOfficesAndDevices();
