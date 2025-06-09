@@ -4,21 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Внесение изминений Яндекс">
-      <change afterPath="$PROJECT_DIR$/DjangoProject3/body/bot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/.env" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/account/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/signals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/docker-compose.yml" afterDir="false" />
-    </list>
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Telebot+" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -343,7 +329,7 @@
       <workItem from="1748256940076" duration="671000" />
       <workItem from="1748260126445" duration="2865000" />
       <workItem from="1749328851284" duration="3845000" />
-      <workItem from="1749385279290" duration="1756000" />
+      <workItem from="1749385279290" duration="2434000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -729,7 +715,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748515233102</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Telebot+">
+      <option name="closed" value="true" />
+      <created>1749387097343</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1749387097343</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -767,7 +761,8 @@
     <MESSAGE value="Добавление верификации и фикс сообщений со входа" />
     <MESSAGE value="Внесение изминений" />
     <MESSAGE value="Внесение изминений Яндекс" />
-    <option name="LAST_COMMIT_MESSAGE" value="Внесение изминений Яндекс" />
+    <MESSAGE value="Telebot+" />
+    <option name="LAST_COMMIT_MESSAGE" value="Telebot+" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/diplomAPI$Test__body_tests.coverage" NAME="Test: body.tests Coverage Results" MODIFIED="1747084746891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
