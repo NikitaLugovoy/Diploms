@@ -34,7 +34,8 @@ services:
 
   bot:
     build: .
-    command: python body/bot.py
+    working_dir: /app/body
+    command: python bot.py
     volumes:
       - .:/app
     environment:
@@ -44,6 +45,7 @@ services:
     depends_on:
       - db
     restart: unless-stopped
+
 
 volumes:
   postgres_data:
