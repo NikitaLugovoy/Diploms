@@ -35,16 +35,9 @@ services:
   bot:
     build: .
     working_dir: /app/body
-    command: python bot.py
+    command: sh -c "ls -la /app/body && sleep 300"
     volumes:
       - .:/app
-    environment:
-      - DEBUG=${DEBUG:-False}
-      - SECRET_KEY=${SECRET_KEY}
-      - BOT_TOKEN=${BOT_TOKEN}
-    depends_on:
-      - db
-    restart: unless-stopped
 
 
 volumes:

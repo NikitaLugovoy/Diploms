@@ -333,15 +333,7 @@
       <workItem from="1749328851284" duration="3845000" />
       <workItem from="1749385279290" duration="2434000" />
       <workItem from="1749502963479" duration="1311000" />
-      <workItem from="1749504811645" duration="740000" />
-    </task>
-    <task id="LOCAL-00004" summary="111">
-      <option name="closed" value="true" />
-      <created>1735148729420</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1735148729420</updated>
+      <workItem from="1749504811645" duration="881000" />
     </task>
     <task id="LOCAL-00005" summary="1111">
       <option name="closed" value="true" />
@@ -727,7 +719,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749505296244</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="Фикс телебота">
+      <option name="closed" value="true" />
+      <created>1749505563984</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1749505563984</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
