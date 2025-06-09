@@ -34,7 +34,7 @@ services:
 
   bot:
     build: .
-    command: python manage.py runbot
+    command: python bot.py
     volumes:
       - .:/app
     environment:
