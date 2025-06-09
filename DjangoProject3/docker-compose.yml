@@ -34,7 +34,7 @@ services:
 
   bot:
     build: .
-    command: python bot.py
+    command: python body/bot.py
     volumes:
       - .:/app
     environment:
