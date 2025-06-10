@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Фикс телебота">
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/diplom_test" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,9 +85,9 @@
       <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\hp\PycharmProjects\diplomAPI" />
       <recent name="C:\Users\hp\PycharmProjects\diplomAPI\DjangoProject3\account\templates\email" />
       <recent name="C:\Users\hp\PycharmProjects\diplomAPI\DjangoProject3" />
-      <recent name="C:\Users\hp\PycharmProjects\diplomAPI" />
       <recent name="D:\pythonProject\Diploms\DjangoProject3\static\body" />
       <recent name="D:\pythonProject\Diploms\DjangoProject3\static\account" />
     </key>
@@ -334,6 +334,7 @@
       <workItem from="1749385279290" duration="2434000" />
       <workItem from="1749502963479" duration="1311000" />
       <workItem from="1749504811645" duration="881000" />
+      <workItem from="1749543166942" duration="455000" />
     </task>
     <task id="LOCAL-00005" summary="1111">
       <option name="closed" value="true" />
