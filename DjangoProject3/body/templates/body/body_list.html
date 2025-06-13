@@ -1045,9 +1045,8 @@
 
     function updateOfficesList(offices, selectedOffices) {
         const previouslySelectedOffices = new Set(
-            Array.from(document.querySelectorAll('input[name="selected_offices"]:checked'))
-                .map(radio => radio.value)
-        );
+        Array.from(selectedOffices).map(radio => radio.value) // берем из аргумента, переданного в функцию
+    );
         DOMCache.officesListContent.innerHTML = "";
         if (offices && offices.length > 0) {
             offices.forEach(office => {
