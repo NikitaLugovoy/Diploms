@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление ТГбота">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/diploms.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/diploms.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -335,15 +335,7 @@
       <workItem from="1749385279290" duration="2434000" />
       <workItem from="1749502963479" duration="1311000" />
       <workItem from="1749504811645" duration="881000" />
-      <workItem from="1749543166942" duration="3853000" />
-    </task>
-    <task id="LOCAL-00012" summary="111">
-      <option name="closed" value="true" />
-      <created>1739531077827</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1739531077827</updated>
+      <workItem from="1749543166942" duration="4666000" />
     </task>
     <task id="LOCAL-00013" summary="111">
       <option name="closed" value="true" />
@@ -729,7 +721,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749802110937</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="Добавление ТГбота">
+      <option name="closed" value="true" />
+      <created>1749802441589</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1749802441589</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

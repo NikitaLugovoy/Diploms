@@ -1317,18 +1317,7 @@
     });
 
     function resetCheckboxes() {
-        document.querySelectorAll('input[name="selected_bodies"]').forEach(radio => {
-            radio.checked = false;
-            radio.closest('.form-check').classList.remove('selected');
-        });
-        document.querySelectorAll('input[name="selected_floors"]').forEach(radio => {
-            radio.checked = false;
-            radio.closest('.form-check')?.classList.remove('selected');
-        });
-        document.querySelectorAll('input[name="selected_offices"]').forEach(radio => {
-            radio.checked = false;
-            radio.closest('.form-check')?.classList.remove('selected');
-        });
+
         document.querySelectorAll('input[name="selected_package_devices"]').forEach(radio => {
             radio.checked = false;
             radio.closest('.device-item')?.classList.remove('selected');
@@ -1338,7 +1327,6 @@
             checkbox.closest('.form-check')?.classList.remove('selected');
         });
 
-        DOMCache.officesList.style.display = "none";
         DOMCache.devicesListContainer.style.display = "none";
         DOMCache.officesListContent.innerHTML = "";
         DOMCache.devicesList.innerHTML = "";
