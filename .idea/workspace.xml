@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление БД">
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление ТГбота">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/bot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/diploms.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/diploms.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -337,23 +335,7 @@
       <workItem from="1749385279290" duration="2434000" />
       <workItem from="1749502963479" duration="1311000" />
       <workItem from="1749504811645" duration="881000" />
-      <workItem from="1749543166942" duration="3332000" />
-    </task>
-    <task id="LOCAL-00010" summary="111">
-      <option name="closed" value="true" />
-      <created>1738132168501</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1738132168501</updated>
-    </task>
-    <task id="LOCAL-00011" summary="111">
-      <option name="closed" value="true" />
-      <created>1738140169722</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1738140169723</updated>
+      <workItem from="1749543166942" duration="3853000" />
     </task>
     <task id="LOCAL-00012" summary="111">
       <option name="closed" value="true" />
@@ -731,7 +713,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749545022211</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="Добавление ТГбота">
+      <option name="closed" value="true" />
+      <created>1749801918024</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1749801918024</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Добавление ТГбота">
+      <option name="closed" value="true" />
+      <created>1749802110937</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1749802110937</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -773,7 +771,8 @@
     <MESSAGE value="обновление зависимостей" />
     <MESSAGE value="Фикс телебота" />
     <MESSAGE value="Добавление БД" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавление БД" />
+    <MESSAGE value="Добавление ТГбота" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавление ТГбота" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/diplomAPI$Test__body_tests.coverage" NAME="Test: body.tests Coverage Results" MODIFIED="1747084746891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
