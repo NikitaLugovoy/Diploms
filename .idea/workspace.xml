@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Добавление БД">
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/bot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -334,15 +337,7 @@
       <workItem from="1749385279290" duration="2434000" />
       <workItem from="1749502963479" duration="1311000" />
       <workItem from="1749504811645" duration="881000" />
-      <workItem from="1749543166942" duration="1830000" />
-    </task>
-    <task id="LOCAL-00009" summary="111">
-      <option name="closed" value="true" />
-      <created>1738130688963</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1738130688963</updated>
+      <workItem from="1749543166942" duration="3332000" />
     </task>
     <task id="LOCAL-00010" summary="111">
       <option name="closed" value="true" />
@@ -728,7 +723,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749544728811</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="Добавление БД">
+      <option name="closed" value="true" />
+      <created>1749545022210</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1749545022211</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -774,6 +777,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/diplomAPI$Test__body_tests.coverage" NAME="Test: body.tests Coverage Results" MODIFIED="1747084746891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/diplomAPI$bot.coverage" NAME="bot Coverage Results" MODIFIED="1749385514382" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/DjangoProject3/body" />
+    <SUITE FILE_PATH="coverage/diplomAPI$bot.coverage" NAME="bot Coverage Results" MODIFIED="1749801769472" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/DjangoProject3/body" />
   </component>
 </project>

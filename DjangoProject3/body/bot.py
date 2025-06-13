@@ -13,7 +13,7 @@ from django.conf import settings
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
-from body.models import Application
+from body.models import Application, TelegramUser
 from django.contrib.auth.models import User
 
 from asgiref.sync import sync_to_async
@@ -38,11 +38,18 @@ dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    logger.info(f"/start command received from user {message.from_user.id}")
+    chat_id = str(message.from_user.id)
+    username = message.from_user.username
+
+    await sync_to_async(TelegramUser.objects.get_or_create)(
+        chat_id=chat_id,
+        defaults={"username": username}
+    )
+
+    logger.info(f"/start command received from user {chat_id}")
+
     keyboard = ReplyKeyboardMarkup(
-        keyboard=[
-            [KeyboardButton(text="📋 Мои заявки"), KeyboardButton(text="❌ Закрыть заявку")]
-        ],
+        keyboard=[[KeyboardButton(text="📋 Мои заявки"), KeyboardButton(text="❌ Закрыть заявку")]],
         resize_keyboard=True
     )
     await message.answer("Добро пожаловать! Выберите действие:", reply_markup=keyboard)

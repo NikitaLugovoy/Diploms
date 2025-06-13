@@ -17,7 +17,7 @@ from datetime import datetime
 from django.conf import settings
 
 from account.models import UserProfile
-from .models import OfficeLayout
+from .models import OfficeLayout, TelegramUser
 from .serializers import OfficeLayoutSerializer, BodySerializer, FloorSerializer
 
 from django.contrib.auth.decorators import login_required
@@ -314,11 +314,19 @@ def send_message_to_telegram(request):
     # Отправка сообщения в Telegram
     try:
         send_telegram_message(BOT_TOKEN, CHAT_ID, formatted_message)
+        notify_all_users(BOT_TOKEN, f"Создана новая заявка!\n\n{formatted_message}")
         return JsonResponse({'status': 'success', 'message': 'Сообщение отправлено!'}, status=200)
     except Exception as e:
         logger.error(f"Ошибка при отправке сообщения в Telegram: {str(e)}")
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+def notify_all_users(bot_token: str, message: str):
+    bot = get_telegram_bot(bot_token)
+    for user in TelegramUser.objects.all():
+        try:
+            bot.send_message(user.chat_id, message)
+        except Exception as e:
+            logger.error(f"Ошибка отправки пользователю {user.chat_id}: {e}")
 
 @swagger_auto_schema(
     method='get',
