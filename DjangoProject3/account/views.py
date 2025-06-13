@@ -55,8 +55,8 @@ def register_view(request):
             user.save()
 
             # Добавление в группу "teacher"
-            teacher_group, created = Group.objects.get_or_create(name='teacher')
-            user.groups.add(teacher_group)
+            #teacher_group, created = Group.objects.get_or_create(name='teacher')
+            #user.groups.add(teacher_group)
 
             send_activation_email(user, request)
 
