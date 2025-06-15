@@ -58,6 +58,7 @@ async def cmd_start(message: types.Message):
 PAGE_SIZE = 10
 
 
+
 async def send_applications_page(message_or_callback, page=1):
     logger.info(f"send_applications_page called with page={page}")
 
@@ -71,7 +72,7 @@ async def send_applications_page(message_or_callback, page=1):
         lambda: list(
             Application.objects
             .select_related(
-                "office", "device__package__office__floor", "device__package__office__body", "status", "breakdown_type"
+                "office", "device__type", "device__package__office__floor", "device__package__office__body", "status", "breakdown_type"
             )
             .filter(status_id=status_id)
             .order_by("-data")[offset:offset + PAGE_SIZE]
