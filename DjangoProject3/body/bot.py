@@ -93,11 +93,13 @@ async def send_applications_page(message_or_callback, page=1):
 
             text += (
                 f"🆔 Заявка №{app.id}\n"
+                f"🛠 Тип устройства: {device.type.name}\n"
                 f"🛠 Устройство: {device.serial_number}\n"
                 f"📦 Установлено в ПК (пакет): {device.package.number}\n"
                 f"🖥 ПК находится в кабинете №{device_office.number if device_office else '—'}\n"
                 f"📍 Кабинет расположен на этаже: {floor.number if floor else '—'}\n"
                 f"🏢 В корпусе: {body.number if body else '—'}, адрес: {body.address if body else '—'}\n"
+                f"⚠️ Тип поломки: {app.breakdown_type.name if app.breakdown_type else '—'}\n"
                 f"📅 Дата заявки: {app.data.strftime('%d.%m.%Y %H:%M')}\n"
                 f"Статус: {app.status.name}\n\n"
             )

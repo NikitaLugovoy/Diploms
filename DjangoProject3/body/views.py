@@ -270,6 +270,7 @@ def send_message_to_telegram(request):
         try:
             # Используем select_related для оптимизации запросов
             device = Device.objects.select_related(
+                'type',
                 'package__office__floor',
                 'package__office__body'
             ).get(id=device_id)
@@ -285,10 +286,11 @@ def send_message_to_telegram(request):
 
             device_details_list.append(
                 f"Устройство ID: {device.id}\n"
-                f"Тип поломки: {breakdown_type.name}\n"
+                f"Тип устройства: {device.type.name}\n"
                 f"Серийный номер: {device.serial_number}\n"
-                f"Пакет: {package.number}\n"
-                f"Офис: {office.number}\n"
+                f"Тип поломки: {breakdown_type.name}\n"
+                f"ПК: {package.number}\n"
+                f"Кабинет: {office.number}\n"
                 f"Этаж: {floor.number}\n"
                 f"Корпус: {body.number}, Адрес: {body.address}\n"
             )
