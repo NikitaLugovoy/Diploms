@@ -118,10 +118,12 @@ load_dotenv()
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_DATABASE', default='diplom_test'),
+        'NAME': config('DB_DATABASE', default='diplom'),
         'USER': config('DB_USERNAME', default='postgres'),
+
         'PASSWORD': config('DB_PASSWORD', default='n1i2k3i4t5a6'),
         'HOST': config('DB_HOST', default='db'),
+
         'PORT': config('DB_PORT', default='5432'),
         # Дополнительные параметры можно указать через OPTIONS
         'OPTIONS': {
@@ -169,6 +171,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

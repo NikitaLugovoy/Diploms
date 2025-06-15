@@ -838,3 +838,4 @@ def device_breakdown_stats(request):
         "notifications_count": notifications_count,
         'active_page': 'device_stats'
     })
+
