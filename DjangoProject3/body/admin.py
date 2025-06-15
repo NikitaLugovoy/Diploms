@@ -4,7 +4,6 @@ from body.models import Body, Floor, Office, PackageDevice, Device, Application,
     OfficeLayout, DevicePosition
 from type_devices.models import TypeDevice
 
-
 # Регистрация моделей
 @admin.register(Body)
 class BodyAdmin(admin.ModelAdmin):
@@ -16,22 +15,30 @@ class FloorAdmin(admin.ModelAdmin):
     list_display = ('number',)
     search_fields = ('number',)
 
+class DeviceInline(admin.TabularInline):
+    model = Device
+    extra = 4
+    fields = ('type', 'serial_number', 'condition')
+
 # В файле admin.py
 @admin.register(Office)
 class OfficeAdmin(admin.ModelAdmin):
-    list_display = ('number', 'floor', 'body')  # Заменили floors_id на floor
-    search_fields = ('number', 'floor__number', 'body__number')  # Используем связанные поля для поиска
-
+    list_display = ('number', 'floor', 'body')
+    search_fields = ('number', 'floor__number', 'body__number')
 
 @admin.register(PackageDevice)
 class PackageDeviceAdmin(admin.ModelAdmin):
-    list_display = ('office_id', 'number')
+    list_display = ('office_id', 'number' )
     search_fields = ('office_id', 'number')
+    inlines = [DeviceInline]
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('type_id', 'serial_number', 'package_id', 'condition_id')
-    search_fields = ('serial_number', 'type_id', 'package_id')
+    list_display = ('type_id', 'serial_number', 'package_id', 'get_condition_name')
+    search_fields = ('serial_number', 'type__name', 'package__number', 'condition__name')
+    def get_condition_name(self, obj):
+        return obj.condition.name
+    get_condition_name.short_description = 'Состояние'
 
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
@@ -63,8 +70,7 @@ class DevicePositionInline(admin.TabularInline):
     model = DevicePosition
     extra = 1
     fields = ('package_device', 'x', 'y', 'is_active')
-    # Если используется django-autocomplete-light, можно включить:
-    # autocomplete_fields = ['device']
+
 
 @admin.register(OfficeLayout)
 class OfficeLayoutAdmin(admin.ModelAdmin):
@@ -80,3 +86,4 @@ class OfficeLayoutAdmin(admin.ModelAdmin):
             'fields': ('width', 'height')
         }),
     )
+

@@ -12,19 +12,23 @@ class BodySerializer(serializers.ModelSerializer):
 
 
 class FloorSerializer(serializers.ModelSerializer):
+    body_ids = serializers.PrimaryKeyRelatedField(
+        source='bodies', many=True, read_only=True
+    )
+
     class Meta:
         model = Floor
-        fields = ["id", "number"]
+        fields = ["id", "number", "body_ids"]
 
 
 class OfficeSerializer(serializers.ModelSerializer):
     floor_id = serializers.IntegerField(source="floor.id", read_only=True)
     body_id = serializers.IntegerField(source="body.id", read_only=True)
+    floor_number = serializers.IntegerField(source="floor.number", read_only=True)
 
     class Meta:
         model = Office
-        fields = ["id", "number", "floor_id", "body_id"]
-
+        fields = ["id", "number", "floor_id", "body_id", "floor_number"]
 
 class PackageDeviceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,11 +38,12 @@ class PackageDeviceSerializer(serializers.ModelSerializer):
 
 class DeviceSerializer(serializers.ModelSerializer):
     package_id = serializers.IntegerField(source="package.id", read_only=True)
+    package_number = serializers.CharField(source="package.number", read_only=True)
     condition_id = serializers.IntegerField(source="condition.id", read_only=True)
     type_name = serializers.CharField(source="type.name", read_only=True)
     class Meta:
         model = Device
-        fields = ["id", "serial_number", "package_id", "condition_id", "type_name"]
+        fields = "__all__"
 
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -52,6 +57,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     floor_number = serializers.IntegerField(source='office.floor.number', read_only=True)
     body_number = serializers.CharField(source='office.body.number', read_only=True)
     device_serial_number = serializers.CharField(source='device.serial_number', read_only=True)
+    package_number = serializers.CharField(source="device.package.number", read_only=True)
     package_id = serializers.IntegerField(source="device.package.id", read_only=True)
     status_name = serializers.CharField(source='status.name', read_only=True)
     status_id = serializers.IntegerField(source='status.id', read_only=True)

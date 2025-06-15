@@ -11,14 +11,17 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
+        fields = ['username', 'first_name', 'last_name', 'email', 'avatar','password1', 'password2']
 
     def save(self, commit=True):
-        user = super().save(commit=False)
+        user = super().save(commit=commit)
+        avatar = self.cleaned_data.get('avatar')
+
         if commit:
-            user.save()
-        if 'avatar' in self.cleaned_data:
-            avatar = self.cleaned_data.get('avatar')
-            # Создайте профиль для пользователя
-            UserProfile.objects.create(user=user, avatar=avatar)
+            profile, created = UserProfile.objects.get_or_create(user=user)
+            if avatar:
+                profile.avatar = avatar
+                profile.save()
+
         return user
+

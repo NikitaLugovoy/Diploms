@@ -8,6 +8,8 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('success/', views.success_view, name='success'),
     path('logout/', views.logout_view, name='logout'),
+    path('activate/<str:token>/', views.activate_view, name='activate'),
+
 ]
 
 if settings.DEBUG:

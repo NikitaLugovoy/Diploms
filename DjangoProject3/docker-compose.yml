@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: >
+      sh -c "sleep 10 &&
+      python manage.py collectstatic --noinput &&
+      gunicorn --bind 0.0.0.0:8000 --workers 3 DjangoProject3.wsgi:application"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=${DEBUG:-False}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=localhost,127.0.0.1,web
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./diploms.sql:/docker-entrypoint-initdb.d/diploms.sql
+    environment:
+      - POSTGRES_DB=diplom_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=n1i2k3i4t5a6
+    restart: unless-stopped
+
+  bot:
+    build: .
+    working_dir: /app/body
+    command: python bot.py
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=${DEBUG:-False}
+      - SECRET_KEY=${SECRET_KEY}
+      - BOT_TOKEN=${BOT_TOKEN}
+    depends_on:
+      - db
+    restart: unless-stopped
+
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
