@@ -4,7 +4,6 @@ from body.models import Body, Floor, Office, PackageDevice, Device, Application,
     OfficeLayout, DevicePosition
 from type_devices.models import TypeDevice
 
-
 # Регистрация моделей
 @admin.register(Body)
 class BodyAdmin(admin.ModelAdmin):
