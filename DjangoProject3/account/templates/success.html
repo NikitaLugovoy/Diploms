@@ -223,10 +223,6 @@
                 <i class="fas fa-bolt"></i>
                 <span>Быстро Оформить заявку</span>
             </a>
-            <a href="{% url 'ya_page' %}" class="card-item">
-                <i class="fas fa-robot"></i>
-                <span>YandexGPT</span>
-            </a>
             <a href="{% url 'device_breakdown_stats' %}" class="card-item">
                 <i class="fas fa-chart-bar"></i>
                 <span>Статистика</span>
@@ -294,26 +290,18 @@
         document.getElementById('preloader').style.display = 'none';
     });
 
-// Toggle theme
-function toggleTheme() {
-    const isDark = document.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    // Обновляем текст кнопки
-    const themeButton = document.querySelector('.theme-toggle');
-    themeButton.textContent = isDark ? '☀️ Тема' : '🌙 Тема';
-}
-
-// Load theme from localStorage
-window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        // Устанавливаем значок солнца при загрузке тёмной темы
-        document.querySelector('.theme-toggle').textContent = '☀️ Тема';
-    } else {
-        // Устанавливаем значок луны для светлой темы
-        document.querySelector('.theme-toggle').textContent = '🌙 Тема';
+    // Toggle theme
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
     }
-});
+
+    // Load theme from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    });
 </script>
 </body>
 </html>

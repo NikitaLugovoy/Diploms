@@ -17,8 +17,8 @@ from datetime import datetime
 from django.conf import settings
 
 from account.models import UserProfile
-from .models import OfficeLayout, TelegramUser
-from .serializers import OfficeLayoutSerializer, BodySerializer, FloorSerializer
+from .models import OfficeLayout
+from .serializers import OfficeLayoutSerializer
 
 from django.contrib.auth.decorators import login_required
 
@@ -115,7 +115,6 @@ def application_list(request):
         "statuses": statuses,
         "role": role,
         "notifications_count": notifications_count,
-        'active_page': 'application_list'
     })
 
 
@@ -315,19 +314,11 @@ def send_message_to_telegram(request):
     # Отправка сообщения в Telegram
     try:
         send_telegram_message(BOT_TOKEN, CHAT_ID, formatted_message)
-        notify_all_users(BOT_TOKEN, f"Создана новая заявка!\n\n{formatted_message}")
         return JsonResponse({'status': 'success', 'message': 'Сообщение отправлено!'}, status=200)
     except Exception as e:
         logger.error(f"Ошибка при отправке сообщения в Telegram: {str(e)}")
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-def notify_all_users(bot_token: str, message: str):
-    bot = get_telegram_bot(bot_token)
-    for user in TelegramUser.objects.all():
-        try:
-            bot.send_message(user.chat_id, message)
-        except Exception as e:
-            logger.error(f"Ошибка отправки пользователю {user.chat_id}: {e}")
 
 @swagger_auto_schema(
     method='get',
@@ -352,26 +343,28 @@ def notify_all_users(bot_token: str, message: str):
 @api_view(["GET", "POST"])
 def body_list(request):
     user = request.user
+    # Получение роли из первой группы, как в user_dashboard
     groups = user.groups.all()
     role = groups[0].name.lower() if groups.exists() else 'без роли'
 
-    # Подсчет уведомлений
+    # Подсчет уведомлений в зависимости от роли
     if role == "master":
-        notifications_count = Application.objects.filter(status_id=1).count()
+        notifications_count = Application.objects.filter(status_id=1).count()  # Все заявки с status_id=1
     else:
-        notifications_count = Application.objects.filter(user=user, status_id=1).count()
+        notifications_count = Application.objects.filter(user=user,
+                                                         status_id=1).count()  # Заявки пользователя с status_id=1
 
     if request.method == "POST":
         selected_bodies = list(map(int, request.POST.getlist("selected_bodies", [])))
         selected_floors = list(map(int, request.POST.getlist("selected_floors", [])))
+        selected_filtered_devices = list(map(int, request.POST.getlist("selected_filtered_devices", [])))
         selected_offices = list(map(int, request.POST.getlist("selected_offices", [])))
         selected_package_devices = list(map(int, request.POST.getlist("selected_package_devices", [])))
-        selected_filtered_devices = list(map(int, request.POST.getlist("selected_filtered_devices", [])))
 
-        # Фильтрация этажей по выбранным корпусам
-        floors = Floor.objects.all()
-        if selected_bodies:
-            floors = floors.filter(bodies__id__in=selected_bodies).distinct()
+        print("Selected Bodies:", selected_bodies)
+        print("Selected Floors:", selected_floors)
+        print("Selected Offices:", selected_offices)
+        print("Selected Filtered Devices:", selected_filtered_devices)
 
         # Фильтрация офисов
         offices = Office.objects.all()
@@ -384,20 +377,23 @@ def body_list(request):
         package_devices = PackageDevice.objects.filter(office_id__in=selected_offices) if selected_offices else []
 
         # Фильтрация устройств
-        devices = Device.objects.filter(package_id__in=selected_package_devices) if selected_package_devices else Device.objects.all()
+        devices = Device.objects.filter(
+            package_id__in=selected_package_devices) if selected_package_devices else Device.objects.all()
 
         # Получение схем для выбранных офисов
-        layouts = OfficeLayout.objects.filter(office_id__in=selected_offices).prefetch_related('device_positions') if selected_offices else []
+        layouts = OfficeLayout.objects.filter(office_id__in=selected_offices).prefetch_related(
+            'device_positions') if selected_offices else []
 
-        # Типы поломок
         breakdown_types = BreakdownType.objects.all()
         breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
 
-        # Проставляем condition_id для пакетов устройств
+        print("Breakdown Types:", breakdown_types)
+
+        # Проставляем `condition_id` для пакетов устройств
         package_devices_with_condition = []
         for package_device in package_devices:
             devices_in_package = Device.objects.filter(package_id=package_device.id)
-            condition = "1"
+            condition = "1"  # По умолчанию
             for device in devices_in_package:
                 if device.condition_id in [4, 6]:
                     condition = str(device.condition_id)
@@ -411,13 +407,11 @@ def body_list(request):
 
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return JsonResponse({
-                "bodies": BodySerializer(Body.objects.all(), many=True).data,
-                "floors": FloorSerializer(floors, many=True).data,
                 "offices": OfficeSerializer(offices, many=True).data,
+                "breakdown_types": breakdown_types_data,
                 "package_devices": package_devices_with_condition,
                 "devices": DeviceSerializer(devices, many=True).data,
-                "layouts": OfficeLayoutSerializer(layouts, many=True).data,
-                "breakdown_types": breakdown_types_data,
+                "layouts": OfficeLayoutSerializer(layouts, many=True).data
             })
 
     # GET-запрос
@@ -432,8 +426,8 @@ def body_list(request):
         "devices": [],
         "role": role,
         "notifications_count": notifications_count,
-        'active_page': 'body_list'
     })
+
 
 @swagger_auto_schema(
     method="get",
@@ -571,7 +565,6 @@ def fastapplication_list(request):
         "offices": offices,
         "role": role,
         "notifications_count": notifications_count,
-        'active_page': 'fastapplication_list'
     })
 
 
@@ -618,7 +611,7 @@ def yagpt_page(request):
         role = groups[0].name.lower() if groups.exists() else 'Без роли'
         notifications_count = Application.objects.filter(user=user, status_id=1).count()
 
-        context = {'role': role, 'notifications_count': notifications_count, 'active_page': 'ya_index'}
+        context = {'role': role, 'notifications_count': notifications_count}
         return render(request, "body/ya_index.html", context)
 
     elif request.method == "POST":
@@ -654,7 +647,7 @@ def yagpt_page(request):
             )
             if response.status_code == 200:
                 generated_text = response.json()["result"]["alternatives"][0]["message"]["text"]
-                truncated_text = generated_text[:850]
+                truncated_text = generated_text[:20]
                 return JsonResponse({'generated_text': truncated_text}, json_dumps_params={"ensure_ascii": False})
             else:
                 return JsonResponse({'error': response.text}, status=response.status_code)
@@ -717,7 +710,6 @@ def user_dashboard(request):
             "notifications_count": notifications_count,
             "role": role,
             "avatar_url": avatar_url,
-            'active_page': 'lkuser'
         }
     )
 
@@ -725,11 +717,7 @@ def user_dashboard(request):
 @login_required
 def delete_application(request, application_id):
     if request.method == "POST":
-
         application = get_object_or_404(Application, id=application_id, user=request.user)
-        device = get_object_or_404(Device, id=application.device_id)
-        device.condition_id = 1  # например, 1 — это "Свободен" или "Работает"
-        device.save()
         application.delete()
         return JsonResponse({"message": "Заявка удалена"}, status=200)
 
@@ -746,7 +734,7 @@ def logout_view(request):
 
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = "body/password_change.html"
-    success_url = reverse_lazy("lkuser")
+    success_url = reverse_lazy("user_dashboard")
 
 
 @swagger_auto_schema(
@@ -765,11 +753,14 @@ class CustomPasswordChangeView(PasswordChangeView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def device_breakdown_stats(request):
+    # Определяем роль пользователя
     user = request.user
+    # Получение роли из первой группы, как в user_dashboard
     groups = user.groups.all()
     role = groups[0].name.lower() if groups.exists() else 'Без роли'
     notifications_count = Application.objects.filter(user=user, status_id=1).count()
 
+    # Получаем общую статистику
     office_stats = (
         Application.objects
         .exclude(status__id=3)
@@ -800,6 +791,7 @@ def device_breakdown_stats(request):
         for entry in heatmap_raw
     ]
 
+    # Если это AJAX-запрос — вернуть JSON
     if request.GET.get("office_id") and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         office_id = int(request.GET["office_id"])
         broken_devices = (
@@ -827,6 +819,7 @@ def device_breakdown_stats(request):
             "breakdown_type_data": breakdown_type_data,
         })
 
+    # Иначе вернуть обычную HTML-страницу
     return render(request, "body/device_stats.html", {
         "stats_data": stats_data,
         "selected_office": request.GET.get("office_id"),
@@ -834,8 +827,6 @@ def device_breakdown_stats(request):
         "chart_data": json.dumps(stats_data),
         "heatmap_data": json.dumps(heatmap_data),
         "breakdown_type_data": json.dumps([]),
-        "role": role,
+        "role": role,  # Добавляем роль в контекст
         "notifications_count": notifications_count,
-        'active_page': 'device_stats'
     })
-

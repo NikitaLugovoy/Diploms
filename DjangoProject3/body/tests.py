@@ -1,238 +1,184 @@
-from django.test import TestCase, RequestFactory, Client
-from django.contrib.auth.models import User, Group
-from django.http import JsonResponse
-from rest_framework.test import APIRequestFactory
-from unittest.mock import patch, MagicMock
-from body.models import (
-    Body, Floor, Office, PackageDevice, Device, Application, Status, BreakdownType, OfficeLayout
-)
-from account.models import UserProfile
-from type_devices.models import TypeDevice
-from body.serializers import (
-    SendMessageSerializer, SaveApplicationSerializer, ApplicationSerializer, CloseApplicationSerializer,
-    OfficeSerializer, OfficeLayoutSerializer
-)
-from body.views import (
-    application_list, close_application, save_application, update_device_condition_by_id,
-    get_office_number, send_message_to_telegram, body_list, fastapplication_list,
-    yagpt_page, user_dashboard, delete_application, device_breakdown_stats
-)
 import json
+from unittest.mock import patch, Mock
+from django.test import TestCase, Client
 from django.urls import reverse
-from django.utils import timezone
-from datetime import datetime
-import pytz
+from django.contrib.auth.models import User
+from rest_framework import status
+from rest_framework.test import APIClient
+from django.conf import settings
 
+class SendMessageToTelegramTests(TestCase):
+    fixtures = ['body_test_data.json']
 
-class BodyViewsTests(TestCase):
     def setUp(self):
-        # Create test data
-        self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.master_user = User.objects.create_user(username='master', password='masterpass')
-        self.master_group = Group.objects.create(name='master')
-        self.master_user.groups.add(self.master_group)
+        self.client = APIClient()
+        self.user = User.objects.get(pk=1)  # Получение пользователя из фикстуры (pk=1)
+        self.client.force_authenticate(user=self.user)  # Аутентификация пользователя
 
-        self.body = Body.objects.create(number='B1', address='Test Address')
-        self.floor = Floor.objects.create(number=1)
-        self.office = Office.objects.create(number='101', floor=self.floor, body=self.body)
-        self.package_device = PackageDevice.objects.create(number='P1', office=self.office)
-
-        # Create Status objects with specific IDs
-        self.status_broken = Status.objects.create(id=1, name='Broken')
-        self.status_closed = Status.objects.create(id=3, name='Closed')
-        self.status_faulty = Status.objects.create(id=4, name='Faulty')
-
-        self.breakdown_type = BreakdownType.objects.create(name='Hardware Failure')
-        self.type_device = TypeDevice.objects.create(name='Computer')
-
-        self.device = Device.objects.create(
-            serial_number='SN123',
-            condition=self.status_broken,
-            package=self.package_device,
-            type=self.type_device
-        )
-        # Create application for regular user
-        self.application = Application.objects.create(
-            office=self.office,
-            device=self.device,
-            reason='Test reason',
-            user=self.user,
-            data=timezone.now(),
-            status=self.status_broken,
-            breakdown_type=self.breakdown_type
-        )
-        # Create application for master user
-        self.master_application = Application.objects.create(
-            office=self.office,
-            device=self.device,
-            reason='Master test reason',
-            user=self.master_user,
-            data=timezone.now(),
-            status=self.status_broken,
-            breakdown_type=self.breakdown_type
-        )
-        self.factory = APIRequestFactory()
-        self.request_factory = RequestFactory()
-        self.client = Client()
-
-    def test_application_list_master(self):
-        """Test application_list for master role."""
-        request = self.factory.get('/applications/', {'status_id': '1'})
-        request.user = self.master_user
-        request.META['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
-
-        response = application_list(request)
-        self.assertEqual(response.status_code, 200)
-        response_data = response.data
-        self.assertEqual(len(response_data), 2)  # Expect two applications
-        reasons = [app['reason'] for app in response_data]
-        self.assertIn('Test reason', reasons)
-        self.assertIn('Master test reason', reasons)
-
-    def test_application_list_non_master(self):
-        """Test application_list for non-master user."""
-        request = self.factory.get('/applications/', {'status_id': '1'})
-        request.user = self.user
-        request.META['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
-
-        response = application_list(request)
-        self.assertEqual(response.status_code, 200)
-        response_data = response.data
-        self.assertEqual(len(response_data), 1)
-        self.assertEqual(response_data[0]['user'], self.user.id)
-
-    def test_close_application(self):
-        """Test closing an application."""
-        request = self.factory.post(f'/close/{self.application.id}/')
-        request.user = self.user
-
-        response = close_application(request, self.application.id)
-        self.assertEqual(response.status_code, 302)  # Redirect
-        application = Application.objects.get(id=self.application.id)
-        device = Device.objects.get(id=self.device.id)
-        self.assertEqual(application.status_id, 3)
-        self.assertEqual(device.condition_id, 1)
-
-    def test_save_application(self):
-        """Test saving a new application."""
-        data = {
-            'office_id': self.office.id,
-            'device_ids': [self.device.id],
-            'reason': 'New issue',
-            'breakdown_type_id': self.breakdown_type.id,
-            'user_id': self.user.id
-        }
-        request = self.factory.post('/save-application/', data, format='json')
-
-        response = save_application(request)
-        self.assertEqual(response.status_code, 201)
-        response_data = response.data
-        self.assertEqual(response_data['status'], 'success')
-        self.assertTrue(Application.objects.filter(reason='New issue').exists())
-
-    def test_update_device_condition_by_id(self):
-        """Test updating device condition."""
-        device = update_device_condition_by_id(self.device.id)
-        self.assertEqual(device.condition_id, 4)
-        device_from_db = Device.objects.get(id=self.device.id)
-        self.assertEqual(device_from_db.condition_id, 4)
-
-    def test_get_office_number(self):
-        """Test getting office number."""
-        result = get_office_number(self.office.id)
-        self.assertEqual(result, '101')
-
-    @patch('requests.post')
-    @patch('telebot.TeleBot.send_message')
-    def test_send_message_to_telegram_success(self, mock_telegram, mock_requests_post):
-        """Test successful Telegram message sending."""
-        mock_requests_post.return_value = MagicMock(status_code=201)
-        mock_telegram.return_value = None
-
-        data = {
+        self.valid_payload = {
             'message': 'Test message',
-            'selected_filtered_devices': [self.device.id],  # Use correct device ID
-            'breakdown_type': self.breakdown_type.id  # Use correct breakdown type ID
+            'selected_filtered_devices': [1],  # Device pk=1
+            'breakdown_type': 1  # BreakdownType pk=1
         }
-        request = self.factory.post('/send-message/', data, format='json')
-        request.user = self.user
 
-        response = send_message_to_telegram(request)
-        self.assertEqual(response.status_code, 200)
-        response_data = json.loads(response.content)
-        self.assertEqual(response_data['status'], 'success')
-        self.assertTrue(Application.objects.filter(device_id=self.device.id).exists())
-        updated_device = Device.objects.get(id=self.device.id)
-        self.assertEqual(updated_device.condition_id, 4)
+    @patch('body.views.requests.post')
+    @patch('body.views.get_telegram_bot')
+    def test_send_message_to_telegram_success(self, mock_get_telegram_bot, mock_requests_post):
+        mock_bot = Mock()
+        mock_get_telegram_bot.return_value = mock_bot
+
+        mock_response = Mock()
+        mock_response.status_code = 201
+        mock_response.raise_for_status = Mock()
+        mock_requests_post.return_value = mock_response
+
+        response = self.client.post(
+            reverse('send_message_to_telegram'),
+            data=json.dumps(self.valid_payload),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {'status': 'success', 'message': 'Сообщение отправлено!'})
+        self.assertEqual(mock_bot.send_message.called, True)
+        self.assertEqual(mock_requests_post.called, True)
+        self.assertEqual(
+            mock_requests_post.call_args[0][0],
+            f"{settings.BASE_URL}/body/save-application/"
+        )
+        self.assertEqual(
+            mock_requests_post.call_args[1]['json'],
+            {
+                'office_id': 1,
+                'device_ids': [1],
+                'reason': 'Test message',
+                'breakdown_type_id': 1,
+                'user_id': 1
+            }
+        )
+
+        from body.models import Device
+        device = Device.objects.get(pk=1)
+        self.assertEqual(device.condition_id, 4)
+
+    @patch('body.views.requests.post')
+    def test_send_message_to_telegram_no_devices(self, mock_requests_post):
+        payload = {
+            'message': 'Test message',
+            'selected_filtered_devices': [],
+            'breakdown_type': 1
+        }
+
+        response = self.client.post(
+            reverse('send_message_to_telegram'),
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json(), {'status': 'error', 'message': 'Не выбрано ни одного устройства!'})
+        self.assertEqual(mock_requests_post.called, False)
+
+class BodyListTests(TestCase):
+    fixtures = ['body_test_data.json']
+
+    def setUp(self):
+        self.client = Client()
+        self.api_client = APIClient()
+        self.user = User.objects.get(pk=1)  # Получение пользователя из фикстуры (pk=1)
+        self.client.force_login(self.user)  # Аутентификация для Client
+        self.api_client.force_authenticate(user=self.user)  # Аутентификация для APIClient
 
     def test_body_list_get(self):
-        """Test GET request for body_list."""
-        request = self.request_factory.get('/bodies/')
-        request.user = self.user
+        response = self.client.get(reverse('body_list'))
 
-        response = body_list(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'bodies')
-        self.assertContains(response, 'floors')
-        self.assertContains(response, 'offices')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTemplateUsed(response, 'body/body_list.html')
+        self.assertIn('bodies', response.context)
+        self.assertIn('floors', response.context)
+        self.assertIn('offices', response.context)
+        self.assertEqual(response.context['role'], 'user')
+        self.assertEqual(response.context['notifications_count'], 0)
+        self.assertEqual(len(response.context['bodies']), 1)
+        self.assertEqual(len(response.context['floors']), 1)
+        self.assertEqual(len(response.context['offices']), 1)
 
-    @patch('requests.get')
-    def test_fastapplication_list_get(self, mock_requests_get):
-        """Test GET request for fastapplication_list."""
-        mock_requests_get.return_value = MagicMock(
-            status_code=200,
-            json=lambda: [{'startAt': '09:00:00', 'endAt': '17:00:00', 'classroom': '101'}]
+    def test_body_list_post_with_filters(self):
+        payload = {
+            'selected_bodies': [1],  # Body pk=1
+            'selected_floors': [1],  # Floor pk=1
+            'selected_offices': [1],  # Office pk=1
+            'selected_package_devices': [1],  # PackageDevice pk=1
+            'selected_filtered_devices': [1]  # Device pk=1
+        }
+
+        response = self.api_client.post(
+            reverse('body_list'),
+            data=payload,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
-        request = self.request_factory.get('/fastapplications/')
-        request.user = self.user
 
-        response = fastapplication_list(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'schedules')
-        self.assertContains(response, 'offices')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertIn('offices', response_data)
+        self.assertIn('package_devices', response_data)
+        self.assertIn('devices', response_data)
+        self.assertIn('layouts', response_data)
+        self.assertIn('breakdown_types', response_data)
+        self.assertEqual(len(response_data['offices']), 1)
+        self.assertEqual(len(response_data['package_devices']), 1)
+        self.assertEqual(len(response_data['devices']), 1)
+        self.assertEqual(len(response_data['layouts']), 1)
+        self.assertEqual(response_data['package_devices'][0]['condition_id'], '1')
+        self.assertEqual(response_data['breakdown_types'][0]['name'], 'Hardware Failure')
 
-    @patch('requests.post')
-    def test_yagpt_page_post_text(self, mock_requests_post):
-        """Test POST request for yagpt_page with text."""
-        mock_requests_post.return_value = MagicMock(
-            status_code=200,
-            json=lambda: {'result': {'alternatives': [{'message': {'text': 'Test response'}}]}}
+    def test_body_list_post_no_filters(self):
+        payload = {
+            'selected_bodies': [],
+            'selected_floors': [],
+            'selected_offices': [],
+            'selected_package_devices': []
+        }
+
+        response = self.api_client.post(
+            reverse('body_list'),
+            data=payload,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
         )
-        data = {'user_text': 'Test query'}
-        self.client.force_login(self.user)  # Authenticate user
-        response = self.client.post('/body/yagpt/', data)  # Temporary direct URL
 
-        self.assertEqual(response.status_code, 200)
-        response_data = json.loads(response.content)
-        self.assertEqual(response_data['generated_text'], 'Test response'[:20])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertIn('offices', response_data)
+        self.assertIn('package_devices', response_data)
+        self.assertIn('devices', response_data)
+        self.assertIn('layouts', response_data)
+        self.assertEqual(len(response_data['offices']), 1)
+        self.assertEqual(len(response_data['package_devices']), 0)
+        self.assertEqual(len(response_data['devices']), 1)
+        self.assertEqual(len(response_data['layouts']), 0)
 
-    def test_user_dashboard_master(self):
-        """Test user_dashboard for master role."""
-        request = self.request_factory.get('/dashboard/')
-        request.user = self.master_user
+    def test_body_list_post_master_role(self):
+        from django.contrib.auth.models import Group
+        group = Group.objects.get(pk=1)
+        group.name = 'master'
+        group.save()
 
-        response = user_dashboard(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '101')  # Check for office number
-        self.assertContains(response, 'Master test reason')  # Check for master application
+        payload = {
+            'selected_bodies': [1],
+            'selected_floors': [1],
+            'selected_offices': [1],
+            'selected_package_devices': [1]
+        }
 
-    def test_delete_application(self):
-        """Test deleting an application."""
-        request = self.factory.post(f'/delete/{self.application.id}/')
-        request.user = self.user
+        response = self.api_client.post(
+            reverse('body_list'),
+            data=payload,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
 
-        response = delete_application(request, self.application.id)
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(Application.objects.filter(id=self.application.id).exists())
-
-    def test_device_breakdown_stats(self):
-        """Test device_breakdown_stats."""
-        request = self.factory.get('/stats/', {'office_id': self.office.id})
-        request.user = self.user
-        request.META['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
-
-        response = device_breakdown_stats(request)
-        self.assertEqual(response.status_code, 200)
-        response_data = json.loads(response.content)
-        self.assertIn('broken_devices', response_data)
-        self.assertIn('breakdown_type_data', response_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        response_data = response.json()
+        self.assertEqual(len(response_data['offices']), 1)
+        self.assertEqual(len(response_data['package_devices']), 1)
+        self.assertEqual(len(response_data['devices']), 1)
+        self.assertEqual(response_data['package_devices'][0]['condition_id'], '1')

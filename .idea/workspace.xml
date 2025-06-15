@@ -4,21 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="Внесение изминений Яндекс">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/.env" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/.env" afterDir="false" />
-
+    <list default="true" id="c34ffd33-c979-44d2-b41f-b9978d7846a6" name="Changes" comment="111">
       <change beforePath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/DjangoProject3/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/application_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/body_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/device_stats.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/device_stats.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/fastapplication_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/lkuser.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/lkuser.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/password_change.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/password_change.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/templates/body/ya_index.html" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/templates/body/ya_index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DjangoProject3/body/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/DjangoProject3/body/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,17 +18,12 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="3ed07e20b7fc26eb1df98f10e070083807500132" />
-      </map>
-    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -69,15 +51,13 @@
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;Django Server.diplom.executor&quot;: &quot;Run&quot;,
     &quot;Django Server.diplomAPI.executor&quot;: &quot;Run&quot;,
-    &quot;Django tests.Test: body.tests.executor&quot;: &quot;Run&quot;,
-    &quot;Python.bot.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
     &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#1 on new__version&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/pythonProject/Diploms/DjangoProject3/body&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -98,35 +78,14 @@
       <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\hp\PycharmProjects\diplomAPI\DjangoProject3\account\templates\email" />
-      <recent name="C:\Users\hp\PycharmProjects\diplomAPI\DjangoProject3" />
-      <recent name="C:\Users\hp\PycharmProjects\diplomAPI" />
       <recent name="D:\pythonProject\Diploms\DjangoProject3\static\body" />
       <recent name="D:\pythonProject\Diploms\DjangoProject3\static\account" />
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\chat" />
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\account" />
+      <recent name="C:\Users\hp\PycharmProjects\diplom\DjangoProject3\chat\templates" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.bot">
-    <configuration name="Test: body.tests" type="DjangoTestsConfigurationType" temporary="true">
-      <module name="diplomAPI" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="TARGET" value="body.tests" />
-      <option name="SETTINGS_FILE" value="" />
-      <option name="CUSTOM_SETTINGS" value="false" />
-      <option name="USE_OPTIONS" value="false" />
-      <option name="OPTIONS" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Django Server.diplomAPI">
     <configuration name="Test: " type="DjangoTestsConfigurationType" temporary="true">
       <module name="diplom" />
       <option name="ENV_FILES" value="" />
@@ -146,29 +105,6 @@
       <option name="CUSTOM_SETTINGS" value="false" />
       <option name="USE_OPTIONS" value="false" />
       <option name="OPTIONS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="bot" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="diplomAPI" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/DjangoProject3/body" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/DjangoProject3/body/bot.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
     <configuration name="diplom" type="Python.DjangoServer" factoryName="Django server">
@@ -220,20 +156,6 @@
       <option name="customRunCommand" value="" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
-      <deployment type="docker-compose.yml">
-        <settings />
-      </deployment>
-      <method v="2" />
-    </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Python.bot" />
-        <item itemvalue="Django tests.Test: body.tests" />
-        <item itemvalue="Django tests.Test: " />
-        <item itemvalue="Django tests.Test: " />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -328,27 +250,8 @@
       <workItem from="1747039793353" duration="7299000" />
       <workItem from="1747051573050" duration="4043000" />
       <workItem from="1747063937811" duration="2785000" />
-
-      <workItem from="1747071232137" duration="614000" />
-      <workItem from="1747124548935" duration="5422000" />
-      <workItem from="1747134539644" duration="486000" />
-      <workItem from="1747157373784" duration="925000" />
-      <workItem from="1747165364498" duration="279000" />
-      <workItem from="1747252953111" duration="6000" />
-      <workItem from="1747307523117" duration="3892000" />
-      <workItem from="1747429182999" duration="12000" />
-      <workItem from="1747727207142" duration="241000" />
-      <workItem from="1747767266756" duration="2550000" />
-      <workItem from="1747770876398" duration="3475000" />
-      <workItem from="1747851974931" duration="9575000" />
-      <workItem from="1748253201523" duration="3278000" />
-      <workItem from="1748256940076" duration="671000" />
-      <workItem from="1748260126445" duration="2865000" />
-      <workItem from="1749328851284" duration="3845000" />
-      <workItem from="1749385279290" duration="1756000" />
-      <workItem from="1749925806600" duration="841000" />
-      <workItem from="1749926708355" duration="2179000" />
-
+      <workItem from="1747071232137" duration="908000" />
+      <workItem from="1747072279911" duration="1222000" />
     </task>
     <task id="LOCAL-00001" summary="111">
       <option name="closed" value="true" />
@@ -622,121 +525,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747066289489</updated>
     </task>
-
-    <task id="LOCAL-00035" summary="Аватар">
+    <task id="LOCAL-00035" summary="111">
       <option name="closed" value="true" />
-      <created>1747083903404</created>
+      <created>1747072138726</created>
       <option name="number" value="00035" />
       <option name="presentableId" value="LOCAL-00035" />
       <option name="project" value="LOCAL" />
-      <updated>1747083903404</updated>
+      <updated>1747072138726</updated>
     </task>
-    <task id="LOCAL-00036" summary="ИзминениеБагов">
-      <option name="closed" value="true" />
-      <created>1747134594194</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1747134594194</updated>
-    </task>
-    <task id="LOCAL-00037" summary="Добавление Сигнала на добавление 4х устройств при создании рабочего места">
-      <option name="closed" value="true" />
-      <created>1747308410925</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1747308410925</updated>
-    </task>
-    <task id="LOCAL-00038" summary="Привязка Этажей к Кабинетам">
-      <option name="closed" value="true" />
-      <created>1747313133545</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1747313133545</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Подготовка под деплой">
-      <option name="closed" value="true" />
-      <created>1747856032304</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1747856032304</updated>
-    </task>
-    <task id="LOCAL-00040" summary="Подготовка под деплой">
-      <option name="closed" value="true" />
-      <created>1747860075978</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1747860075978</updated>
-    </task>
-    <task id="LOCAL-00041" summary="Подготовка под деплой">
-      <option name="closed" value="true" />
-      <created>1747861110003</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1747861110005</updated>
-    </task>
-    <task id="LOCAL-00042" summary="Подготовка под деплой">
-      <option name="closed" value="true" />
-      <created>1747861274695</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1747861274695</updated>
-    </task>
-    <task id="LOCAL-00043" summary="Подготовка под деплой">
-      <option name="closed" value="true" />
-      <created>1747861965435</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1747861965435</updated>
-    </task>
-    <task id="LOCAL-00044" summary="Подготовка под деплой">
-      <option name="closed" value="true" />
-      <created>1747863075449</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1747863075449</updated>
-    </task>
-    <task id="LOCAL-00045" summary="Добавление верификации и фикс сообщений со входа">
-      <option name="closed" value="true" />
-      <created>1748256404628</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1748256404628</updated>
-    </task>
-    <task id="LOCAL-00046" summary="Добавление верификации и фикс сообщений со входа">
-      <option name="closed" value="true" />
-      <created>1748256450249</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1748256450249</updated>
-    </task>
-    <task id="LOCAL-00047" summary="Внесение изминений">
-      <option name="closed" value="true" />
-      <created>1748262336169</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1748262336169</updated>
-    </task>
-    <task id="LOCAL-00048" summary="Внесение изминений Яндекс">
-      <option name="closed" value="true" />
-      <created>1748515233102</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1748515233102</updated>
-    </task>
-    <option name="localTasksCounter" value="49" />
-
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -765,20 +562,7 @@
     <MESSAGE value="Дизайн" />
     <MESSAGE value="Уведомление" />
     <MESSAGE value="тест" />
-
-    <MESSAGE value="Аватар" />
-    <MESSAGE value="ИзминениеБагов" />
-    <MESSAGE value="Добавление Сигнала на добавление 4х устройств при создании рабочего места" />
-    <MESSAGE value="Привязка Этажей к Кабинетам" />
-    <MESSAGE value="Подготовка под деплой" />
-    <MESSAGE value="Добавление верификации и фикс сообщений со входа" />
-    <MESSAGE value="Внесение изминений" />
-    <MESSAGE value="Внесение изминений Яндекс" />
-    <option name="LAST_COMMIT_MESSAGE" value="Внесение изминений Яндекс" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/diplomAPI$Test__body_tests.coverage" NAME="Test: body.tests Coverage Results" MODIFIED="1747084746891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/diplomAPI$bot.coverage" NAME="bot Coverage Results" MODIFIED="1749385514382" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/DjangoProject3/body" />
-
+    <MESSAGE value="111" />
+    <option name="LAST_COMMIT_MESSAGE" value="111" />
   </component>
 </project>
