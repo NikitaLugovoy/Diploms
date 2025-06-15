@@ -115,6 +115,7 @@ def application_list(request):
         "statuses": statuses,
         "role": role,
         "notifications_count": notifications_count,
+        'active_page': 'application_list'
     })
 
 
@@ -431,6 +432,7 @@ def body_list(request):
         "devices": [],
         "role": role,
         "notifications_count": notifications_count,
+        'active_page': 'body_list'
     })
 
 @swagger_auto_schema(
@@ -569,6 +571,7 @@ def fastapplication_list(request):
         "offices": offices,
         "role": role,
         "notifications_count": notifications_count,
+        'active_page': 'fastapplication_list'
     })
 
 
@@ -615,7 +618,7 @@ def yagpt_page(request):
         role = groups[0].name.lower() if groups.exists() else 'Без роли'
         notifications_count = Application.objects.filter(user=user, status_id=1).count()
 
-        context = {'role': role, 'notifications_count': notifications_count}
+        context = {'role': role, 'notifications_count': notifications_count, 'active_page': 'ya_index'}
         return render(request, "body/ya_index.html", context)
 
     elif request.method == "POST":
@@ -714,6 +717,7 @@ def user_dashboard(request):
             "notifications_count": notifications_count,
             "role": role,
             "avatar_url": avatar_url,
+            'active_page': 'lkuser'
         }
     )
 
@@ -761,14 +765,11 @@ class CustomPasswordChangeView(PasswordChangeView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def device_breakdown_stats(request):
-    # Определяем роль пользователя
     user = request.user
-    # Получение роли из первой группы, как в user_dashboard
     groups = user.groups.all()
     role = groups[0].name.lower() if groups.exists() else 'Без роли'
     notifications_count = Application.objects.filter(user=user, status_id=1).count()
 
-    # Получаем общую статистику
     office_stats = (
         Application.objects
         .exclude(status__id=3)
@@ -799,7 +800,6 @@ def device_breakdown_stats(request):
         for entry in heatmap_raw
     ]
 
-    # Если это AJAX-запрос — вернуть JSON
     if request.GET.get("office_id") and request.headers.get('x-requested-with') == 'XMLHttpRequest':
         office_id = int(request.GET["office_id"])
         broken_devices = (
@@ -827,7 +827,6 @@ def device_breakdown_stats(request):
             "breakdown_type_data": breakdown_type_data,
         })
 
-    # Иначе вернуть обычную HTML-страницу
     return render(request, "body/device_stats.html", {
         "stats_data": stats_data,
         "selected_office": request.GET.get("office_id"),
@@ -835,6 +834,7 @@ def device_breakdown_stats(request):
         "chart_data": json.dumps(stats_data),
         "heatmap_data": json.dumps(heatmap_data),
         "breakdown_type_data": json.dumps([]),
-        "role": role,  # Добавляем роль в контекст
+        "role": role,
         "notifications_count": notifications_count,
+        'active_page': 'device_stats'
     })

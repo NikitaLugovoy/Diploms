@@ -8,6 +8,8 @@ class Body(models.Model):
     class Meta:
         db_table = 'body'
 
+    def __str__(self):
+        return f"{self.number}"
 
 class Floor(models.Model):
     number = models.IntegerField(db_index=True)
@@ -16,6 +18,8 @@ class Floor(models.Model):
     class Meta:
         db_table = 'floors'
 
+    def __str__(self):
+        return f"{self.number}"
 
 class Office(models.Model):
     number = models.CharField(max_length=50, db_index=True)
@@ -28,12 +32,18 @@ class Office(models.Model):
             models.Index(fields=['floor', 'body']),
         ]
 
+    def __str__(self):
+        return f"{self.number}"
+
 
 class BreakdownType(models.Model):
     name = models.CharField(max_length=255, unique=True, db_index=True)
 
     class Meta:
         db_table = 'breakdown_types'
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 class PackageDevice(models.Model):
@@ -42,6 +52,9 @@ class PackageDevice(models.Model):
 
     class Meta:
         db_table = 'package_device'
+
+    def __str__(self):
+        return f"{self.number}"
 
 
 class Device(models.Model):
@@ -56,6 +69,8 @@ class Device(models.Model):
             models.Index(fields=['type', 'serial_number']),
         ]
 
+    def __str__(self):
+        return f"{self.type}, {self.condition.name}"
 
 class Application(models.Model):
     office = models.ForeignKey(Office, on_delete=models.CASCADE, related_name='applications', db_index=True)
@@ -80,6 +95,8 @@ class Status(models.Model):
     class Meta:
         db_table = 'statuses'
 
+    def __str__(self):
+        return f"{self.name}"
 
 class Schedule(models.Model):
     name = models.TextField()
@@ -106,6 +123,9 @@ class OfficeLayout(models.Model):
         indexes = [
             models.Index(fields=['office', 'created_at']),
         ]
+
+        def __str__(self):
+            return f"{self.name} / {self.office.number}"
 
 
 class DevicePosition(models.Model):

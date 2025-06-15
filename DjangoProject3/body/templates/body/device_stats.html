@@ -66,8 +66,12 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .container {
@@ -81,8 +85,13 @@
             margin-bottom: 20px;
         }
 
-        h2 { font-size: 36px; }
-        h4 { font-size: 24px; }
+        h2 {
+            font-size: 36px;
+        }
+
+        h4 {
+            font-size: 24px;
+        }
 
         /* Стили для карточек */
         .card-item {
@@ -223,11 +232,22 @@
                 margin-bottom: 1rem;
             }
 
-            .card-item h4 { font-size: 1.25rem; }
+            .card-item h4 {
+                font-size: 1.25rem;
+            }
+
             .card-item .table th,
-            .card-item .table td { font-size: 0.875rem; }
-            .card-item .list-group-item { font-size: 0.875rem; }
-            .card-item canvas { max-height: 350px; }
+            .card-item .table td {
+                font-size: 0.875rem;
+            }
+
+            .card-item .list-group-item {
+                font-size: 0.875rem;
+            }
+
+            .card-item canvas {
+                max-height: 350px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -236,12 +256,27 @@
                 border-radius: 15px;
             }
 
-            .card-item h4 { font-size: 1.125rem; }
-            .card-item .table { font-size: 0.75rem; }
+            .card-item h4 {
+                font-size: 1.125rem;
+            }
+
+            .card-item .table {
+                font-size: 0.75rem;
+            }
+
             .card-item .table th,
-            .card-item .table td { padding: 0.5rem; }
-            .card-item .list-group-item { font-size: 0.75rem; }
-            .card-item canvas { max-height: 300px; }
+            .card-item .table td {
+                padding: 0.5rem;
+            }
+
+            .card-item .list-group-item {
+                font-size: 0.75rem;
+            }
+
+            .card-item canvas {
+                max-height: 300px;
+            }
+
             .card-item .btn-show-devices,
             .card-item .btn-hide-devices {
                 padding: 0.5rem 1rem;
@@ -261,7 +296,9 @@
                 -webkit-overflow-scrolling: touch;
             }
 
-            .card-item canvas { max-height: 250px; }
+            .card-item canvas {
+                max-height: 250px;
+            }
         }
 
         /* Стили для таблиц и других элементов */
@@ -275,7 +312,9 @@
             font-size: 16px;
         }
 
-        .hidden { display: none; }
+        .hidden {
+            display: none;
+        }
 
         hr {
             border-color: #dee2e6;
@@ -299,10 +338,21 @@
         }
 
         @media (max-width: 768px) {
-            h2 { font-size: 28px; }
-            h4 { font-size: 20px; }
-            .table { font-size: 14px; }
-            canvas { max-height: 300px; }
+            h2 {
+                font-size: 28px;
+            }
+
+            h4 {
+                font-size: 20px;
+            }
+
+            .table {
+                font-size: 14px;
+            }
+
+            canvas {
+                max-height: 300px;
+            }
         }
 
         /* Стили для пагинации */
@@ -450,62 +500,65 @@
                 padding-top: 80px;
             }
         }
+
         .navbar-nav .nav-link.active {
-    background-color: var(--accent);
-    color: #ffffff !important;
-}
-.notification-link {
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
+            background-color: var(--accent);
+            color: #ffffff !important;
+        }
 
-.notification-link .notification-count {
-    background-color: var(--accent);
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-left: 0.5rem;
-    min-width: 20px;
-    text-align: center;
-}
+        .notification-link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-body.dark-mode .notification-link .notification-count {
-    background-color: #0056b3;
-}
+        .notification-link .notification-count {
+            background-color: var(--accent);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 0.5rem;
+            min-width: 20px;
+            text-align: center;
+        }
 
-.notification-link:hover {
-    background-color: rgba(0, 123, 255, 0.1);
-    color: var(--accent);
-}
+        body.dark-mode .notification-link .notification-count {
+            background-color: #0056b3;
+        }
 
-body.dark-mode .notification-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-@media (max-width: 992px) {
-    .notification-link {
-        padding: 0.5rem 0.75rem;
-    }
+        .notification-link:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            color: var(--accent);
+        }
 
-    .notification-link .notification-count {
-        font-size: 0.7rem;
-        padding: 2px 6px;
-        min-width: 18px;
-    }
-}
+        body.dark-mode .notification-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
-@media (max-width: 768px) {
-    .notification-link .notification-count {
-        font-size: 0.65rem;
-        padding: 1px 5px;
-        min-width: 16px;
-    }
-}
+        @media (max-width: 992px) {
+            .notification-link {
+                padding: 0.5rem 0.75rem;
+            }
+
+            .notification-link .notification-count {
+                font-size: 0.7rem;
+                padding: 2px 6px;
+                min-width: 18px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .notification-link .notification-count {
+                font-size: 0.65rem;
+                padding: 1px 5px;
+                min-width: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -515,99 +568,7 @@ body.dark-mode .notification-link:hover {
 </div>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNavbar">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-    <img src="https://upload.wikimedia.org/wikipedia/ru/thumb/3/34/%D0%93%D0%B5%D1%80%D0%B1_%D0%91%D0%93%D0%98%D0%A2%D0%A3.png/587px-%D0%93%D0%B5%D1%80%D0%B1_%D0%91%D0%93%D0%98%D0%A2%D0%A3.png?20160707075707"
-         alt="Герб БГИТУ" style="height: 30px; margin-right: 8px;">
-    БГИТУ
-</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                {% if role == "admin" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'body_list' %}">
-                            <i class="fas fa-tools me-1"></i> Отправить заявку
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'fastapplication_list' %}">
-                            <i class="fas fa-bolt me-1"></i> Быстрая заявка
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'device_breakdown_stats' %}">
-                            <i class="fas fa-chart-bar me-1"></i> Статистика
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/">
-                            <i class="fas fa-cogs me-1"></i> Админ-панель
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lkuser' %}">
-                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
-                        </a>
-                    </li>
-                {% elif role == "teacher" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'body_list' %}">
-                            <i class="fas fa-tools me-1"></i> Отправить заявку
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'fastapplication_list' %}">
-                            <i class="fas fa-bolt me-1"></i> Быстрая заявка
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lkuser' %}">
-                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
-                        </a>
-                    </li>
-                {% elif role == "master" %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'body_list' %}">
-                            <i class="fas fa-tools me-1"></i> Отправить заявку
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'ya_page' %}">
-                            <i class="fas fa-robot me-1"></i> YandexGPT
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'application_list' %}">
-                            <i class="fas fa-file-alt me-1"></i> Заявки
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lkuser' %}">
-                            <i class="fas fa-user-circle me-1"></i> Личный кабинет
-                        </a>
-                    </li>
-                {% endif %}
-                <!-- Уведомления -->
-                <li class="nav-item">
-                    <a class="nav-link notification-link" href="#">
-                        <i class="fas fa-bell me-1"></i>
-                        <span class="notification-count">{{ notifications_count }}</span>
-                    </a>
-                </li>
-                <!-- Переключение темы -->
-                <li class="nav-item">
-                    <button class="theme-toggle" onclick="toggleTheme()">
-                        <i class="fas fa-moon me-1"></i> Тема
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+{% include '../navbar.html' %}
 
 <div class="container">
     <h2><i class="fas fa-chart-bar"></i> Статистика поломанных устройств по офисам</h2>
@@ -615,15 +576,15 @@ body.dark-mode .notification-link:hover {
     <div class="card-item">
         <table class="table table-bordered table-hover align-middle">
             <thead>
-                <tr>
-                    <th>Корпус</th>
-                    <th>Кабинет</th>
-                    <th>Кол-во сломанных устройств</th>
-                    <th>Детали</th>
-                </tr>
+            <tr>
+                <th>Корпус</th>
+                <th>Кабинет</th>
+                <th>Кол-во сломанных устройств</th>
+                <th>Детали</th>
+            </tr>
             </thead>
             <tbody>
-                {% for stat in stats_data %}
+            {% for stat in stats_data %}
                 <tr>
                     <td>{{ stat.body_number }}</td>
                     <td>{{ stat.office_number }}</td>
@@ -634,7 +595,7 @@ body.dark-mode .notification-link:hover {
                         </button>
                     </td>
                 </tr>
-                {% endfor %}
+            {% endfor %}
             </tbody>
         </table>
     </div>
@@ -667,174 +628,219 @@ body.dark-mode .notification-link:hover {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-// Hide preloader after page load
-window.addEventListener('load', () => {
-    document.getElementById('preloader').style.display = 'none';
-});
-
-// Toggle theme
-function toggleTheme() {
-    const isDark = document.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    // Обновляем текст кнопки
-    const themeButton = document.querySelector('.theme-toggle');
-    themeButton.textContent = isDark ? '☀️ Тема' : '🌙 Тема';
-}
-
-// Load theme from localStorage
-window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        // Устанавливаем значок солнца при загрузке тёмной темы
-        document.querySelector('.theme-toggle').textContent = '☀️ Тема';
-    } else {
-        // Устанавливаем значок луны для светлой темы
-        document.querySelector('.theme-toggle').textContent = '🌙 Тема';
-    }
-});
-
-// Pagination settings
-const ITEMS_PER_PAGE = 10;
-
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('.btn-show-devices').forEach(button => {
-        button.addEventListener('click', function () {
-            const officeId = this.getAttribute('data-office-id');
-            fetch("{% url 'device_breakdown_stats' %}?office_id=" + officeId, {
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                renderBrokenDevices(data.broken_devices);
-                renderBreakdownTypeChart(data.breakdown_type_data);
-            });
-        });
+    // Hide preloader after page load
+    window.addEventListener('load', () => {
+        document.getElementById('preloader').style.display = 'none';
     });
 
-    function renderBrokenDevices(devices) {
-        const section = document.getElementById("brokenDevicesSection");
-        if (!section) {
-            console.warn("⚠️ Элемент #brokenDevicesSection не найден");
-            return;
+    // Toggle theme
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        // Обновляем текст кнопки
+        const themeButton = document.querySelector('.theme-toggle');
+        themeButton.textContent = isDark ? '☀️ Тема' : '🌙 Тема';
+    }
+
+    // Load theme from localStorage
+    window.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            // Устанавливаем значок солнца при загрузке тёмной темы
+            document.querySelector('.theme-toggle').textContent = '☀️ Тема';
+        } else {
+            // Устанавливаем значок луны для светлой темы
+            document.querySelector('.theme-toggle').textContent = '🌙 Тема';
         }
+    });
 
-        section.classList.remove("hidden");
+    // Pagination settings
+    const ITEMS_PER_PAGE = 10;
 
-        const list = section.querySelector("ul#brokenDeviceList");
-        if (!list) {
-            console.warn("⚠️ ul#brokenDeviceList не найден");
-            return;
-        }
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.btn-show-devices').forEach(button => {
+            button.addEventListener('click', function () {
+                const officeId = this.getAttribute('data-office-id');
+                fetch("{% url 'device_breakdown_stats' %}?office_id=" + officeId, {
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        renderBrokenDevices(data.broken_devices);
+                        renderBreakdownTypeChart(data.breakdown_type_data);
+                    });
+            });
+        });
 
-        // Clear previous content
-        list.innerHTML = '';
+        function renderBrokenDevices(devices) {
+            const section = document.getElementById("brokenDevicesSection");
+            if (!section) {
+                console.warn("⚠️ Элемент #brokenDevicesSection не найден");
+                return;
+            }
 
-        // Track current page
-        let currentPage = 1;
-        const totalPages = Math.ceil(devices.length / ITEMS_PER_PAGE);
+            section.classList.remove("hidden");
 
-        function renderPage(page) {
-            list.innerHTML = ''; // Clear the list
-            const start = (page - 1) * ITEMS_PER_PAGE;
-            const end = start + ITEMS_PER_PAGE;
-            const paginatedDevices = devices.slice(start, end);
+            const list = section.querySelector("ul#brokenDeviceList");
+            if (!list) {
+                console.warn("⚠️ ul#brokenDeviceList не найден");
+                return;
+            }
 
-            // Render devices for the current page
-            paginatedDevices.forEach(device => {
-                const li = document.createElement("li");
-                li.className = "list-group-item";
-                li.innerHTML = `
+            // Clear previous content
+            list.innerHTML = '';
+
+            // Track current page
+            let currentPage = 1;
+            const totalPages = Math.ceil(devices.length / ITEMS_PER_PAGE);
+
+            function renderPage(page) {
+                list.innerHTML = ''; // Clear the list
+                const start = (page - 1) * ITEMS_PER_PAGE;
+                const end = start + ITEMS_PER_PAGE;
+                const paginatedDevices = devices.slice(start, end);
+
+                // Render devices for the current page
+                paginatedDevices.forEach(device => {
+                    const li = document.createElement("li");
+                    li.className = "list-group-item";
+                    li.innerHTML = `
                     <strong>Серийный номер:</strong> ${device.device_serial_number} <br>
                     <strong>Причина:</strong> ${device.reason} <br>
                     <strong>Тип поломки:</strong> ${device.breakdown_type_name}
                 `;
-                list.appendChild(li);
+                    list.appendChild(li);
+                });
+
+                // Update pagination controls
+                updatePaginationControls(page);
+            }
+
+            function updatePaginationControls(page) {
+                // Remove existing pagination
+                const existingPagination = section.querySelector(".pagination");
+                if (existingPagination) existingPagination.remove();
+
+                // Create pagination container
+                const pagination = document.createElement("div");
+                pagination.className = "pagination mt-3 d-flex justify-content-center align-items-center";
+
+                // Previous button
+                if (page > 1) {
+                    const prevButton = document.createElement("button");
+                    prevButton.className = "btn btn-outline-primary mx-1";
+                    prevButton.textContent = "Назад";
+                    prevButton.addEventListener("click", () => renderPage(page - 1));
+                    pagination.appendChild(prevButton);
+                }
+
+                // Page indicator
+                const pageIndicator = document.createElement("span");
+                pageIndicator.className = "mx-2";
+                pageIndicator.textContent = `Страница ${page} из ${totalPages}`;
+                pagination.appendChild(pageIndicator);
+
+                // Next button
+                if (page < totalPages) {
+                    const nextButton = document.createElement("button");
+                    nextButton.className = "btn btn-outline-primary mx-1";
+                    nextButton.textContent = "Вперед";
+                    nextButton.addEventListener("click", () => renderPage(page + 1));
+                    pagination.appendChild(nextButton);
+                }
+
+                // Append pagination if there are multiple pages or a single page with devices
+                if (totalPages > 0) {
+                    list.after(pagination);
+                }
+            }
+
+            // Render the first page
+            renderPage(currentPage);
+        }
+
+        let breakdownTypeChartInstance = null;
+
+        function renderBreakdownTypeChart(data) {
+            const labels = data.map(item => item.type);
+            const counts = data.map(item => item.count);
+
+            if (breakdownTypeChartInstance) {
+                breakdownTypeChartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('breakdownTypeChart').getContext('2d');
+            breakdownTypeChartInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Типы поломок',
+                        data: counts,
+                        backgroundColor: [
+                            'rgba(0, 123, 255, 0.5)',
+                            'rgba(0, 123, 255, 0.3)',
+                            'rgba(0, 123, 255, 0.7)',
+                            'rgba(0, 123, 255, 0.4)',
+                            'rgba(0, 123, 255, 0.6)',
+                            'rgba(0, 123, 255, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)',
+                            'rgba(0, 123, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Типы поломок в выбранном офисе',
+                            color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
+                        }
+                    }
+                }
             });
-
-            // Update pagination controls
-            updatePaginationControls(page);
         }
 
-        function updatePaginationControls(page) {
-            // Remove existing pagination
-            const existingPagination = section.querySelector(".pagination");
-            if (existingPagination) existingPagination.remove();
+        document.getElementById('hideDevicesButton')?.addEventListener('click', function () {
+            document.getElementById('brokenDevicesSection').classList.add('hidden');
+            const url = new URL(window.location.href);
+            url.searchParams.delete('office_id');
+            window.history.replaceState({}, '', url);
+        });
 
-            // Create pagination container
-            const pagination = document.createElement("div");
-            pagination.className = "pagination mt-3 d-flex justify-content-center align-items-center";
+        const breakdownTypeData = {{ breakdown_type_data|safe }};
+        const breakdownLabels = breakdownTypeData.map(item => item.type);
+        const breakdownCounts = breakdownTypeData.map(item => item.count);
 
-            // Previous button
-            if (page > 1) {
-                const prevButton = document.createElement("button");
-                prevButton.className = "btn btn-outline-primary mx-1";
-                prevButton.textContent = "Назад";
-                prevButton.addEventListener("click", () => renderPage(page - 1));
-                pagination.appendChild(prevButton);
-            }
+        const heatmapData = {{ heatmap_data|safe }};
+        const parsedData = {};
+        heatmapData.forEach(entry => {
+            const date = new Date(entry.date);
+            const timestamp = Math.floor(date.getTime() / 1000);
+            parsedData[timestamp] = entry.count;
+        });
 
-            // Page indicator
-            const pageIndicator = document.createElement("span");
-            pageIndicator.className = "mx-2";
-            pageIndicator.textContent = `Страница ${page} из ${totalPages}`;
-            pagination.appendChild(pageIndicator);
-
-            // Next button
-            if (page < totalPages) {
-                const nextButton = document.createElement("button");
-                nextButton.className = "btn btn-outline-primary mx-1";
-                nextButton.textContent = "Вперед";
-                nextButton.addEventListener("click", () => renderPage(page + 1));
-                pagination.appendChild(nextButton);
-            }
-
-            // Append pagination if there are multiple pages or a single page with devices
-            if (totalPages > 0) {
-                list.after(pagination);
-            }
-        }
-
-        // Render the first page
-        renderPage(currentPage);
-    }
-
-    let breakdownTypeChartInstance = null;
-
-    function renderBreakdownTypeChart(data) {
-        const labels = data.map(item => item.type);
-        const counts = data.map(item => item.count);
-
-        if (breakdownTypeChartInstance) {
-            breakdownTypeChartInstance.destroy();
-        }
-
-        const ctx = document.getElementById('breakdownTypeChart').getContext('2d');
-        breakdownTypeChartInstance = new Chart(ctx, {
-            type: 'pie',
+        const heatmapChart = new Chart(document.getElementById('heatmap'), {
+            type: 'line',
             data: {
-                labels: labels,
+                labels: Object.keys(parsedData).map(timestamp => new Date(timestamp * 1000).toLocaleDateString()),
                 datasets: [{
-                    label: 'Типы поломок',
-                    data: counts,
-                    backgroundColor: [
-                        'rgba(0, 123, 255, 0.5)',
-                        'rgba(0, 123, 255, 0.3)',
-                        'rgba(0, 123, 255, 0.7)',
-                        'rgba(0, 123, 255, 0.4)',
-                        'rgba(0, 123, 255, 0.6)',
-                        'rgba(0, 123, 255, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgba(0, 123, 255, 1)',
-                        'rgba(0, 123, 255, 1)',
-                        'rgba(0, 123, 255, 1)',
-                        'rgba(0, 123, 255, 1)',
-                        'rgba(0, 123, 255, 1)',
-                        'rgba(0, 123, 255, 1)'
-                    ],
-                    borderWidth: 1
+                    label: 'Поломки по дням',
+                    data: Object.values(parsedData),
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1,
+                    fill: true
                 }]
             },
             options: {
@@ -842,95 +848,51 @@ document.addEventListener("DOMContentLoaded", function () {
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Типы поломок в выбранном офисе',
+                        text: 'Поломки по дням',
                         color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
                     }
                 }
             }
         });
-    }
 
-    document.getElementById('hideDevicesButton')?.addEventListener('click', function() {
-        document.getElementById('brokenDevicesSection').classList.add('hidden');
-        const url = new URL(window.location.href);
-        url.searchParams.delete('office_id');
-        window.history.replaceState({}, '', url);
-    });
+        const chartData = {{ chart_data|safe }};
+        const labels = chartData.map(e => "Офис " + e.office_number);
+        const data = chartData.map(e => e.broken_count);
 
-    const breakdownTypeData = {{ breakdown_type_data|safe }};
-    const breakdownLabels = breakdownTypeData.map(item => item.type);
-    const breakdownCounts = breakdownTypeData.map(item => item.count);
-
-    const heatmapData = {{ heatmap_data|safe }};
-    const parsedData = {};
-    heatmapData.forEach(entry => {
-        const date = new Date(entry.date);
-        const timestamp = Math.floor(date.getTime() / 1000);
-        parsedData[timestamp] = entry.count;
-    });
-
-    const heatmapChart = new Chart(document.getElementById('heatmap'), {
-        type: 'line',
-        data: {
-            labels: Object.keys(parsedData).map(timestamp => new Date(timestamp * 1000).toLocaleDateString()),
-            datasets: [{
-                label: 'Поломки по дням',
-                data: Object.values(parsedData),
-                backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                borderColor: 'rgba(0, 123, 255, 1)',
-                borderWidth: 1,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Поломки по дням',
-                    color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
+        new Chart(document.getElementById("barChart"), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Сломанные устройства',
+                    data: data,
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {display: false},
+                    title: {
+                        display: true,
+                        text: 'Поломки по офисам',
+                        color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
+                    }
                 }
             }
+        });
+
+        function updatePieChart(newData) {
+            const labels = newData.map(item => item.type);
+            const values = newData.map(item => item.count);
+            breakdownTypeChartInstance.data.labels = labels;
+            breakdownTypeChartInstance.data.datasets[0].data = values;
+            breakdownTypeChartInstance.update();
         }
     });
 
-    const chartData = {{ chart_data|safe }};
-    const labels = chartData.map(e => "Офис " + e.office_number);
-    const data = chartData.map(e => e.broken_count);
-
-    new Chart(document.getElementById("barChart"), {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Сломанные устройства',
-                data: data,
-                backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                borderColor: 'rgba(0, 123, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                title: {
-                    display: true,
-                    text: 'Поломки по офисам',
-                    color: document.body.classList.contains('dark-mode') ? 'var(--text-dark)' : 'var(--text-light)'
-                }
-            }
-        }
-    });
-
-    function updatePieChart(newData) {
-        const labels = newData.map(item => item.type);
-        const values = newData.map(item => item.count);
-        breakdownTypeChartInstance.data.labels = labels;
-        breakdownTypeChartInstance.data.datasets[0].data = values;
-        breakdownTypeChartInstance.update();
-    }
-});
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== "") {
