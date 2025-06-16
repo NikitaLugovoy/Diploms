@@ -49,7 +49,7 @@ async def cmd_start(message: types.Message):
     logger.info(f"/start command received from user {chat_id}")
 
     keyboard = ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text="📋 Мои заявки"), KeyboardButton(text="❌ Закрыть заявку")]],
+        keyboard=[[KeyboardButton(text="📋 Заявки"), KeyboardButton(text="❌ Закрыть заявку")]],
         resize_keyboard=True
     )
     await message.answer("Добро пожаловать! Выберите действие:", reply_markup=keyboard)
