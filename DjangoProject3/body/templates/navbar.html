@@ -185,22 +185,20 @@
             <ul class="navbar-nav">
                 {% if role == "admin" %}
                     <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'body_list' %}active{% endif %}" href="{% url 'body_list' %}">
+                        <a class="nav-link {% if active_page == 'body_list' %}active{% endif %}"
+                           href="{% url 'body_list' %}">
                             <i class="fas fa-tools me-1"></i> Отправить заявку
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'fastapplication_list' %}active{% endif %}" href="{% url 'fastapplication_list' %}">
+                        <a class="nav-link {% if active_page == 'fastapplication_list' %}active{% endif %}"
+                           href="{% url 'fastapplication_list' %}">
                             <i class="fas fa-bolt me-1"></i> Быстрая заявка
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'ya_page' %}active{% endif %}" href="{% url 'ya_page' %}">
-                            <i class="fas fa-robot me-1"></i> YandexGPT
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'device_breakdown_stats' %}active{% endif %}" href="{% url 'device_breakdown_stats' %}">
+                        <a class="nav-link {% if active_page == 'device_breakdown_stats' %}active{% endif %}"
+                           href="{% url 'device_breakdown_stats' %}">
                             <i class="fas fa-chart-bar me-1"></i> Статистика
                         </a>
                     </li>
@@ -216,12 +214,14 @@
                     </li>
                 {% elif role == "teacher" %}
                     <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'body_list' %}active{% endif %}" href="{% url 'body_list' %}">
+                        <a class="nav-link {% if active_page == 'body_list' %}active{% endif %}"
+                           href="{% url 'body_list' %}">
                             <i class="fas fa-tools me-1"></i> Отправить заявку
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'fastapplication_list' %}active{% endif %}" href="{% url 'fastapplication_list' %}">
+                        <a class="nav-link {% if active_page == 'fastapplication_list' %}active{% endif %}"
+                           href="{% url 'fastapplication_list' %}">
                             <i class="fas fa-bolt me-1"></i> Быстрая заявка
                         </a>
                     </li>
@@ -232,13 +232,21 @@
                     </li>
                 {% elif role == "master" %}
                     <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'body_list' %}active{% endif %}" href="{% url 'body_list' %}">
+                        <a class="nav-link {% if active_page == 'body_list' %}active{% endif %}"
+                           href="{% url 'body_list' %}">
                             <i class="fas fa-tools me-1"></i> Отправить заявку
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'application_list' %}active{% endif %}" href="{% url 'application_list' %}">
+                        <a class="nav-link {% if active_page == 'application_list' %}active{% endif %}"
+                           href="{% url 'application_list' %}">
                             <i class="fas fa-file-alt me-1"></i> Заявки
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'ya_page' %}active{% endif %}"
+                           href="{% url 'ya_page' %}">
+                            <i class="fas fa-robot me-1"></i> YandexGPT
                         </a>
                     </li>
                     <li class="nav-item">
@@ -249,7 +257,8 @@
                 {% endif %}
                 <!-- Уведомления -->
                 <li class="nav-item">
-                    <a class="nav-link notification-link {% if active_page == 'notifications' %}active{% endif %}" href="#">
+                    <a class="nav-link notification-link {% if active_page == 'notifications' %}active{% endif %}"
+                       href="#">
                         <i class="fas fa-bell me-1"></i>
                         {% if notifications_count > 0 %}
                             <span class="notification-count">{{ notifications_count }}</span>
