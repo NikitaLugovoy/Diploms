@@ -645,6 +645,7 @@
                     li.className = "list-group-item";
                     li.innerHTML = `
                     <strong>Серийный номер:</strong> ${device.device_serial_number} <br>
+                    <strong>Тип устройства:</strong> ${device.type_name || 'Не указано'} <br>
                     <strong>Причина:</strong> ${device.reason} <br>
                     <strong>Тип поломки:</strong> ${device.breakdown_type_name}
                 `;
