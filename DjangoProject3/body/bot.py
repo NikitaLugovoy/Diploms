@@ -139,7 +139,7 @@ async def process_pagination_callback(callback_query: CallbackQuery):
 async def handle_text(message: types.Message):
     logger.info(f"Text message received: {message.text} from user {message.from_user.id}")
 
-    if message.text == "📋 Мои заявки":
+    if message.text == "📋 Заявки":
         await send_applications_page(message, page=1)
 
     elif message.text == "❌ Закрыть заявку":
