@@ -618,8 +618,12 @@ def yagpt_page(request):
         # Получение роли из первой группы, как в user_dashboard
         groups = user.groups.all()
         role = groups[0].name.lower() if groups.exists() else 'Без роли'
-        notifications_count = Application.objects.filter(user=user, status_id=1).count()
-
+        if role == "master":
+            # Для мастера: все заявки в системе
+            applications = Application.objects.filter(status_id=1).order_by("-data")
+            notifications_count = applications.count()  # Уведомления: общее количество всех заявок
+        else:
+            notifications_count=0
         context = {'role': role, 'notifications_count': notifications_count, 'active_page': 'ya_index'}
         return render(request, "body/ya_index.html", context)
 

@@ -363,7 +363,6 @@
         }
     });
 
-    // AJAX request for form submission
     async function sendRequest(event) {
         event.preventDefault();
 
@@ -427,6 +426,7 @@
         if (currentCount > 0) {
             countElement.textContent = currentCount - 1;
         }
+        console.log(currentCount)
     }
 </script>
 </body>
