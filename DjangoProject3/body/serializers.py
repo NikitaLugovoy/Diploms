@@ -64,6 +64,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     breakdown_type_id = serializers.IntegerField(source='breakdown_type.id', read_only=True, allow_null=True)
     breakdown_type_name = serializers.CharField(source='breakdown_type.name', read_only=True, allow_null=True)
     user_name = serializers.CharField(source='user.username', read_only=True)  # Добавляем имя пользователя
+    type_name = serializers.CharField(source='device.type.name', read_only=True)  # Добавляем type_name
 
     def get_breakdown_type_id(self, obj):
         return obj.breakdown_type.id if obj.breakdown_type else None

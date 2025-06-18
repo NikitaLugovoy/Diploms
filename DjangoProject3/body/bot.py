@@ -49,7 +49,7 @@ async def cmd_start(message: types.Message):
     logger.info(f"/start command received from user {chat_id}")
 
     keyboard = ReplyKeyboardMarkup(
-        keyboard=[[KeyboardButton(text="📋 Мои заявки"), KeyboardButton(text="❌ Закрыть заявку")]],
+        keyboard=[[KeyboardButton(text="📋 Заявки"), KeyboardButton(text="❌ Закрыть заявку")]],
         resize_keyboard=True
     )
     await message.answer("Добро пожаловать! Выберите действие:", reply_markup=keyboard)
@@ -139,7 +139,7 @@ async def process_pagination_callback(callback_query: CallbackQuery):
 async def handle_text(message: types.Message):
     logger.info(f"Text message received: {message.text} from user {message.from_user.id}")
 
-    if message.text == "📋 Мои заявки":
+    if message.text == "📋 Заявки":
         await send_applications_page(message, page=1)
 
     elif message.text == "❌ Закрыть заявку":
