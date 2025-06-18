@@ -523,7 +523,7 @@
                     <tr>
                         <td>{{ application.id }}</td>
                         <td class="office-tooltip" data-floor="{{ application.floor_number }}" data-body="{{ application.body_number }}">{{ application.office_number }}</td>
-                        <td class="device-tooltip" data-package="{{ application.package_number }}">{{ application.device_serial_number }}</td>
+                        <td class="device-tooltip" data-package="{{ application.package_number }}">{{ application.device_serial_number }}, {{ application.type_name }}</td>
                         <td>{{ application.reason }}</td>
                         <td>{{ application.breakdown_type_name }}</td>
                         <td>{{ application.data }}</td>
@@ -683,7 +683,7 @@ $(document).ready(function () {
                     var row = `<tr>
                         <td>${application.id}</td>
                         <td class="office-tooltip" data-floor="${application.floor_number || 'Не указано'}" data-body="${application.body_number || 'Не указано'}">${application.office_number || 'Не указано'}</td>
-                        <td class="device-tooltip" data-package="${application.package_number || 'Не указано'}">${application.device_serial_number || 'Не указано'}</td>
+                        <td class="device-tooltip" data-package="${application.package_number || 'Не указано'}">${application.device_serial_number || 'Не указано'}, ${application.type_name || 'Не указано'}</td>
                         <td>${application.reason || 'Не указано'}</td>
                         <td>${application.breakdown_type_name || 'Не указано'}</td>
                         <td>${formatDate(application.data)}</td>
