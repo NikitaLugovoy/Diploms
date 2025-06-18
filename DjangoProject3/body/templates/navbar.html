@@ -244,7 +244,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if active_page == 'ya_page' %}active{% endif %}"
+                        <a class="nav-link {% if active_page == 'ya_index' %}active{% endif %}"
                            href="{% url 'ya_page' %}">
                             <i class="fas fa-robot me-1"></i> YandexGPT
                         </a>
@@ -255,7 +255,6 @@
                         </a>
                     </li>
                 {% endif %}
-                <!-- Уведомления -->
                 <li class="nav-item">
                     <a class="nav-link notification-link {% if active_page == 'notifications' %}active{% endif %}"
                        href="#">
