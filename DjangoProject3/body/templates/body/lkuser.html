@@ -422,7 +422,7 @@
                     {% for application in group.applications %}
                         <tr>
                             <td>{{ application.id }}</td>
-                            <td>{{ application.device_serial_number }}</td>
+                            <td>{{ application.device_serial_number }}, {{ application.type_name }}</td>
                             <td>{{ application.reason }}</td>
                             <td>{{ application.breakdown_type_name }}</td>
                             <td>{{ application.data }}</td>
@@ -456,7 +456,7 @@
                     <tr>
                         <td>{{ application.id }}</td>
                         <td>{{ application.office_number }}</td>
-                        <td>{{ application.device_serial_number }}</td>
+                        <td>{{ application.device_serial_number }}, {{ application.type_name }}</td>
                         <td>{{ application.reason }}</td>
                         <td>{{ application.breakdown_type_name }}</td>
                         <td>{{ application.data }}</td>
