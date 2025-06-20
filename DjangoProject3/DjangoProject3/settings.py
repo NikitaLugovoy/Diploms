@@ -38,7 +38,7 @@ OAUTH_TOKEN = "y0__xDb65qfAhjB3RMgx9vHqRL-nTzxy4_H8SOVUt0AjSB2s_ZbtA"
 FOLDER_ID = "b1grkccohtd3ffp7p9p3"
 
 # Путь к Tesseract (если требуется)
-TESSERACT_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+TESSERACT_PATH = r"/usr/bin/tesseract"
 
 
 # settings.py
