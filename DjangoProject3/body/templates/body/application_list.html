@@ -508,7 +508,7 @@
             <thead>
                 <tr>
                     <th class="sortable" data-column="id">ID</th>
-                    <th class="sortable" data-column="office_number">Номер Офиса</th>
+                    <th class="sortable" data-column="office_number">Номер Кабинета</th>
                     <th class="sortable" data-column="device_serial_number">Серийный Номер</th>
                     <th class="sortable" data-column="reason">Причина</th>
                     <th class="sortable" data-column="breakdown_type_name">Тип Поломки</th>
@@ -593,7 +593,7 @@ $(document).on("mouseenter", ".office-tooltip, .device-tooltip", function (event
         var floor = $(this).data("floor") || "Не указано";
         var body = $(this).data("body") || "Не указано";
         var office = $(this).text().trim() || "Не указано";
-        tooltip.text(`Офис: ${office}, Этаж: ${floor}, Корпус: ${body}`);
+        tooltip.text(`Кабинет: ${office}, Этаж: ${floor}, Корпус: ${body}`);
     } else {
         var packageDevice = $(this).data("package") || "Не указано";
         var serialNumber = $(this).text().trim() || "Не указано";
