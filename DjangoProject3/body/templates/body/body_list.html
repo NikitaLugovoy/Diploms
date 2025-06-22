@@ -728,7 +728,6 @@
         DOMCache.themeToggle.textContent = isDark ? '☀️ Тема' : '🌙 Тема';
     }
 
-    // Load theme from localStorage
     window.addEventListener('DOMContentLoaded', () => {
         if (localStorage.getItem('theme') === 'dark') {
             DOMCache.body.classList.add('dark-mode');
@@ -776,7 +775,6 @@
         }
     }
 
-    // Event handler for input changes
     function handleInputChange(event) {
         if (event.target.classList.contains('form-check-input')) {
             const groupName = event.target.name;
@@ -787,7 +785,6 @@
                 event.target.closest('.form-check').classList.add('selected');
             }
 
-            // Reset subsequent selections when body or floor changes
             if (event.target.name === 'selected_bodies') {
                 document.querySelectorAll('input[name="selected_floors"]').forEach(radio => {
                     radio.checked = false;
@@ -825,13 +822,11 @@
         if (event.target.name === 'selected_filtered_devices') {
             const selectedDeviceId = event.target.value;
             const isChecked = event.target.checked;
-            console.log(isChecked ? `Выбран ID устройства: ${selectedDeviceId}` : `Снята галочка с устройства ID: ${selectedDeviceId}`);
         }
 
         fetchOfficesAndDevices();
     }
 
-    // Fetch offices and devices
     function fetchOfficesAndDevices() {
         const selectedBodies = document.querySelectorAll('input[name="selected_bodies"]:checked');
         const selectedFloors = document.querySelectorAll('input[name="selected_floors"]:checked');
@@ -846,7 +841,6 @@
         selectedDevices.forEach(radio => formData.append('selected_package_devices', radio.value));
         selectedFilteredDevices.forEach(checkbox => formData.append('selected_filtered_devices', checkbox.value));
 
-        // Manage block visibility
         DOMCache.floorsList.style.display = selectedBodies.length > 0 ? 'block' : 'none';
         DOMCache.officesList.style.display = (selectedBodies.length > 0 && selectedFloors.length > 0) ? 'block' : 'none';
         DOMCache.devicesListContainer.style.display = selectedOffices.length > 0 ? 'block' : 'none';
@@ -874,7 +868,7 @@
 
     function updateOfficesList(offices, selectedOffices) {
         const previouslySelectedOffices = new Set(
-        Array.from(selectedOffices).map(radio => radio.value) // берем из аргумента, переданного в функцию
+        Array.from(selectedOffices).map(radio => radio.value)
     );
         DOMCache.officesListContent.innerHTML = "";
         if (offices && offices.length > 0) {
@@ -911,9 +905,7 @@
     }
 
     function updatePackageDevicesList(devices, selectedDevices, layout) {
-        console.log("userRole:", window.userRole);
-        console.log("devices:", devices);
-        console.log("layout:", layout);
+
 
         if (!DOMCache.devicesList) {
             console.error("Элемент #devices-list не найден в DOM");
@@ -923,7 +915,7 @@
 
         if (!layout || !layout.width || !layout.height || !layout.device_positions) {
             DOMCache.devicesList.innerHTML = "<p>Схема кабинета не задана.</p>";
-            console.log("Схема не задана или некорректна");
+
             return;
         }
 
@@ -932,10 +924,10 @@
         grid.style.minWidth = `${layout.width * 80}px`;
 
         layout.device_positions.forEach(position => {
-            console.log("position:", position);
+
             if (position.is_active && position.x >= 0 && position.y >= 0) {
                 const device = devices.find(d => d.id === position.package_device_id);
-                console.log("found device:", device);
+
                 if (device) {
                     const deviceItem = document.createElement("div");
                     deviceItem.classList.add("device-item");

@@ -50,13 +50,10 @@ def register_view(request):
     if request.method == 'POST':
         reg_form = CustomUserCreationForm(request.POST, request.FILES)
         if reg_form.is_valid():
-            user = reg_form.save()  # commit=True по умолчанию
-            user.is_active = False  # блокируем доступ до подтверждения
+            user = reg_form.save()
+            user.is_active = False
             user.save()
 
-            # Добавление в группу "teacher"
-            #teacher_group, created = Group.objects.get_or_create(name='teacher')
-            #user.groups.add(teacher_group)
 
             send_activation_email(user, request)
 
@@ -72,7 +69,7 @@ def register_view(request):
 @permission_classes([AllowAny])
 def activate_view(request, token):
     try:
-        user_pk = signer.unsign(token, max_age=60*60*24)  # токен живёт 24 часа
+        user_pk = signer.unsign(token, max_age=60*60*24)
         user = User.objects.get(pk=user_pk)
         user.is_active = True
         user.save()

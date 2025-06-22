@@ -4,7 +4,7 @@ from body.models import Body, Floor, Office, PackageDevice, Device, Application,
     OfficeLayout, DevicePosition
 from type_devices.models import TypeDevice
 
-# Регистрация моделей
+
 @admin.register(Body)
 class BodyAdmin(admin.ModelAdmin):
     list_display = ('number', 'address')
@@ -20,7 +20,7 @@ class DeviceInline(admin.TabularInline):
     extra = 4
     fields = ('type', 'serial_number', 'condition')
 
-# В файле admin.py
+
 @admin.register(Office)
 class OfficeAdmin(admin.ModelAdmin):
     list_display = ('number', 'floor', 'body')
@@ -40,7 +40,7 @@ class DeviceAdmin(admin.ModelAdmin):
         return obj.condition.name
     get_condition_name.short_description = 'Состояние'
     def get_type_name(self, obj):
-        return obj.type.name  # Предполагается, что поле называется `type` и ссылается на модель TypeDevice
+        return obj.type.name
     get_type_name.short_description = 'Тип устройства'
 
 @admin.register(Application)

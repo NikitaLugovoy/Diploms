@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 import django
 
-load_dotenv()  # Загружаем .env в окружение
+load_dotenv()
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DjangoProject3.settings")
 django.setup()
@@ -141,16 +141,14 @@ async def handle_text(message: types.Message):
         app_id = int(message.text)
         try:
             application = await sync_to_async(Application.objects.get)(id=app_id)
-            application.status_id = 3  # Статус "Закрыто"
+            application.status_id = 3
             await sync_to_async(application.save)()
             await message.answer(f"Заявка №{app_id} успешно закрыта.")
-            logger.info(f"Application {app_id} closed by user {message.from_user.id}")
         except Application.DoesNotExist:
             await message.answer(f"Заявка №{app_id} не найдена.")
-            logger.warning(f"Application {app_id} not found when closing by user {message.from_user.id}")
 
     else:
-        # Игнорируем другие сообщения
+
         pass
 
 

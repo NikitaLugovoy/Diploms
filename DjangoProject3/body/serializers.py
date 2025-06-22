@@ -63,8 +63,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
     status_id = serializers.IntegerField(source='status.id', read_only=True)
     breakdown_type_id = serializers.IntegerField(source='breakdown_type.id', read_only=True, allow_null=True)
     breakdown_type_name = serializers.CharField(source='breakdown_type.name', read_only=True, allow_null=True)
-    user_name = serializers.CharField(source='user.username', read_only=True)  # Добавляем имя пользователя
-    type_name = serializers.CharField(source='device.type.name', read_only=True)  # Добавляем type_name
+    user_name = serializers.CharField(source='user.username', read_only=True)
+    type_name = serializers.CharField(source='device.type.name', read_only=True)
 
     def get_breakdown_type_id(self, obj):
         return obj.breakdown_type.id if obj.breakdown_type else None
@@ -87,7 +87,6 @@ class ScheduleSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "office", "datetime_start", "datetime_end", "user_id", "user_name"]
 
 
-# **Сериализаторы для обработки данных API**
 class CloseApplicationSerializer(serializers.Serializer):
     application_id = serializers.IntegerField()
 
