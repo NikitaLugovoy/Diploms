@@ -46,8 +46,6 @@ async def cmd_start(message: types.Message):
         defaults={"username": username}
     )
 
-    logger.info(f"/start command received from user {chat_id}")
-
     keyboard = ReplyKeyboardMarkup(
         keyboard=[[KeyboardButton(text="📋 Заявки"), KeyboardButton(text="❌ Закрыть заявку")]],
         resize_keyboard=True
@@ -60,13 +58,11 @@ PAGE_SIZE = 10
 
 
 async def send_applications_page(message_or_callback, page=1):
-    logger.info(f"send_applications_page called with page={page}")
 
     status_id = 1
     offset = (page - 1) * PAGE_SIZE
 
     total_count = await sync_to_async(lambda: Application.objects.filter(status_id=status_id).count())()
-    logger.info(f"Total applications count: {total_count}")
 
     applications = await sync_to_async(
         lambda: list(
@@ -78,8 +74,6 @@ async def send_applications_page(message_or_callback, page=1):
             .order_by("-data")[offset:offset + PAGE_SIZE]
         )
     )()
-
-    logger.info(f"Applications on page {page}: {len(applications)}")
 
     if not applications:
         text = "Заявок пока нет."
@@ -125,13 +119,11 @@ async def send_applications_page(message_or_callback, page=1):
 
 @dp.callback_query(lambda c: c.data and c.data.startswith("apps_page:"))
 async def process_pagination_callback(callback_query: CallbackQuery):
-    logger.info(f"Callback query data received: {callback_query.data} from user {callback_query.from_user.id}")
     page_str = callback_query.data.split(":")[1]
     if page_str.isdigit():
         page = int(page_str)
         await send_applications_page(callback_query, page=page)
     else:
-        logger.warning(f"Invalid page number in callback data: {callback_query.data}")
         await callback_query.answer("Некорректный номер страницы", show_alert=True)
 
 
