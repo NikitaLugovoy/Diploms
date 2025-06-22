@@ -1,7 +1,11 @@
 import logging
 
 from collections import defaultdict
-
+from django.db.models import Prefetch, Q
+from django.http import JsonResponse
+from django.shortcuts import render
+from .models import *
+from .serializers import *
 import pytz
 
 import telebot
@@ -326,57 +330,70 @@ def notify_all_users(bot_token: str, message: str):
     ),
     responses={200: "Отфильтрованные офисы, пакеты устройств и устройства"}
 )
+
 @api_view(["GET", "POST"])
 def body_list(request):
     user = request.user
     groups = user.groups.all()
     role = groups[0].name.lower() if groups.exists() else 'без роли'
 
-    if role == "master":
-        notifications_count = Application.objects.filter(status_id=1).count()
-    else:
-        notifications_count = Application.objects.filter(user=user, status_id=1).count()
+    notifications_count = Application.objects.filter(
+        Q(status_id=1) & (Q(user=user) if role != "master" else Q())
+    ).count()
 
     if request.method == "POST":
         selected_bodies = list(map(int, request.POST.getlist("selected_bodies", [])))
         selected_floors = list(map(int, request.POST.getlist("selected_floors", [])))
         selected_offices = list(map(int, request.POST.getlist("selected_offices", [])))
         selected_package_devices = list(map(int, request.POST.getlist("selected_package_devices", [])))
-        selected_filtered_devices = list(map(int, request.POST.getlist("selected_filtered_devices", [])))
+        selected_filtered_devices = list(map(int, request.POST.getlist("selected_filtered_devices", [])))  # Возможно не используется
 
-        floors = Floor.objects.all()
-        if selected_bodies:
-            floors = floors.filter(bodies__id__in=selected_bodies).distinct()
-
+        floors = Floor.objects.filter(bodies__id__in=selected_bodies).distinct() if selected_bodies else Floor.objects.all()
         offices = Office.objects.all()
         if selected_bodies:
             offices = offices.filter(body_id__in=selected_bodies)
         if selected_floors:
             offices = offices.filter(floor_id__in=selected_floors)
 
-        package_devices = PackageDevice.objects.filter(office_id__in=selected_offices) if selected_offices else []
+        package_devices = (
+            PackageDevice.objects.filter(office_id__in=selected_offices).select_related("office")
+            if selected_offices else []
+        )
 
-        devices = Device.objects.filter(package_id__in=selected_package_devices) if selected_package_devices else Device.objects.all()
+        if selected_package_devices:
+            devices = Device.objects.filter(package_id__in=selected_package_devices).select_related("condition")
+        else:
+            devices = Device.objects.none()
 
-        layouts = OfficeLayout.objects.filter(office_id__in=selected_offices).prefetch_related('device_positions') if selected_offices else []
+        layouts = (
+            OfficeLayout.objects.filter(office_id__in=selected_offices)
+            .prefetch_related("device_positions")
+            if selected_offices else []
+        )
 
-        breakdown_types = BreakdownType.objects.all()
-        breakdown_types_data = [{"id": b.id, "name": b.name} for b in breakdown_types]
+        breakdown_types_data = list(
+            BreakdownType.objects.values("id", "name")
+        )
 
-        package_devices_with_condition = []
-        for package_device in package_devices:
-            devices_in_package = Device.objects.filter(package_id=package_device.id)
-            condition = "1"
-            for device in devices_in_package:
-                if device.condition_id in [4, 6]:
-                    condition = str(device.condition_id)
-                    break
-            package_devices_with_condition.append({
-                "id": package_device.id,
-                "number": package_device.number,
-                "office_id": package_device.office_id or None,
-                "condition_id": condition,
-            })
+        # Получаем все устройства, сгруппированные по package_id
+        all_devices = Device.objects.filter(package_id__in=[p.id for p in package_devices]).values("package_id", "condition_id")
+        package_condition_map = {}
+
+        for d in all_devices:
+            if d["package_id"] not in package_condition_map:
+                package_condition_map[d["package_id"]] = d["condition_id"]
+            elif package_condition_map[d["package_id"]] not in [4, 6] and d["condition_id"] in [4, 6]:
+                package_condition_map[d["package_id"]] = d["condition_id"]
+
+        package_devices_with_condition = [
+            {
+                "id": pd.id,
+                "number": pd.number,
+                "office_id": pd.office_id or None,
+                "condition_id": str(package_condition_map.get(pd.id, 1)),  # по умолчанию "1"
+            }
+            for pd in package_devices
+        ]
 
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             return JsonResponse({
