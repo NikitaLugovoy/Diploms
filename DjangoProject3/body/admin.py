@@ -28,17 +28,20 @@ class OfficeAdmin(admin.ModelAdmin):
 
 @admin.register(PackageDevice)
 class PackageDeviceAdmin(admin.ModelAdmin):
-    list_display = ('office_id', 'number' )
-    search_fields = ('office_id', 'number')
+    list_display = ('office', 'number' )
+    search_fields = ('office__number', 'number')
     inlines = [DeviceInline]
 
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
-    list_display = ('type_id', 'serial_number', 'package_id', 'get_condition_name')
+    list_display = ('get_type_name', 'serial_number', 'package_id', 'get_condition_name')
     search_fields = ('serial_number', 'type__name', 'package__number', 'condition__name')
     def get_condition_name(self, obj):
         return obj.condition.name
     get_condition_name.short_description = 'Состояние'
+    def get_type_name(self, obj):
+        return obj.type.name  # Предполагается, что поле называется `type` и ссылается на модель TypeDevice
+    get_type_name.short_description = 'Тип устройства'
 
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
